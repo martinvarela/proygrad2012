@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 //esto es una linea para probar el gittt
+//linea que pongo yo (Gonzalo)
 //esta linea la meto yo (martin)
 class Entrada : Capa
 {
