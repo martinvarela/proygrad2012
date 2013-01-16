@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 //esto es una linea para probar el git
+//linea que pongo yo (Gonzalo)
 
 class Entrada : Capa
 {
