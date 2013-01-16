@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+//esto es una linea para probar el git
+
 class Entrada : Capa
 {
     private String nombreAtributo { get; set; }
