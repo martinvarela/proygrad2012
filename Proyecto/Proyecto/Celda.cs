@@ -10,7 +10,7 @@ class Celda
     private float desviacion;
     private float media;
     private int clasificacion;
-
+    //nico
     public Celda() { }
 
     public void setDatos(DTDatosDM datos)
