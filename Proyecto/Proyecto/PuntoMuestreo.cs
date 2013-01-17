@@ -6,7 +6,7 @@ using System.Text;
 class PuntoMuestreo : Punto
 {
 
-    void calcularValor(List<PuntoZonificacion> pts)
+    public void calcularValor(List<PuntoZonificacion> pts)
     {
         //paso 1
         //intersectar hace una "seleccion" entre los puntos de 'pts' y se queda con aquellos q esten dentro del punto de muestreo.

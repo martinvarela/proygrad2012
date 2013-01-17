@@ -55,7 +55,7 @@ class Controlador
 
             return new Muestreo();
     }
-    public Muestreo muestreoOptimo(File entrada, float alto, float ancho)
+    public Muestreo muestreoOptimo(String rutaEntrada, float alto, float ancho)
     {
         //HACER!!!
         return new Muestreo();
