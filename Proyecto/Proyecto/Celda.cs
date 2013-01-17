@@ -11,6 +11,7 @@ class Celda
     private float media;
     private int clasificacion;
     //nico
+    //nico2
     public Celda() { }
 
     public void setDatos(DTDatosDM datos)
