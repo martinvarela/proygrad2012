@@ -71,7 +71,7 @@ class Zonificacion
         string string_Yinicial = "CoordY: ";
         string string_CellSize = "CellSize: ";
         string string_cant_variables = "VarQty:";
-
+        coordenadaInicial = new Coordenada();
         string NAN = "NaN";
 
         string comienzo_datos = "[Cells]";
@@ -92,22 +92,22 @@ class Zonificacion
                 Cols = Int32.Parse(sLine.Substring(string_cols.Length, sLine.Length - string_cols.Length));
                 this.Columnas = Cols;
             }
-            else if (((sLine != "") && sLine.Substring(0, string_Xinicial.Length) == string_Xinicial))
+            else if (((sLine != "") && (sLine.Length >= string_Xinicial.Length) && sLine.Substring(0, string_Xinicial.Length) == string_Xinicial))
             {
                 xinicial = Double.Parse(sLine.Substring(string_Xinicial.Length, sLine.Length - string_Xinicial.Length));
                 this.coordenadaInicial.X = xinicial; 
             }
-            else if (((sLine != "") && sLine.Substring(0, string_Yinicial.Length) == string_Yinicial))
+            else if (((sLine != "") && (sLine.Length >= string_Yinicial.Length)  && sLine.Substring(0, string_Yinicial.Length) == string_Yinicial))
             {
                 yinicial = Double.Parse(sLine.Substring(string_Yinicial.Length, sLine.Length - string_Yinicial.Length));
                 this.coordenadaInicial.Y = yinicial;
             }
-            else if (((sLine != "") && sLine.Substring(0, string_CellSize.Length) == string_CellSize))
+            else if (((sLine != "") && (sLine.Length >= string_CellSize.Length)  && sLine.Substring(0, string_CellSize.Length) == string_CellSize))
             {
                 cellSize = Int32.Parse(sLine.Substring(string_CellSize.Length, sLine.Length - string_CellSize.Length));
                 this.TamanoCelda = cellSize;
             }
-            else if (((sLine != "") && sLine.Substring(0, string_cant_variables.Length) == string_cant_variables))
+            else if (((sLine != "") && (sLine.Length >= string_cant_variables.Length) && sLine.Substring(0, string_cant_variables.Length) == string_cant_variables))
             {
                 cant_variables = Int32.Parse(sLine.Substring(string_cant_variables.Length, sLine.Length - string_cant_variables.Length));
                 int i = 1;

@@ -112,6 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blackmore.cs" />
+    <Compile Include="botonMuestreo.cs" />
     <Compile Include="Capa.cs" />
     <Compile Include="Celda.cs" />
     <Compile Include="classBlackmore.cs" />
@@ -137,6 +138,12 @@
     </Compile>
     <Compile Include="ventanaBlackmore.Designer.cs">
       <DependentUpon>ventanaBlackmore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ventanaMuestreo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ventanaMuestreo.Designer.cs">
+      <DependentUpon>ventanaMuestreo.cs</DependentUpon>
     </Compile>
     <Compile Include="Zonificacion.cs" />
   </ItemGroup>
@@ -179,12 +186,18 @@
     <EmbeddedResource Include="ventanaBlackmore.resx">
       <DependentUpon>ventanaBlackmore.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ventanaMuestreo.resx">
+      <DependentUpon>ventanaMuestreo.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <AddInContent Include="Images\botonMuestreo.png" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

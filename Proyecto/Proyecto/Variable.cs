@@ -14,13 +14,12 @@ class Variable
     }
     private float media { get; set; }
     private List<PuntoZonificacion> puntosZonificacion;
-    private string nombreVariable; 
-
+    
     public Variable() { }
 
     public Variable(string nombreVariable)
     {
-        this.nombreVariable = nombreVariable;
+        this.nombre = nombreVariable;
     }
 
     public void calcularMedia()
