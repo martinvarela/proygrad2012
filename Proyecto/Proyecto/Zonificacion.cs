@@ -138,11 +138,12 @@ class Zonificacion
         {
             for (int ix = 1; ix <= this.Columnas; ix++)
             {
+                sLine = objReader.ReadLine(); 
+                
                 PuntoZonificacion ptoZonificacion = new PuntoZonificacion();
                 ptoZonificacion.Coordenada = calcularCoordenada(this.coordenadaInicial, this.TamanoCelda, ix-1, iy-1);
                 ptoZonificacion.Variables = this.Variables;
 
-                sLine = objReader.ReadLine();
                 char[] coma = { ';' };
                 string[] datos = null;
                 datos = sLine.Split(coma);
@@ -163,7 +164,7 @@ class Zonificacion
                     ptoZonificacion.Util = puntoUtil;
 
                 }
-                sLine = objReader.ReadLine();
+                
             }
         }
 
