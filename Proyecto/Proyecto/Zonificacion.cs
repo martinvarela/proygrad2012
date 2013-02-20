@@ -214,8 +214,8 @@ class Zonificacion
         //cursor.InsertFeature
         IFeatureBuffer featureBuffer = nueva.CreateFeatureBuffer();
 
-        int indice = nueva.FindField("Sample");
-        featureBuffer.set_Value(indice, "prueba");
+        int indice = nueva.FindField("Valor");
+        featureBuffer.set_Value(indice, 1233);
         cursor.InsertFeature(featureBuffer);
 
         // Calling flush allows you to handle any errors at a known time rather then on the cursor destruction.
@@ -348,16 +348,42 @@ class Zonificacion
             IFieldEdit fieldEdit = (IFieldEdit)field; // Explicit Cast
 
             // setup field properties
-            fieldEdit.Name_2 = "Sample";
-            fieldEdit.Type_2 = esriFieldType.esriFieldTypeString;
+            fieldEdit.Name_2 = "Valor";
+            fieldEdit.Type_2 = esriFieldType.esriFieldTypeDouble;
             fieldEdit.IsNullable_2 = true;
-            fieldEdit.AliasName_2 = "Sample Field Column";
-            fieldEdit.DefaultValue_2 = "test";
+            fieldEdit.AliasName_2 = "Valor";
+            fieldEdit.DefaultValue_2 = 0;
             fieldEdit.Editable_2 = true;
-            fieldEdit.Length_2 = 100;
-
+            
             // add field to field collection
             fieldsEdit.AddField(field);
+            //fields = (IFields)fieldsEdit; // Explicit Cast
+
+
+            IField puntoField = new FieldClass();
+
+            
+            // create a user defined text field
+            IFieldEdit puntoFieldEdit = (IFieldEdit)puntoField; // Explicit Cast
+
+            // setup field properties
+            puntoFieldEdit.Name_2 = "Punto";
+            puntoFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
+            puntoFieldEdit.IsNullable_2 = true;
+            puntoFieldEdit.AliasName_2 = "Punto";
+            puntoFieldEdit.DefaultValue_2 = 0;
+            puntoFieldEdit.Editable_2 = true;
+
+            // Modify the GeometryDef object before using the fields collection to create a 
+            // feature class.
+            IGeometryDef geometryDef = new GeometryDefClass();
+            IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
+            
+            // Alter the feature class geometry type to lines (default is polygons).
+            geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
+            puntoFieldEdit.GeometryDef_2 = geometryDefEdit;
+            // add field to field collection
+            fieldsEdit.AddField(puntoField);
             fields = (IFields)fieldsEdit; // Explicit Cast
         }
 
@@ -386,7 +412,7 @@ class Zonificacion
         // finally create and return the feature class
         if (featureDataset == null)// if no feature dataset passed in, create at the workspace level
         {
-            featureClass = featureWorkspace.CreateFeatureClass(featureClassName, validatedFields, CLSID, CLSEXT, esriFeatureType.esriFTSimple, strShapeField, strConfigKeyword);
+            featureClass = featureWorkspace.CreateFeatureClass(featureClassName, validatedFields, CLSID, CLSEXT, esriFeatureType.esriFTSimple, /*strShapeField*/"", strConfigKeyword);
         }
         else
         {
