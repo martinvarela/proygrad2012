@@ -22,18 +22,19 @@ class Variable
         this.nombre = nombreVariable;
     }
 
-    public void calcularMedia()
+    public void calcularMedia(List<PuntoZonificacion> listaPuntos)
     {
         float temp = 0;
         int cant = 0;
         float medicion;
+        this.puntosZonificacion = listaPuntos;
         for (int i = 0; i < this.puntosZonificacion.Count; i++)
         {
             PuntoZonificacion p = this.puntosZonificacion[i];
             if (p.Util)
             {
                 medicion = p.getMedicion(this.Nombre);
-                temp =+ medicion;
+                temp += medicion;
                 cant++;
             }
         }
