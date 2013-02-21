@@ -59,7 +59,7 @@ class Zonificacion
     {
         Coordenada coordenada = new Coordenada();
         coordenada.X = coordenadaInicial.X + TamanoCelda * x;
-        coordenada.Y = coordenadaInicial.Y + TamanoCelda * y;
+        coordenada.Y = coordenadaInicial.Y - TamanoCelda * y;
         return coordenada;
 
     }
@@ -386,7 +386,7 @@ class Zonificacion
         IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
         geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
         ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
-        ISpatialReference spatialReference = spatialReferenceFactory.CreateProjectedCoordinateSystem((int)esriSRProjCSType.esriSRProjCS_NAD1983UTM_20N);
+        ISpatialReference spatialReference = spatialReferenceFactory.CreateProjectedCoordinateSystem((int)esriSRProjCSType.esriSRProjCS_WGS1984UTM_21S);
         ISpatialReferenceResolution spatialReferenceResolution = (ISpatialReferenceResolution)spatialReference;
         spatialReferenceResolution.ConstructFromHorizon();
         spatialReferenceResolution.SetDefaultXYResolution();
