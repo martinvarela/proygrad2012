@@ -177,74 +177,29 @@ class Zonificacion
                     ptoZonificacion.Util = puntoUtil;
 
                 }
-                this.agregarPuntoZonificacion(ptoZonificacion);
+                //agrego el punto solo si tiene datos
+                if (ptoZonificacion.Util)
+                    this.agregarPuntoZonificacion(ptoZonificacion);
             }
         }
 
         //cierro el archivo
         objReader.Close();
-        
 
+        this.calcularVariabilidad();
+
+        MessageBox.Show("canrt puntos:" + puntosZonificacion.Count().ToString());
         /*PRUEBAS */        
         IMap map = ArcMap.Document.FocusMap;
-        MessageBox.Show(map.LayerCount.ToString());
-        MessageBox.Show(map.Name);
-        MessageBox.Show(map.Layers.Next().Name);
-         
-        IWorkspace ws = ((IDataset)map.Layer[0]).Workspace;
-        
-       
 
-        IFeatureClass nueva = CreateFeatureClass((IWorkspace2)ws, null, "nuevaClase", null, null, null, "nada");
-        //IFeatureClass otraClase = CreateStandaloneFeatureClass(null, "clase nueva 2", null, "ss");
-        
-        
-        
-        ESRI.ArcGIS.esriSystem.IExtension extension = ArcMap.Application.FindExtensionByName("ESRI Object Editor");
-        ESRI.ArcGIS.Editor.IEditor2 editor2 = extension as ESRI.ArcGIS.Editor.IEditor2; // Dynamic Cast
-
-        if (editor2.EditState != esriEditState.esriStateEditing)
-        {
-            editor2.StartEditing(ws);
-        }
-        
-        /*HAGO LOS CAMBIOS*/
-        IFeatureCursor cursor = nueva.Insert(true);
-        //cursor.InsertFeature
-        IFeatureBuffer featureBuffer = nueva.CreateFeatureBuffer();
-
-        int indice = nueva.FindField("Valor");
-        featureBuffer.set_Value(indice, 1233);
-        cursor.InsertFeature(featureBuffer);
-
-        // Calling flush allows you to handle any errors at a known time rather then on the cursor destruction.
-        cursor.Flush();
-
-        // Explicitly release the cursor.
-        Marshal.ReleaseComObject(cursor);
-
-        //Stop editing and save edits
-        editor2.StopEditing(true);
-
-        //map.AddLayer((ILayer)nueva);
-
-        IFeatureLayer featureLayer = new FeatureLayerClass();
-        featureLayer.FeatureClass = nueva;
-        ILayer layer = (ILayer)featureLayer;
-        layer.Name = featureLayer.FeatureClass.AliasName;
-        // Add the Layer to the focus map
-        map.AddLayer(layer);
-
-        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
-        activeView.Refresh();
-        /*FIN PRUEBAS*/
+        this.crearNuevaCapa(map, "nuevaCapa23", puntosZonificacion);
 
         
     }
 
     public void calcularVariabilidad()
     {
-        for (int i=0; i < this.Variables.Count; i++) { this.Variables[i].calcularMedia(); }
+        for (int i=0; i < this.Variables.Count; i++) { this.Variables[i].calcularMedia(this.puntosZonificacion); }
         for (int i = 0; i < this.puntosZonificacion.Count; i++) { this.puntosZonificacion[i].calcularVariabilidad(); }
     }
 
@@ -262,21 +217,7 @@ class Zonificacion
             this.puntosZonificacion = new List<PuntoZonificacion>();
 
         this.puntosZonificacion.Add(punto);
-        
-        Point puntoo = new Point();
-        puntoo.X = punto.Coordenada.X;
-        puntoo.Y = punto.Coordenada.Y;
-
-        RgbColor color = new ESRI.ArcGIS.Display.RgbColor();
-        color.Blue = 222;
-        color.Green = 0;
-        color.Red = 0;
-        MarkerElement puntooooo = new MarkerElement();
-        puntooooo.Geometry = puntoo;
-        //esto hay que cambiarlo
-        //AddGraphicToMap(ArcMap.Document.FocusMap, puntoo, color, color);
-        
-        
+                
     }
 
     #region "Create FeatureClass"
@@ -421,66 +362,141 @@ class Zonificacion
     }
     #endregion
 
-    public IFeatureClass CreateStandaloneFeatureClass(IWorkspace workspace, String featureClassName, IFields fieldsCollection, String shapeFieldName)
+
+    public IFeatureClass createFeatureClassWithFields(String featureClassName, IFeatureWorkspace featureWorkspace)
     {
-        IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)workspace;
-        IFeatureClassDescription fcDesc = new FeatureClassDescriptionClass();
-        IObjectClassDescription ocDesc = (IObjectClassDescription)fcDesc;
+        IFeatureClassDescription fcDescription = new FeatureClassDescriptionClass();
+        IObjectClassDescription ocDescription = (IObjectClassDescription)fcDescription;
+        //IFields fields = ocDescription.RequiredFields;
+
+
+        // Create a fields collection for the feature class.
+        IFields fields = new FieldsClass();
+        IFieldsEdit fieldsEdit = (IFieldsEdit)fields;
+
+        // Add an Object ID field to the fields collection. This is mandatory for feature classes.
+        IField oidField = new FieldClass();
+        IFieldEdit oidFieldEdit = (IFieldEdit)oidField;
+        oidFieldEdit.Name_2 = "OID";
+        oidFieldEdit.Type_2 = esriFieldType.esriFieldTypeOID;
+        fieldsEdit.AddField(oidField);
+
+        // Create a geometry definition (and spatial reference) for the feature class.
+        IGeometryDef geometryDef = new GeometryDefClass();
+        IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
+        geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
+        ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
+        ISpatialReference spatialReference = spatialReferenceFactory.CreateProjectedCoordinateSystem((int)esriSRProjCSType.esriSRProjCS_NAD1983UTM_20N);
+        ISpatialReferenceResolution spatialReferenceResolution = (ISpatialReferenceResolution)spatialReference;
+        spatialReferenceResolution.ConstructFromHorizon();
+        spatialReferenceResolution.SetDefaultXYResolution();
+        ISpatialReferenceTolerance spatialReferenceTolerance = (ISpatialReferenceTolerance)spatialReference;
+        spatialReferenceTolerance.SetDefaultXYTolerance();
+        geometryDefEdit.SpatialReference_2 = spatialReference;
+
+        // Add a geometry field to the fields collection. This is where the geometry definition is applied.
+        IField geometryField = new FieldClass();
+        IFieldEdit geometryFieldEdit = (IFieldEdit)geometryField;
+        geometryFieldEdit.Name_2 = "Shape";
+        geometryFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
+        geometryFieldEdit.GeometryDef_2 = geometryDef;
+        fieldsEdit.AddField(geometryField);
+
+        // Create a Name text field for the fields collection.
+        IField valorField = new FieldClass();
+        IFieldEdit valorFieldEdit = (IFieldEdit)valorField;
+        valorFieldEdit.Name_2 = "Valor";
+        valorFieldEdit.Type_2 = esriFieldType.esriFieldTypeDouble;
+        fieldsEdit.AddField(valorField);
 
         // Use IFieldChecker to create a validated fields collection.
         IFieldChecker fieldChecker = new FieldCheckerClass();
         IEnumFieldError enumFieldError = null;
         IFields validatedFields = null;
-        fieldChecker.ValidateWorkspace = workspace;
-        fieldChecker.Validate(fieldsCollection, out enumFieldError, out
-    validatedFields);
+        fieldChecker.ValidateWorkspace = (IWorkspace)featureWorkspace;
+        fieldChecker.Validate(fields, out enumFieldError, out validatedFields);
 
         // The enumFieldError enumerator can be inspected at this point to determine 
         // which fields were modified during validation.
-        IFeatureClass featureClass = featureWorkspace.CreateFeatureClass
-          (featureClassName, validatedFields, ocDesc.InstanceCLSID,
-          ocDesc.ClassExtensionCLSID, esriFeatureType.esriFTSimple, shapeFieldName,
-          "");
+
+        // Create the feature class. Note that the CLSID parameter is null—this indicates to use the
+        // default CLSID, esriGeodatabase.Feature (acceptable in most cases for feature classes).
+        IFeatureClass featureClass = featureWorkspace.CreateFeatureClass(featureClassName,
+                                                                            validatedFields, null, ocDescription.ClassExtensionCLSID,
+                                                                            esriFeatureType.esriFTSimple, "Shape", "");
+
         return featureClass;
     }
 
-
-    ///<remarks>You could also use the: application.FindExtensionByName("ESRI Object Editor") to get the extension object.</remarks>
-    public ESRI.ArcGIS.Editor.IEditor2 GetEditorFromArcMap(ESRI.ArcGIS.ArcMapUI.IMxApplication mxApplication)
+    public IFeatureClass crearNuevaCapa(IMap map, string nombreFeatureClass, List<PuntoZonificacion> listaPuntos)
     {
-        if (mxApplication == null)
-        {
-            return null;
-        }
-        ESRI.ArcGIS.Framework.IApplication application = mxApplication as ESRI.ArcGIS.Framework.IApplication; // Dynamic Cast
-        ESRI.ArcGIS.esriSystem.IExtension extension = ArcMap.Application.FindExtensionByName("ESRI Object Editor");
-        ESRI.ArcGIS.Editor.IEditor2 editor2 = extension as ESRI.ArcGIS.Editor.IEditor2; // Dynamic Cast
 
-        return editor2;
+        IWorkspace ws = ((IDataset)map.Layer[0]).Workspace;
+        IWorkspace2 ws2 = (IWorkspace2)ws;
+        IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)ws2; // Explicit Cast
+
+        IFeatureClass nuevaFeatureClass = this.createFeatureClassWithFields(nombreFeatureClass, featureWorkspace);
+
+        IFeatureBuffer featureBuffer = nuevaFeatureClass.CreateFeatureBuffer();
+        IFeatureCursor FeatureCursor = nuevaFeatureClass.Insert(true);
+
+        IWorkspaceEdit workspaceEdit = (IWorkspaceEdit)ws;
+
+        //Start an edit session and operation
+        workspaceEdit.StartEditing(true);
+        workspaceEdit.StartEditOperation();
+
+        object featureOID;
+
+        //With a feature buffer you have the ability to set the attribute for a specific field to be
+        //the same for all features added to the buffer.
+        //featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), 0);
+
+        //Here you can set the featurebuffers's shape by setting the featureBuffer.Shape
+        //to a geomerty that matched the featureclasses.
+        //Create 100 features using FeatureBuffer and insert into a feature cursor
+        ESRI.ArcGIS.Geometry.IPoint point;// = new ESRI.ArcGIS.Geometry.PointClass();
+        
+        foreach (PuntoZonificacion aux in listaPuntos)
+        {
+            point = new ESRI.ArcGIS.Geometry.PointClass();
+            point.X = aux.Coordenada.X;
+            point.Y = aux.Coordenada.Y;
+
+            featureBuffer.Shape = point;
+            featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.Variabilidad);
+
+            //Insert the feature into the feature cursor
+            featureOID = FeatureCursor.InsertFeature(featureBuffer);
+            
+        }
+        //Flush the feature cursor to the database
+        //Calling flush allows you to handle any errors at a known time rather then on the cursor destruction.
+        FeatureCursor.Flush();
+
+        //Stop editing
+        workspaceEdit.StopEditOperation();
+        workspaceEdit.StopEditing(true);
+
+        //Release the Cursor
+        System.Runtime.InteropServices.Marshal.ReleaseComObject(FeatureCursor);
+
+        IFeatureLayer featureLayer = new FeatureLayerClass();
+
+        featureLayer.FeatureClass = nuevaFeatureClass;
+
+        ILayer layer = (ILayer)featureLayer;
+        layer.Name = featureLayer.FeatureClass.AliasName;
+        // Add the Layer to the focus map
+        map.AddLayer(layer);
+
+        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
+        activeView.Refresh();
+
+        return nuevaFeatureClass;
     }
 
-    ///<summary>Get MxApplication from ArcMap</summary>
-///<param name="application">An IApplication interface that is the ArcMap application.</param>
-///<returns>An IMxApplication interface.</returns>
-///<remarks>The IMxApplication interface allows access the AppDisplay object, the selection environment, and the default printer page settings.</remarks>
-public ESRI.ArcGIS.Carto.IMap GetMxApplicationFromArcMap(ESRI.ArcGIS.Framework.IApplication application)
-{
-
-  if (application == null)
-  {
-	return null;
-  }
-
-  if (! (application is ESRI.ArcGIS.ArcMapUI.IMxApplication))
-  {
-	return null;
-  }
-
-  ESRI.ArcGIS.ArcMapUI.IMxApplication mxApplication = (ESRI.ArcGIS.ArcMapUI.IMxApplication)application; // Explicit Cast
-
-  return (ESRI.ArcGIS.Carto.IMap)mxApplication;
-}
-
+    
 
 
 }
