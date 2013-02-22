@@ -19,6 +19,10 @@ namespace Proyecto
         private void botonAbrir_Click(object sender, EventArgs e)
         {
             OpenFileDialog open = new OpenFileDialog();
+            
+            open.Filter = "ZF Files|*.ZF|All Files|*.*";
+            open.FilterIndex = 1;
+
             if (open.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 textBox1.Text = open.FileName;
