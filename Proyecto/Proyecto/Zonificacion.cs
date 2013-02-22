@@ -192,7 +192,7 @@ class Zonificacion
         /*PRUEBAS */        
         IMap map = ArcMap.Document.FocusMap;
 
-        this.crearNuevaCapa(map, "nuevaCapa23", puntosZonificacion);
+        this.crearNuevaCapa(map, "nuevaCapa25", puntosZonificacion);
 
         
     }

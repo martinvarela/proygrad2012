@@ -25,13 +25,30 @@ namespace Proyecto
 
             if (open.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                textBox1.Text = open.FileName;
+                txtArchivoZF.Text = open.FileName;
             }
         }
+
+        
         
         private void Zonificacion_Click(object sender, EventArgs e)
         {
-            Zonificacion zonificacion = new Zonificacion(textBox1.Text);         
+            if (!ptoVerdeZF.Visible)
+            {
+                Zonificacion zonificacion = new Zonificacion(txtArchivoZF.Text);
+            }
+        }
+
+        private void txtArchivoZF_TextChanged(object sender, EventArgs e)
+        {
+            if (txtArchivoZF.Text != "")
+            {
+                ptoVerdeZF.Visible = false;
+            }
+            else
+            {
+                ptoVerdeZF.Visible = true;
+            }
         }
     }
 }
