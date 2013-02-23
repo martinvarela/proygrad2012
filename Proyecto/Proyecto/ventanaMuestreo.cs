@@ -50,5 +50,63 @@ namespace Proyecto
                 ptoVerdeZF.Visible = true;
             }
         }
+
+        private void botonAbrirMuestreo_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog destino = new SaveFileDialog();
+            //destino.CheckPathExists = true;
+            if (destino.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtMuestreo.Text = destino.FileName.ToString();
+            }
+
+        }
+
+        private void txtMuestreo_TextChanged(object sender, EventArgs e)
+        {
+            if (txtMuestreo.Text != "")
+            {
+                ptoVerdeDestino.Visible = false;
+            }
+            else
+            {
+                ptoVerdeDestino.Visible = true;
+            }
+
+        }
+
+        private void txtArchivoZF_GotFocus(object sender, EventArgs e)
+        {
+            panelAyuda.Controls.Clear();
+
+            panelAyuda.Controls.Add(labelTituloZonificacion);
+            panelAyuda.Controls.Add(labelDescripcionZonificacion);
+        }
+
+        private void txtMuestreo_GotFocus(object sender, EventArgs e)
+        {
+            panelAyuda.Controls.Clear();
+
+            panelAyuda.Controls.Add(labelTituloMuestreo);
+            panelAyuda.Controls.Add(labelDescripcionMuestreo);
+        }
+
+
+        private void botonAyuda_Click(object sender, EventArgs e)
+        {
+            if (botonAyuda.Text.ToString() == "Mostrar ayuda >>")
+            {
+                panelAyuda.Visible = true;
+                this.Size = new Size(922, 485);
+                botonAyuda.Text = "Ocultar ayuda <<";
+            }
+            else
+            {
+                this.Size = new Size(484, 485);
+                panelAyuda.Visible = true;
+                botonAyuda.Text = "Mostrar ayuda >>";
+            }
+        }
+
     }
 }

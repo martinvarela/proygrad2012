@@ -34,70 +34,206 @@
             this.Zonificacion = new System.Windows.Forms.Button();
             this.lblOpenFileZF = new System.Windows.Forms.Label();
             this.ptoVerdeZF = new System.Windows.Forms.PictureBox();
+            this.ptoVerdeDestino = new System.Windows.Forms.PictureBox();
+            this.lblMuestreo = new System.Windows.Forms.Label();
+            this.botonAbrirMuestreo = new System.Windows.Forms.Button();
+            this.txtMuestreo = new System.Windows.Forms.TextBox();
+            this.botonAyuda = new System.Windows.Forms.Button();
+            this.panelAyuda = new System.Windows.Forms.Panel();
+            this.labelDescripcionMuestreo = new System.Windows.Forms.Label();
+            this.labelTituloMuestreo = new System.Windows.Forms.Label();
+            this.labelDescripcionZonificacion = new System.Windows.Forms.Label();
+            this.labelTituloZonificacion = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).BeginInit();
+            this.panelAyuda.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtArchivoZF
             // 
-            this.txtArchivoZF.Location = new System.Drawing.Point(27, 39);
+            this.txtArchivoZF.Location = new System.Drawing.Point(31, 48);
+            this.txtArchivoZF.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtArchivoZF.Name = "txtArchivoZF";
-            this.txtArchivoZF.Size = new System.Drawing.Size(227, 20);
+            this.txtArchivoZF.Size = new System.Drawing.Size(377, 22);
             this.txtArchivoZF.TabIndex = 0;
             this.txtArchivoZF.TextChanged += new System.EventHandler(this.txtArchivoZF_TextChanged);
+            this.txtArchivoZF.GotFocus += new System.EventHandler(this.txtArchivoZF_GotFocus);
             // 
             // botonAbrir
             // 
             this.botonAbrir.Image = ((System.Drawing.Image)(resources.GetObject("botonAbrir.Image")));
-            this.botonAbrir.Location = new System.Drawing.Point(260, 37);
+            this.botonAbrir.Location = new System.Drawing.Point(420, 46);
+            this.botonAbrir.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.botonAbrir.Name = "botonAbrir";
-            this.botonAbrir.Size = new System.Drawing.Size(27, 23);
+            this.botonAbrir.Size = new System.Drawing.Size(31, 28);
             this.botonAbrir.TabIndex = 1;
             this.botonAbrir.UseVisualStyleBackColor = true;
             this.botonAbrir.Click += new System.EventHandler(this.botonAbrir_Click);
             // 
             // Zonificacion
             // 
-            this.Zonificacion.Location = new System.Drawing.Point(66, 227);
+            this.Zonificacion.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Zonificacion.Location = new System.Drawing.Point(31, 396);
+            this.Zonificacion.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Zonificacion.Name = "Zonificacion";
-            this.Zonificacion.Size = new System.Drawing.Size(75, 23);
+            this.Zonificacion.Size = new System.Drawing.Size(110, 28);
             this.Zonificacion.TabIndex = 2;
-            this.Zonificacion.Text = "Zonificacion";
+            this.Zonificacion.Text = "Aceptar";
             this.Zonificacion.UseVisualStyleBackColor = true;
             this.Zonificacion.Click += new System.EventHandler(this.Zonificacion_Click);
             // 
             // lblOpenFileZF
             // 
             this.lblOpenFileZF.AutoSize = true;
-            this.lblOpenFileZF.Location = new System.Drawing.Point(24, 22);
+            this.lblOpenFileZF.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOpenFileZF.Location = new System.Drawing.Point(28, 27);
             this.lblOpenFileZF.Name = "lblOpenFileZF";
-            this.lblOpenFileZF.Size = new System.Drawing.Size(117, 13);
+            this.lblOpenFileZF.Size = new System.Drawing.Size(140, 16);
             this.lblOpenFileZF.TabIndex = 3;
             this.lblOpenFileZF.Text = "Archivo de zonificación";
             // 
             // ptoVerdeZF
             // 
             this.ptoVerdeZF.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeZF.Image")));
-            this.ptoVerdeZF.Location = new System.Drawing.Point(11, 39);
+            this.ptoVerdeZF.Location = new System.Drawing.Point(13, 48);
+            this.ptoVerdeZF.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ptoVerdeZF.Name = "ptoVerdeZF";
-            this.ptoVerdeZF.Size = new System.Drawing.Size(16, 16);
+            this.ptoVerdeZF.Size = new System.Drawing.Size(19, 20);
             this.ptoVerdeZF.TabIndex = 4;
             this.ptoVerdeZF.TabStop = false;
             // 
+            // ptoVerdeDestino
+            // 
+            this.ptoVerdeDestino.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeDestino.Image")));
+            this.ptoVerdeDestino.Location = new System.Drawing.Point(13, 116);
+            this.ptoVerdeDestino.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ptoVerdeDestino.Name = "ptoVerdeDestino";
+            this.ptoVerdeDestino.Size = new System.Drawing.Size(19, 20);
+            this.ptoVerdeDestino.TabIndex = 8;
+            this.ptoVerdeDestino.TabStop = false;
+            // 
+            // lblMuestreo
+            // 
+            this.lblMuestreo.AutoSize = true;
+            this.lblMuestreo.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMuestreo.Location = new System.Drawing.Point(28, 95);
+            this.lblMuestreo.Name = "lblMuestreo";
+            this.lblMuestreo.Size = new System.Drawing.Size(114, 16);
+            this.lblMuestreo.TabIndex = 7;
+            this.lblMuestreo.Text = "Capa de muestreo";
+            // 
+            // botonAbrirMuestreo
+            // 
+            this.botonAbrirMuestreo.Image = ((System.Drawing.Image)(resources.GetObject("botonAbrirMuestreo.Image")));
+            this.botonAbrirMuestreo.Location = new System.Drawing.Point(420, 112);
+            this.botonAbrirMuestreo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.botonAbrirMuestreo.Name = "botonAbrirMuestreo";
+            this.botonAbrirMuestreo.Size = new System.Drawing.Size(31, 28);
+            this.botonAbrirMuestreo.TabIndex = 6;
+            this.botonAbrirMuestreo.UseVisualStyleBackColor = true;
+            this.botonAbrirMuestreo.Click += new System.EventHandler(this.botonAbrirMuestreo_Click);
+            // 
+            // txtMuestreo
+            // 
+            this.txtMuestreo.Location = new System.Drawing.Point(31, 116);
+            this.txtMuestreo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtMuestreo.Name = "txtMuestreo";
+            this.txtMuestreo.Size = new System.Drawing.Size(377, 22);
+            this.txtMuestreo.TabIndex = 5;
+            this.txtMuestreo.TextChanged += new System.EventHandler(this.txtMuestreo_TextChanged);
+            this.txtMuestreo.GotFocus += new System.EventHandler(this.txtMuestreo_GotFocus);
+            // 
+            // botonAyuda
+            // 
+            this.botonAyuda.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botonAyuda.Location = new System.Drawing.Point(294, 396);
+            this.botonAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.botonAyuda.Name = "botonAyuda";
+            this.botonAyuda.Size = new System.Drawing.Size(157, 28);
+            this.botonAyuda.TabIndex = 9;
+            this.botonAyuda.Text = "Mostrar ayuda >>";
+            this.botonAyuda.UseVisualStyleBackColor = true;
+            this.botonAyuda.Click += new System.EventHandler(this.botonAyuda_Click);
+            // 
+            // panelAyuda
+            // 
+            this.panelAyuda.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.panelAyuda.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelAyuda.Controls.Add(this.labelDescripcionMuestreo);
+            this.panelAyuda.Controls.Add(this.labelTituloMuestreo);
+            this.panelAyuda.Controls.Add(this.labelDescripcionZonificacion);
+            this.panelAyuda.Controls.Add(this.labelTituloZonificacion);
+            this.panelAyuda.Location = new System.Drawing.Point(475, 27);
+            this.panelAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.panelAyuda.Name = "panelAyuda";
+            this.panelAyuda.Size = new System.Drawing.Size(408, 397);
+            this.panelAyuda.TabIndex = 10;
+            // 
+            // labelDescripcionMuestreo
+            // 
+            this.labelDescripcionMuestreo.AutoSize = true;
+            this.labelDescripcionMuestreo.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDescripcionMuestreo.Location = new System.Drawing.Point(19, 86);
+            this.labelDescripcionMuestreo.Name = "labelDescripcionMuestreo";
+            this.labelDescripcionMuestreo.Size = new System.Drawing.Size(239, 16);
+            this.labelDescripcionMuestreo.TabIndex = 3;
+            this.labelDescripcionMuestreo.Text = "Ruta de destino de la capa de muestreo";
+            // 
+            // labelTituloMuestreo
+            // 
+            this.labelTituloMuestreo.AutoSize = true;
+            this.labelTituloMuestreo.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelTituloMuestreo.Location = new System.Drawing.Point(18, 20);
+            this.labelTituloMuestreo.Name = "labelTituloMuestreo";
+            this.labelTituloMuestreo.Size = new System.Drawing.Size(148, 19);
+            this.labelTituloMuestreo.TabIndex = 2;
+            this.labelTituloMuestreo.Text = "Capa de muestreo";
+            // 
+            // labelDescripcionZonificacion
+            // 
+            this.labelDescripcionZonificacion.AutoSize = true;
+            this.labelDescripcionZonificacion.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDescripcionZonificacion.Location = new System.Drawing.Point(19, 86);
+            this.labelDescripcionZonificacion.Name = "labelDescripcionZonificacion";
+            this.labelDescripcionZonificacion.Size = new System.Drawing.Size(301, 16);
+            this.labelDescripcionZonificacion.TabIndex = 1;
+            this.labelDescripcionZonificacion.Text = "Ingrese el archivo correspondiente a la zonificación";
+            // 
+            // labelTituloZonificacion
+            // 
+            this.labelTituloZonificacion.AutoSize = true;
+            this.labelTituloZonificacion.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelTituloZonificacion.Location = new System.Drawing.Point(14, 20);
+            this.labelTituloZonificacion.Name = "labelTituloZonificacion";
+            this.labelTituloZonificacion.Size = new System.Drawing.Size(188, 19);
+            this.labelTituloZonificacion.TabIndex = 0;
+            this.labelTituloZonificacion.Text = "Archivo de zonificación";
+            // 
             // ventanaMuestreo
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(327, 262);
+            this.ClientSize = new System.Drawing.Size(468, 447);
+            this.Controls.Add(this.panelAyuda);
+            this.Controls.Add(this.botonAyuda);
+            this.Controls.Add(this.ptoVerdeDestino);
+            this.Controls.Add(this.lblMuestreo);
+            this.Controls.Add(this.botonAbrirMuestreo);
+            this.Controls.Add(this.txtMuestreo);
             this.Controls.Add(this.ptoVerdeZF);
             this.Controls.Add(this.lblOpenFileZF);
             this.Controls.Add(this.Zonificacion);
             this.Controls.Add(this.botonAbrir);
             this.Controls.Add(this.txtArchivoZF);
+            this.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "ventanaMuestreo";
-            this.ShowIcon = false;
             this.Text = "Optimización de muestreo";
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).EndInit();
+            this.panelAyuda.ResumeLayout(false);
+            this.panelAyuda.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -110,6 +246,17 @@
         private System.Windows.Forms.Button Zonificacion;
         private System.Windows.Forms.Label lblOpenFileZF;
         private System.Windows.Forms.PictureBox ptoVerdeZF;
+        private System.Windows.Forms.PictureBox ptoVerdeDestino;
+        private System.Windows.Forms.Label lblMuestreo;
+        private System.Windows.Forms.Button botonAbrirMuestreo;
+        private System.Windows.Forms.TextBox txtMuestreo;
+        private System.Windows.Forms.Button botonAyuda;
+        private System.Windows.Forms.Panel panelAyuda;
+        private System.Windows.Forms.Label labelDescripcionZonificacion;
+        private System.Windows.Forms.Label labelTituloZonificacion;
+        private System.Windows.Forms.Label labelDescripcionMuestreo;
+        private System.Windows.Forms.Label labelTituloMuestreo;
+
 
     }
 }

@@ -16,6 +16,13 @@ namespace Proyecto
         {
             //se crea la ventana principal del Muestreo
             ventanaMuestreo ventana = new ventanaMuestreo();
+            //no se puede minimizar
+            ventana.MinimizeBox = false;
+            //no se puede maximizar
+            ventana.MaximizeBox = false;
+            //no se puede cambiar el tamano
+            ventana.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+
             ventana.Visible = true;
         }
 

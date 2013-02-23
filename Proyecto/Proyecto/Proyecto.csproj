@@ -210,11 +210,9 @@
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
-    <AddInContent Include="Images\botonMuestreo.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Images\blackmoore1.ico" />
     <Content Include="Images\blackmoore2.ico" />
+    <AddInContent Include="Images\botonMuestreo_1.png" />
     <Content Include="Images\folderOpen.ico" />
     <Content Include="Images\optimizacion.ico" />
     <Content Include="Images\puntoVerde.png" />
