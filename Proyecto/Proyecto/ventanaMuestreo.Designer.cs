@@ -31,19 +31,20 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ventanaMuestreo));
             this.txtArchivoZF = new System.Windows.Forms.TextBox();
             this.botonAbrir = new System.Windows.Forms.Button();
-            this.Zonificacion = new System.Windows.Forms.Button();
+            this.btnAceptar = new System.Windows.Forms.Button();
             this.lblOpenFileZF = new System.Windows.Forms.Label();
             this.ptoVerdeZF = new System.Windows.Forms.PictureBox();
             this.ptoVerdeDestino = new System.Windows.Forms.PictureBox();
             this.lblMuestreo = new System.Windows.Forms.Label();
             this.botonAbrirMuestreo = new System.Windows.Forms.Button();
             this.txtMuestreo = new System.Windows.Forms.TextBox();
-            this.botonAyuda = new System.Windows.Forms.Button();
+            this.btnAyuda = new System.Windows.Forms.Button();
             this.panelAyuda = new System.Windows.Forms.Panel();
             this.labelDescripcionMuestreo = new System.Windows.Forms.Label();
             this.labelTituloMuestreo = new System.Windows.Forms.Label();
             this.labelDescripcionZonificacion = new System.Windows.Forms.Label();
             this.labelTituloZonificacion = new System.Windows.Forms.Label();
+            this.btnCancelar = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).BeginInit();
             this.panelAyuda.SuspendLayout();
@@ -70,17 +71,17 @@
             this.botonAbrir.UseVisualStyleBackColor = true;
             this.botonAbrir.Click += new System.EventHandler(this.botonAbrir_Click);
             // 
-            // Zonificacion
+            // btnAceptar
             // 
-            this.Zonificacion.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Zonificacion.Location = new System.Drawing.Point(31, 396);
-            this.Zonificacion.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.Zonificacion.Name = "Zonificacion";
-            this.Zonificacion.Size = new System.Drawing.Size(110, 28);
-            this.Zonificacion.TabIndex = 2;
-            this.Zonificacion.Text = "Aceptar";
-            this.Zonificacion.UseVisualStyleBackColor = true;
-            this.Zonificacion.Click += new System.EventHandler(this.Zonificacion_Click);
+            this.btnAceptar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAceptar.Location = new System.Drawing.Point(31, 396);
+            this.btnAceptar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnAceptar.Name = "btnAceptar";
+            this.btnAceptar.Size = new System.Drawing.Size(110, 28);
+            this.btnAceptar.TabIndex = 2;
+            this.btnAceptar.Text = "Aceptar";
+            this.btnAceptar.UseVisualStyleBackColor = true;
+            this.btnAceptar.Click += new System.EventHandler(this.Zonificacion_Click);
             // 
             // lblOpenFileZF
             // 
@@ -143,17 +144,17 @@
             this.txtMuestreo.TextChanged += new System.EventHandler(this.txtMuestreo_TextChanged);
             this.txtMuestreo.GotFocus += new System.EventHandler(this.txtMuestreo_GotFocus);
             // 
-            // botonAyuda
+            // btnAyuda
             // 
-            this.botonAyuda.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonAyuda.Location = new System.Drawing.Point(294, 396);
-            this.botonAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.botonAyuda.Name = "botonAyuda";
-            this.botonAyuda.Size = new System.Drawing.Size(157, 28);
-            this.botonAyuda.TabIndex = 9;
-            this.botonAyuda.Text = "Mostrar ayuda >>";
-            this.botonAyuda.UseVisualStyleBackColor = true;
-            this.botonAyuda.Click += new System.EventHandler(this.botonAyuda_Click);
+            this.btnAyuda.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAyuda.Location = new System.Drawing.Point(294, 396);
+            this.btnAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnAyuda.Name = "btnAyuda";
+            this.btnAyuda.Size = new System.Drawing.Size(157, 28);
+            this.btnAyuda.TabIndex = 9;
+            this.btnAyuda.Text = "Mostrar ayuda >>";
+            this.btnAyuda.UseVisualStyleBackColor = true;
+            this.btnAyuda.Click += new System.EventHandler(this.botonAyuda_Click);
             // 
             // panelAyuda
             // 
@@ -209,20 +210,33 @@
             this.labelTituloZonificacion.TabIndex = 0;
             this.labelTituloZonificacion.Text = "Archivo de zonificación";
             // 
+            // btnCancelar
+            // 
+            this.btnCancelar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancelar.Location = new System.Drawing.Point(162, 396);
+            this.btnCancelar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.btnCancelar.Name = "btnCancelar";
+            this.btnCancelar.Size = new System.Drawing.Size(110, 28);
+            this.btnCancelar.TabIndex = 11;
+            this.btnCancelar.Text = "Cancelar";
+            this.btnCancelar.UseVisualStyleBackColor = true;
+            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
+            // 
             // ventanaMuestreo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 447);
+            this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.panelAyuda);
-            this.Controls.Add(this.botonAyuda);
+            this.Controls.Add(this.btnAyuda);
             this.Controls.Add(this.ptoVerdeDestino);
             this.Controls.Add(this.lblMuestreo);
             this.Controls.Add(this.botonAbrirMuestreo);
             this.Controls.Add(this.txtMuestreo);
             this.Controls.Add(this.ptoVerdeZF);
             this.Controls.Add(this.lblOpenFileZF);
-            this.Controls.Add(this.Zonificacion);
+            this.Controls.Add(this.btnAceptar);
             this.Controls.Add(this.botonAbrir);
             this.Controls.Add(this.txtArchivoZF);
             this.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -243,19 +257,20 @@
 
         private System.Windows.Forms.TextBox txtArchivoZF;
         private System.Windows.Forms.Button botonAbrir;
-        private System.Windows.Forms.Button Zonificacion;
+        private System.Windows.Forms.Button btnAceptar;
         private System.Windows.Forms.Label lblOpenFileZF;
         private System.Windows.Forms.PictureBox ptoVerdeZF;
         private System.Windows.Forms.PictureBox ptoVerdeDestino;
         private System.Windows.Forms.Label lblMuestreo;
         private System.Windows.Forms.Button botonAbrirMuestreo;
         private System.Windows.Forms.TextBox txtMuestreo;
-        private System.Windows.Forms.Button botonAyuda;
+        private System.Windows.Forms.Button btnAyuda;
         private System.Windows.Forms.Panel panelAyuda;
         private System.Windows.Forms.Label labelDescripcionZonificacion;
         private System.Windows.Forms.Label labelTituloZonificacion;
         private System.Windows.Forms.Label labelDescripcionMuestreo;
         private System.Windows.Forms.Label labelTituloMuestreo;
+        private System.Windows.Forms.Button btnCancelar;
 
 
     }

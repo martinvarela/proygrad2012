@@ -29,8 +29,6 @@ namespace Proyecto
             }
         }
 
-        
-        
         private void Zonificacion_Click(object sender, EventArgs e)
         {
             if (!ptoVerdeZF.Visible)
@@ -91,21 +89,25 @@ namespace Proyecto
             panelAyuda.Controls.Add(labelDescripcionMuestreo);
         }
 
-
         private void botonAyuda_Click(object sender, EventArgs e)
         {
-            if (botonAyuda.Text.ToString() == "Mostrar ayuda >>")
+            if (btnAyuda.Text.ToString() == "Mostrar ayuda >>")
             {
                 panelAyuda.Visible = true;
                 this.Size = new Size(922, 485);
-                botonAyuda.Text = "Ocultar ayuda <<";
+                btnAyuda.Text = "Ocultar ayuda <<";
             }
             else
             {
                 this.Size = new Size(484, 485);
                 panelAyuda.Visible = true;
-                botonAyuda.Text = "Mostrar ayuda >>";
+                btnAyuda.Text = "Mostrar ayuda >>";
             }
+        }
+
+        private void btnCancelar_Click(object sender, EventArgs e)
+        {
+            this.Close();
         }
 
     }
