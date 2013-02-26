@@ -40,12 +40,14 @@ class Zonificacion
         get { return tamanoCelda; }
         set { tamanoCelda = value; }
     }
+
     private List<Variable> variables;
     internal List<Variable> Variables
     {
         get { return variables; }
         set { variables = value; }
     }
+    
     private List<PuntoZonificacion> puntosZonificacion;
     internal List<PuntoZonificacion> PuntosZonificacion
     {
@@ -188,10 +190,11 @@ class Zonificacion
 
         this.calcularVariabilidad();
 
-        MessageBox.Show("canrt puntos:" + puntosZonificacion.Count().ToString());
-        /*PRUEBAS */        
+        //MessageBox.Show("canrt puntos:" + puntosZonificacion.Count().ToString());
+        ///*PRUEBAS */        
+        
         IMap map = ArcMap.Document.FocusMap;
-
+        String capaPuntosZonificacion = System.DateTime.Now.ToString("yyyyMMddHHmmss");
         this.crearNuevaCapa(map, "nuevaCapa25", puntosZonificacion);
 
         
