@@ -190,6 +190,9 @@ class Zonificacion
 
         this.calcularVariabilidad();
 
+        this.calcularSemivariograma();
+
+        
         //MessageBox.Show("canrt puntos:" + puntosZonificacion.Count().ToString());
         ///*PRUEBAS */        
         
@@ -200,6 +203,75 @@ class Zonificacion
         
     }
 
+    //ACA TENGO QUE PONER MI FUNCION
+    /****************************************************************************************************************************************/
+
+    //Calcula la distancia entre dos puntos y devuelve la distancia en metros luego de redondear el resultado
+    public int calcularDistancia(int i, int j)
+    {
+
+        double cuadX = (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X) * (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X);
+        double cuadY = (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y) * (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y);
+        double distancia = Math.Sqrt(cuadX + cuadY);
+
+       // MessageBox.Show("distancia" + distancia.ToString());
+        
+        return (int)Math.Round(distancia);
+
+    }
+
+    public void calcularSemivariograma()
+    {
+
+        List<double> VariablididadPuntosDistancia = new List<double>();   //al ppo esta lista tendra las sumas de la variacion a cada distancia
+        List<double> cantPuntosDistancia = new List<double>();
+        cantPuntosDistancia.Add(0);
+        VariablididadPuntosDistancia.Add(0);
+        int hmax = 0; //es la maxima distancia actual a la que se calcula el semivariograma (coordenada x en la grafica del semivariograma) indica la cant de nodos en la lista
+        int cantAgregar = 0;
+        int distanciaActual = 0;
+        //int cantidadPuntos=
+
+         for (int i = 0; i < this.puntosZonificacion.Count; i++)
+        //for (int i = 0; i < 1; i++)
+        {
+            for (int j = i + 1; j < this.puntosZonificacion.Count; j++)
+            {
+                distanciaActual = calcularDistancia(i, j);
+
+                if (distanciaActual > hmax)
+                {  //Pregunto si tengo que agregar nodos a las listas (rellenando con las distancias que intermedias hasta llegar a la hmax)
+                    cantAgregar = distanciaActual - hmax;
+                    hmax = distanciaActual;
+                    for (int k = 0; k < cantAgregar; k++)
+                    {
+                        cantPuntosDistancia.Add(0);
+                        VariablididadPuntosDistancia.Add(0);
+                        //this.puntosZonificacion[k].calcularVariabilidad(); 
+                    }
+                }
+
+                //double sss = Math.Pow(5, 2);
+                //aca se murio
+                VariablididadPuntosDistancia[distanciaActual] += Math.Pow(this.puntosZonificacion[i].Variabilidad - this.puntosZonificacion[j].Variabilidad,2);
+                cantPuntosDistancia[distanciaActual] += 1; //o ++
+            }
+        }
+
+        //ahora se actualiza la lista "VariablididadPuntosDistancia" donde el j-esimo lugar indicara el valor para el semivariograma (coordenada y) para una distancia de j metros
+        //si no se han computado valores para la distancia j metros el valor sera de 0 (pueden quedar distancias en metros sin valores por como son creadas las listas)
+        for (int i = 0; i < hmax; i++)
+        {
+
+            if (cantPuntosDistancia[i] != 0)
+                VariablididadPuntosDistancia[i] = VariablididadPuntosDistancia[i] / (2*cantPuntosDistancia[i]);
+
+        }
+    }
+
+    /****************************************************************************************************************************************/
+
+    
     public void calcularVariabilidad()
     {
         for (int i=0; i < this.Variables.Count; i++) { this.Variables[i].calcularMedia(this.puntosZonificacion); }
