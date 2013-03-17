@@ -28,12 +28,17 @@ namespace Proyecto
                 txtArchivoZF.Text = open.FileName;
             }
         }
-
+        
         private void Zonificacion_Click(object sender, EventArgs e)
         {
+            txtArchivoZF.Text = "C:\\Users\\Gonzalo\\Desktop\\New folder\\20110608_153342\\Sur_todvar.ZF";
+            txtMuestreo.Text = "C:\\Users\\Gonzalo\\Desktop\\asdas";
             if (!ptoVerdeZF.Visible)
             {
-                Zonificacion zonificacion = new Zonificacion(txtArchivoZF.Text);
+
+                Controlador controlador = new Controlador();
+                controlador.muestreoOptimo(txtArchivoZF.Text,10,10);
+                this.Close();
             }
         }
 

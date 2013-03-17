@@ -30,9 +30,6 @@ class PuntoZonificacion
         get { return util; }
         set { util = value; }
     }
-    private float temp;
-    private int cant;
-
     public PuntoZonificacion() { }
     
     public void calcularVariabilidad()

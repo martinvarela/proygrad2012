@@ -9,20 +9,20 @@ using System.Text;
 class Entrada : Capa
 {
     private String nombreAtributo { get; set; }
-    private float media { get; set; }
+    private double media { get; set; }
     private List<PuntoCapa> puntosCapa;
 
-    public float setearMedias()
+    public double setearMedias()
     {
         this.media = 0;
         if (this.puntosCapa != null)
         {
-            float temp = 0;
+            double temp = 0;
             int cant = 0;
 
             foreach (PuntoCapa puntoCapa in this.puntosCapa)
             {
-                temp = +puntoCapa.Valor;
+                temp += puntoCapa.Valor;
                 cant++;
             }
 
@@ -40,10 +40,10 @@ class Entrada : Capa
         int cant = 0;
         foreach (PuntoCapa p in puntos)
         {
-            temp =+ Math.Pow((p.Valor - this.media),2);
+            temp += Math.Pow((p.Valor - this.media),2);
             cant++;
         }
-        DTDatosDM datosCelda = new DTDatosDM((float)(temp / cant), this.media);
+        DTDatosDM datosCelda = new DTDatosDM((double)(temp / cant), this.media);
         return datosCelda;
 
     }
