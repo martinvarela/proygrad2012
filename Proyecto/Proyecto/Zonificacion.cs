@@ -162,23 +162,16 @@ class Zonificacion
                 char[] coma = { ';' };
                 string[] datos = null;
                 datos = sLine.Split(coma);
-                bool puntoUtil = false;
-                for (int i = 0; i < cant_variables; i++)
-                {
-                    float dato;
-                    if (datos[i] == NAN)
-                    {
-                        dato = 0;
+                bool puntoUtil = true;
+                for (int i = 0; i < cant_variables; i++){                    
+                    if (datos[i] == NAN){
+                        puntoUtil = false;
+                        break;
                     }
                     else
-                    {
-                        puntoUtil = true;
-                        dato = float.Parse(datos[i]);
-                    }
-                    ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, dato);
-                    ptoZonificacion.Util = puntoUtil;
-
+                        ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, float.Parse(datos[i]));                    
                 }
+                ptoZonificacion.Util = puntoUtil;
                 //agrego el punto solo si tiene datos
                 if (ptoZonificacion.Util)
                     this.agregarPuntoZonificacion(ptoZonificacion);
@@ -198,7 +191,7 @@ class Zonificacion
         
         IMap map = ArcMap.Document.FocusMap;
         String capaPuntosZonificacion = System.DateTime.Now.ToString("yyyyMMddHHmmss");
-        this.crearNuevaCapa(map, "nuevaCapa25", puntosZonificacion);
+        this.crearNuevaCapa(map, capaPuntosZonificacion, puntosZonificacion);
 
         
     }
@@ -209,64 +202,126 @@ class Zonificacion
     //Calcula la distancia entre dos puntos y devuelve la distancia en metros luego de redondear el resultado
     public int calcularDistancia(int i, int j)
     {
-
         double cuadX = (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X) * (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X);
         double cuadY = (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y) * (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y);
         double distancia = Math.Sqrt(cuadX + cuadY);
-
-       // MessageBox.Show("distancia" + distancia.ToString());
-        
         return (int)Math.Round(distancia);
 
     }
 
+    /*
+    public void calcularSemivariograma(){
+
+        int distanciaActual = 0;
+        int longitudMenor = (int)((Math.Min(this.Columnas, this.Filas)/2) * 0.8); //0.8 es un coeficiente de ajuste
+        //es la maxima distancia a la que se calcula el semivariograma (coordenada x en la grafica del semivariograma)
+        int hmax = (longitudMenor *  this.TamanoCelda);
+        int h = 0;  //rango del semivariograma
+        double max = 0; //maximo valor del semivariograma
+        double[] VariablididadPuntosDistancia = new double[hmax+1]; // por la formula de mas abajo (subindice = (distanciaActual-1) / this.TamanoCelda;) no precisa "+1"
+        double[] cantPuntosDistancia = new double[hmax+1];
+
+        for (int i = 0; i < this.puntosZonificacion.Count; i++) {
+            for (int j = i + 1; j < this.puntosZonificacion.Count; j++) {
+                distanciaActual = calcularDistancia(i, j);
+                if (distanciaActual <= hmax) {
+                    VariablididadPuntosDistancia[distanciaActual] += Math.Pow(this.puntosZonificacion[i].Variabilidad - this.puntosZonificacion[j].Variabilidad, 2); 
+                    cantPuntosDistancia[distanciaActual] += 1;
+                }
+            }
+        }
+
+        //Tengo que "normalizar" los sumandos
+        for (int i = 0; i <= hmax; i++){
+            if (cantPuntosDistancia[i] != 0)
+                VariablididadPuntosDistancia[i] = VariablididadPuntosDistancia[i] / (2 * cantPuntosDistancia[i]);
+        }       
+        for (int i = 0; i < hmax; i++){
+            if (VariablididadPuntosDistancia[i] > max){
+                max = VariablididadPuntosDistancia[i];
+            }
+        }
+        double limite = max * 0.92;
+        while (VariablididadPuntosDistancia[h] < limite){
+            h++;
+        }
+
+    }
+    */
+
     public void calcularSemivariograma()
     {
 
-        List<double> VariablididadPuntosDistancia = new List<double>();   //al ppo esta lista tendra las sumas de la variacion a cada distancia
-        List<double> cantPuntosDistancia = new List<double>();
-        cantPuntosDistancia.Add(0);
-        VariablididadPuntosDistancia.Add(0);
-        int hmax = 0; //es la maxima distancia actual a la que se calcula el semivariograma (coordenada x en la grafica del semivariograma) indica la cant de nodos en la lista
-        int cantAgregar = 0;
         int distanciaActual = 0;
-        //int cantidadPuntos=
+        int longitudMenor = (int)((Math.Min(this.Columnas, this.Filas) / 2) * 0.8); //0.8 es un coeficiente de ajuste
+        //es la maxima distancia a la que se calcula el semivariograma (coordenada x en la grafica del semivariograma)
+        int hmax = (longitudMenor * this.TamanoCelda);
 
-         for (int i = 0; i < this.puntosZonificacion.Count; i++)
-        //for (int i = 0; i < 1; i++)
+        //Cada posicion del arreglo tendra los valores para las distancias dentro de cada rango, de la siguiente manera
+        // {[0, h], (h, 2h], (2h, 3h], siendo h el tamaño de las celdas
+        double[] VariablididadPuntosDistancia = new double[longitudMenor]; // por la formula de mas abajo (subindice = (distanciaActual-1) / this.TamanoCelda;) no precisa "+1"
+        double[] cantPuntosDistancia = new double[longitudMenor];
+        int subindice;
+
+        double[] VariablididadPuntosDistancia1 = new double[hmax + 1]; // por la formula de mas abajo (subindice = (distanciaActual-1) / this.TamanoCelda;) no precisa "+1"
+        double[] cantPuntosDistancia1 = new double[hmax + 1];
+
+        double result = 0;
+
+        //for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < this.puntosZonificacion.Count; i++)
         {
             for (int j = i + 1; j < this.puntosZonificacion.Count; j++)
             {
                 distanciaActual = calcularDistancia(i, j);
+                if (distanciaActual <= hmax) 
+                    //if ((distanciaActual <= hmax) && (distanciaActual % this.tamanoCelda == 0))
+                {
+                    subindice = (distanciaActual - 1) / (this.TamanoCelda*this.TamanoCelda); //Se le resta 1 para que se ubique en el lugar correspondiente del arreglo!
+                    result = Math.Pow(this.puntosZonificacion[i].Variabilidad - this.puntosZonificacion[j].Variabilidad, 2);
 
-                if (distanciaActual > hmax)
-                {  //Pregunto si tengo que agregar nodos a las listas (rellenando con las distancias que intermedias hasta llegar a la hmax)
-                    cantAgregar = distanciaActual - hmax;
-                    hmax = distanciaActual;
-                    for (int k = 0; k < cantAgregar; k++)
-                    {
-                        cantPuntosDistancia.Add(0);
-                        VariablididadPuntosDistancia.Add(0);
-                        //this.puntosZonificacion[k].calcularVariabilidad(); 
-                    }
+                    VariablididadPuntosDistancia[subindice] += result;
+                    cantPuntosDistancia[subindice] += 1;
+
+                    //VIEJO METODO
+                    VariablididadPuntosDistancia1[distanciaActual] += result;
+                    cantPuntosDistancia1[distanciaActual] += 1;
+
                 }
-
-                //double sss = Math.Pow(5, 2);
-                //aca se murio
-                VariablididadPuntosDistancia[distanciaActual] += Math.Pow(this.puntosZonificacion[i].Variabilidad - this.puntosZonificacion[j].Variabilidad,2);
-                cantPuntosDistancia[distanciaActual] += 1; //o ++
             }
         }
 
-        //ahora se actualiza la lista "VariablididadPuntosDistancia" donde el j-esimo lugar indicara el valor para el semivariograma (coordenada y) para una distancia de j metros
-        //si no se han computado valores para la distancia j metros el valor sera de 0 (pueden quedar distancias en metros sin valores por como son creadas las listas)
+        //ahora se actualiza "VariablididadPuntosDistancia" donde el j-esimo lugar indicara el valor para el semivariograma en el dominio
+        //(j * tamañoceldas , (j+1)*tamañoceldas )
+        for (int i = 0; i < longitudMenor; i++)
+        {
+            if (cantPuntosDistancia[i] != 0)
+                VariablididadPuntosDistancia[i] = VariablididadPuntosDistancia[i] / (2 * cantPuntosDistancia[i]);
+        }
+
+        //Tengo que "normalizar" los sumandos
+        for (int i = 0; i <= hmax; i++)
+        {
+            if (cantPuntosDistancia1[i] != 0)
+                VariablididadPuntosDistancia1[i] = VariablididadPuntosDistancia1[i] / (2 * cantPuntosDistancia1[i]);
+        }
+        int h = 0;
+        double max = 0;
         for (int i = 0; i < hmax; i++)
         {
-
-            if (cantPuntosDistancia[i] != 0)
-                VariablididadPuntosDistancia[i] = VariablididadPuntosDistancia[i] / (2*cantPuntosDistancia[i]);
-
+            if (VariablididadPuntosDistancia1[i] > max)
+            {
+                //h = i;
+                max = VariablididadPuntosDistancia1[i];
+            }
         }
+
+        double limite = max * 0.92;
+        while (VariablididadPuntosDistancia1[h] < limite)
+        {
+            h++;
+        }
+
     }
 
     /****************************************************************************************************************************************/
@@ -274,7 +329,7 @@ class Zonificacion
     
     public void calcularVariabilidad()
     {
-        for (int i=0; i < this.Variables.Count; i++) { this.Variables[i].calcularMedia(this.puntosZonificacion); }
+        for (int i = 0; i < this.Variables.Count; i++) { this.Variables[i].calcularMedia(this.puntosZonificacion); }                       
         for (int i = 0; i < this.puntosZonificacion.Count; i++) { this.puntosZonificacion[i].calcularVariabilidad(); }
     }
 
