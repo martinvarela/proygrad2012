@@ -57,6 +57,21 @@ class Zonificacion
         set { puntosZonificacion = value; }
     }
 
+    private ESRI.ArcGIS.Geometry.IPoint puntoOrigen;
+
+    public ESRI.ArcGIS.Geometry.IPoint PuntoOrigen
+    {
+        get { return puntoOrigen; }
+        set { puntoOrigen = value; }
+    }
+    private ESRI.ArcGIS.Geometry.IPoint puntoOpuesto;
+
+    public ESRI.ArcGIS.Geometry.IPoint PuntoOpuesto
+    {
+        get { return puntoOpuesto; }
+        set { puntoOpuesto = value; }
+    }
+
     //Dada la coordenada inicial y el tamamio de la celda, calculamos la siguiente coordenada en base al x e y actual (desplazamiento en celdas
     //desde la posicion (x,y)=(0,0) hasta la posicion actual x,y pasada por parametro)
     public Coordenada calcularCoordenada(Coordenada coordenadaInicial, int TamanoCelda, int x, int y)
@@ -151,6 +166,17 @@ class Zonificacion
             sLine = objReader.ReadLine();
         }  //fin while de datos generales
 
+        //se setea el puntoOrigen
+        this.puntoOrigen = new ESRI.ArcGIS.Geometry.PointClass();
+        this.puntoOrigen.X = xinicial;
+        this.puntoOrigen.Y = yinicial - Rows * cellSize;
+
+        //se setea el puntoOpuesto
+        this.puntoOpuesto = new ESRI.ArcGIS.Geometry.PointClass();
+        this.puntoOpuesto.X = xinicial + Cols * cellSize;
+        this.puntoOpuesto.Y = yinicial;
+
+        //comienza el proceso de los puntos de la zonificacion
         for (int iy = 1; iy <= this.Filas; iy++)
         {
             for (int ix = 1; ix <= this.Columnas; ix++)
@@ -190,7 +216,7 @@ class Zonificacion
         //cierro el archivo
         objReader.Close();
 
-        this.calcularSemivariograma();
+        //this.calcularSemivariograma();
 
         
     }

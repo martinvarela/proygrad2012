@@ -8,6 +8,7 @@ using Proyecto;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using System.Runtime.InteropServices;
+using ESRI.ArcGIS.Geoprocessor;
 
 class Controlador
 {
@@ -58,13 +59,16 @@ class Controlador
         //paso 4
         //se crea una layer temporal con los puntos de zonificacion sacados del .ZF
         IMap map = ArcMap.Document.FocusMap;
-        String nombreCapaPuntosZonificacion = System.DateTime.Now.ToString("PZ-yyyyMMdd-HHmmss");
+        String ahora = System.DateTime.Now.ToString("HHmmss");
+        String nombreCapaPuntosZonificacion = "PZ-" + ahora;
         IFeatureClass capaPuntosZonificacion = this.crearCapaPuntosZonificacion(map, nombreCapaPuntosZonificacion, zonificacion.PuntosZonificacion);
 
         //se crea la capa de red con las filas y columnas pasadas como parametro
         //hacer!!
-        String nombreCapaPoligonos = "capaRed";
-        String nombreCapaPuntosMuestreos = "capaRed_label";
+        String nombreCapaPoligonos = "CR" + ahora;
+        String nombreCapaPuntosMuestreos = "CR" + ahora + "_label";
+        this.crearRed(map, nombreCapaPoligonos, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, 5, 5, true);
+
 
         //paso 5
         //calcula los valores de los puntos de muestreo haciendo promedio en los puntos que "caen" dentro de la celda de la capa de poligonos
@@ -393,6 +397,57 @@ class Controlador
             schemaLock.ChangeSchemaLock(esriSchemaLock.esriSharedSchemaLock);
         }
         return featureClass.FindField(nombreField);
+    }
+    public void crearRed(IMap targetMap, string nombreLayer, IPoint puntoOrigen, IPoint puntoOpuesto, int nroFilas, int nroColumnas, bool selectable)
+    {
+
+        //// Create a FeatureLayer and assign a shapefile to it.
+        //IFeatureLayer featureLayer = new FeatureLayerClass();
+        //IEnumLayer enumlayers = targetMap.get_Layers();
+
+        //enumlayers.Reset();
+        //ILayer capa = enumlayers.Next();
+
+        Geoprocessor gp = new Geoprocessor();
+
+        ESRI.ArcGIS.DataManagementTools.CreateFishnet fishNet = new ESRI.ArcGIS.DataManagementTools.CreateFishnet();
+        fishNet.out_feature_class = nombreLayer;
+
+        fishNet.origin_coord = puntoOrigen.X.ToString() + " " + puntoOrigen.Y.ToString();
+
+        double medio = (puntoOpuesto.Y + puntoOrigen.Y)/2;
+        fishNet.y_axis_coord = puntoOrigen.X.ToString() + " " + medio.ToString();
+        
+        fishNet.corner_coord = puntoOpuesto.X.ToString() + " " + puntoOpuesto.Y.ToString();
+
+        fishNet.cell_width = 0;
+        fishNet.cell_height = 0;
+        fishNet.number_rows = nroFilas;
+        fishNet.number_columns = nroColumnas;
+        fishNet.out_label = nombreLayer;
+        fishNet.geometry_type = "POLYGON";
+
+        gp.AddOutputsToMap = true;
+        gp.OverwriteOutput = true;
+
+        try
+        {
+            gp.Execute(fishNet, null);
+        }
+        catch (NullReferenceException e)
+        {
+            System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
+        }
+        catch
+        {
+            for (int i = 0; i < gp.MessageCount; i++)
+                System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
+        }
+        finally
+        {
+            for (int i = 0; i < gp.MessageCount; i++)
+                System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
+        }
     }
 
 }

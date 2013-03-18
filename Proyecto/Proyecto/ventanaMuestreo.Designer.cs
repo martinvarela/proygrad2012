@@ -45,6 +45,7 @@
             this.labelDescripcionZonificacion = new System.Windows.Forms.Label();
             this.labelTituloZonificacion = new System.Windows.Forms.Label();
             this.btnCancelar = new System.Windows.Forms.Button();
+            this.chkLstVariables = new System.Windows.Forms.CheckedListBox();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).BeginInit();
             this.panelAyuda.SuspendLayout();
@@ -52,6 +53,7 @@
             // 
             // txtArchivoZF
             // 
+            this.txtArchivoZF.Enabled = false;
             this.txtArchivoZF.Location = new System.Drawing.Point(31, 48);
             this.txtArchivoZF.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtArchivoZF.Name = "txtArchivoZF";
@@ -106,7 +108,7 @@
             // ptoVerdeDestino
             // 
             this.ptoVerdeDestino.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeDestino.Image")));
-            this.ptoVerdeDestino.Location = new System.Drawing.Point(13, 116);
+            this.ptoVerdeDestino.Location = new System.Drawing.Point(13, 229);
             this.ptoVerdeDestino.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ptoVerdeDestino.Name = "ptoVerdeDestino";
             this.ptoVerdeDestino.Size = new System.Drawing.Size(19, 20);
@@ -117,7 +119,7 @@
             // 
             this.lblMuestreo.AutoSize = true;
             this.lblMuestreo.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMuestreo.Location = new System.Drawing.Point(28, 95);
+            this.lblMuestreo.Location = new System.Drawing.Point(28, 208);
             this.lblMuestreo.Name = "lblMuestreo";
             this.lblMuestreo.Size = new System.Drawing.Size(114, 16);
             this.lblMuestreo.TabIndex = 7;
@@ -126,7 +128,7 @@
             // botonAbrirMuestreo
             // 
             this.botonAbrirMuestreo.Image = ((System.Drawing.Image)(resources.GetObject("botonAbrirMuestreo.Image")));
-            this.botonAbrirMuestreo.Location = new System.Drawing.Point(420, 112);
+            this.botonAbrirMuestreo.Location = new System.Drawing.Point(420, 225);
             this.botonAbrirMuestreo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.botonAbrirMuestreo.Name = "botonAbrirMuestreo";
             this.botonAbrirMuestreo.Size = new System.Drawing.Size(31, 28);
@@ -136,7 +138,7 @@
             // 
             // txtMuestreo
             // 
-            this.txtMuestreo.Location = new System.Drawing.Point(31, 116);
+            this.txtMuestreo.Location = new System.Drawing.Point(31, 229);
             this.txtMuestreo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMuestreo.Name = "txtMuestreo";
             this.txtMuestreo.Size = new System.Drawing.Size(377, 22);
@@ -222,11 +224,20 @@
             this.btnCancelar.UseVisualStyleBackColor = true;
             this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
+            // chkLstVariables
+            // 
+            this.chkLstVariables.FormattingEnabled = true;
+            this.chkLstVariables.Location = new System.Drawing.Point(31, 114);
+            this.chkLstVariables.Name = "chkLstVariables";
+            this.chkLstVariables.Size = new System.Drawing.Size(377, 89);
+            this.chkLstVariables.TabIndex = 12;
+            // 
             // ventanaMuestreo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 447);
+            this.Controls.Add(this.chkLstVariables);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.panelAyuda);
             this.Controls.Add(this.btnAyuda);
@@ -271,6 +282,7 @@
         private System.Windows.Forms.Label labelDescripcionMuestreo;
         private System.Windows.Forms.Label labelTituloMuestreo;
         private System.Windows.Forms.Button btnCancelar;
+        private System.Windows.Forms.CheckedListBox chkLstVariables;
 
 
     }
