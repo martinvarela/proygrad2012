@@ -38,8 +38,7 @@ class PuntoZonificacion
         float medicion =0;
         float temp = 0;
         int cant = 0;
-       // for (int i = 0; i < this.Variables.Count; i++)
-        for (int i = 3; i < 4 ; i++)
+        for (int i = 0; i < this.Variables.Count; i++)
         {
             datosVariable = this.Variables[i].getDatos();
             medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];

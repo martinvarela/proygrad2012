@@ -183,7 +183,7 @@ class Zonificacion
         //cierro el archivo
         objReader.Close();
 
-        this.calcularSemivariograma();
+       // this.calcularSemivariograma();
 
         
     }
@@ -240,7 +240,7 @@ class Zonificacion
 
     }
     */
-
+    /*
     public void calcularSemivariograma()
     {
 
@@ -315,7 +315,7 @@ class Zonificacion
         }
 
     }
-
+    */
     /****************************************************************************************************************************************/
 
     
