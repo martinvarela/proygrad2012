@@ -32,8 +32,8 @@ namespace Proyecto
         
         private void Zonificacion_Click(object sender, EventArgs e)
         {
-            txtArchivoZF.Text = "C:\\Users\\Gonzalo\\Desktop\\New folder\\20110608_153342\\Sur_todvar.ZF";
-            txtMuestreo.Text = "C:\\Users\\Gonzalo\\Desktop\\asdas";
+            txtArchivoZF.Text = "C:\\Users\\Nico\\Desktop\\Datos Proyecto\\20110608_153342\\Sur_todvar.ZF";                     
+            txtMuestreo.Text = "C:\\Users\\Nico\\Desktop\\asdas";
             if (!ptoVerdeZF.Visible)
             {
 
