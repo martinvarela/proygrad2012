@@ -85,7 +85,7 @@ class Zonificacion
 
 
 
-    public Zonificacion(String rutaEntrada, int[] variables_seleccion)
+    public Zonificacion(String rutaEntrada, List<int> variables_seleccion)
     {
         //Obtengo el archivo
         StreamReader objReader = new StreamReader(rutaEntrada);
@@ -147,7 +147,7 @@ class Zonificacion
                 String nombreVariable = "";
 
                 int p = 0;
-                while (i <= cant_variables && sLine != "" && p < variables_seleccion.Length )
+                while (i <= cant_variables && sLine != "" && p < variables_seleccion.Count )
                 {
                     if ((i-1) == variables_seleccion[p]) //es i-1 porque en el archivo ZF el i comienza en 1 y la seleccion de variable comienza en 0
                     {
@@ -198,7 +198,7 @@ class Zonificacion
                 datos = sLine.Split(coma);
                 bool puntoUtil = true;
 
-                for (int i = 0; i < variables_seleccion.Length; i++){
+                for (int i = 0; i < variables_seleccion.Count; i++){
                     if (datos[variables_seleccion[i]] == NAN)
                     {
                         puntoUtil = false;

@@ -47,12 +47,9 @@ class Controlador
 
     public Muestreo muestreoOptimoFilasColumnas(String rutaEntrada, int filas, int columnas, List<int> variablesMarcadas)
     {
-        int [] variables = new int [3];
-        variables[0] = 2;
-        variables[1] = 4;
-        variables[2] = 7;
+      
         //paso 1
-        Zonificacion zonificacion = new Zonificacion(rutaEntrada,variables);
+        Zonificacion zonificacion = new Zonificacion(rutaEntrada, variablesMarcadas);
 
         //paso 2
         zonificacion.calcularVariabilidad();
@@ -71,7 +68,7 @@ class Controlador
         //hacer!!
         String nombreCapaPoligonos = "CR" + ahora;
         String nombreCapaPuntosMuestreos = "CR" + ahora + "_label";
-        this.crearRed(map, nombreCapaPoligonos, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, 5, 5, true);
+        this.crearRed(map, nombreCapaPoligonos, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filas, columnas, true);
 
 
         //paso 5

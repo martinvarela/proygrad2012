@@ -46,7 +46,7 @@ namespace Proyecto
                 }
                 if (this.cboTipoRed.SelectedIndex == 0)
                 {
-                    //controlador.muestreoOptimoFilasColumnas(txtArchivoZF.Text, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables);
+                    controlador.muestreoOptimoFilasColumnas(txtArchivoZF.Text, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables);
                 }
                 else if (this.cboTipoRed.SelectedIndex == 1)
                 {
