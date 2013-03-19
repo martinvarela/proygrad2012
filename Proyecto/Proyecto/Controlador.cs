@@ -68,7 +68,7 @@ class Controlador
         //hacer!!
         String nombreCapaPoligonos = "CR" + ahora;
         String nombreCapaPuntosMuestreos = "CR" + ahora + "_label";
-        this.crearRed(map, nombreCapaPoligonos, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filas, columnas, true);
+        this.crearRed(map, nombreCapaPoligonos, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filas, columnas, true, nombreCapaPuntosZonificacion);
 
 
         //paso 5
@@ -399,7 +399,7 @@ class Controlador
         }
         return featureClass.FindField(nombreField);
     }
-    public void crearRed(IMap targetMap, string nombreLayer, IPoint puntoOrigen, IPoint puntoOpuesto, int nroFilas, int nroColumnas, bool selectable)
+    public void crearRed(IMap targetMap, string nombreLayer, IPoint puntoOrigen, IPoint puntoOpuesto, int nroFilas, int nroColumnas, bool selectable, string capaZonificacion)
     {
 
         Geoprocessor gp = new Geoprocessor();
@@ -420,7 +420,7 @@ class Controlador
         fishNet.number_columns = nroColumnas;
         fishNet.out_label = nombreLayer;
         fishNet.geometry_type = "POLYGON";
-
+        fishNet.template = capaZonificacion;
         gp.AddOutputsToMap = true;
         gp.OverwriteOutput = true;
 
