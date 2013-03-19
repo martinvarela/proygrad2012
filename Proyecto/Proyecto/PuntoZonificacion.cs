@@ -30,22 +30,27 @@ class PuntoZonificacion
         get { return util; }
         set { util = value; }
     }
-    private float temp;
-    private int cant;
-
     public PuntoZonificacion() { }
-    
+
     public void calcularVariabilidad()
     {
         DTVariable datosVariable;
         float medicion =0;
         float temp = 0;
         int cant = 0;
-        for (int i = 0; i < this.Variables.Count ; i++)
+
+        /*for (int i = 0; i < variables_seleccion.Length; i++)
+        {
+            datosVariable = this.Variables[variables_seleccion[i]].getDatos();
+            medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
+            temp += (float)Math.Pow((double)((medicion - datosVariable.Media) / datosVariable.Media),2);
+            cant++;
+        }*/
+        for (int i = 0; i < this.Variables.Count; i++)
         {
             datosVariable = this.Variables[i].getDatos();
             medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
-            temp =+ (float)Math.Pow((double)((medicion - datosVariable.Media) / datosVariable.Media),2);
+            temp += (float)Math.Pow((double)((medicion - datosVariable.Media) / datosVariable.Media),2);
             cant++;
         }
         this.variabilidad = temp / cant;

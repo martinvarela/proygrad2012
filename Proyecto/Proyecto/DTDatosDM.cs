@@ -7,14 +7,14 @@ using System.Text;
 class DTDatosDM
 {
 
-    private float desviacion;
-    public float Desviacion
+    private double desviacion;
+    public double Desviacion
     {
         get { return desviacion; }
         set { desviacion = value; }
     }
-    private float media;
-    public float Media
+    private double media;
+    public double Media
     {
         get { return media; }
         set { media = value; }
@@ -22,7 +22,7 @@ class DTDatosDM
 
     public DTDatosDM() { }
 
-    public DTDatosDM(float desviacion, float media)
+    public DTDatosDM(double desviacion, double media)
     {
         this.desviacion = desviacion;
         this.media = media;

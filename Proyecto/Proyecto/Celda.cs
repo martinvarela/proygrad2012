@@ -7,8 +7,8 @@ using System.Text;
 class Celda
 {
     //private Coordenada ubicacion;
-    private float desviacion;
-    private float media;
+    private double desviacion;
+    private double media;
     private int clasificacion;
     //nico
     //nico2

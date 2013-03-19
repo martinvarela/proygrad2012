@@ -1,4 +1,5 @@
-﻿using ESRI.ArcGIS.esriSystem;
+﻿using ESRI.ArcGIS.SystemUI;
+using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.Display;
 using System;
 using System.Collections.Generic;
@@ -59,6 +60,21 @@ class Zonificacion
         set { puntosZonificacion = value; }
     }
 
+    private ESRI.ArcGIS.Geometry.IPoint puntoOrigen;
+
+    public ESRI.ArcGIS.Geometry.IPoint PuntoOrigen
+    {
+        get { return puntoOrigen; }
+        set { puntoOrigen = value; }
+    }
+    private ESRI.ArcGIS.Geometry.IPoint puntoOpuesto;
+
+    public ESRI.ArcGIS.Geometry.IPoint PuntoOpuesto
+    {
+        get { return puntoOpuesto; }
+        set { puntoOpuesto = value; }
+    }
+
     //Dada la coordenada inicial y el tamamio de la celda, calculamos la siguiente coordenada en base al x e y actual (desplazamiento en celdas
     //desde la posicion (x,y)=(0,0) hasta la posicion actual x,y pasada por parametro)
     public Coordenada calcularCoordenada(Coordenada coordenadaInicial, int TamanoCelda, int x, int y)
@@ -69,10 +85,10 @@ class Zonificacion
         return coordenada;
 
     }
-    
-    
 
-    public Zonificacion(String rutaEntrada)
+
+
+    public Zonificacion(String rutaEntrada, List<int> variables_seleccion)
     {
         //Obtengo el archivo
         StreamReader objReader = new StreamReader(rutaEntrada);
@@ -132,14 +148,20 @@ class Zonificacion
                 int i = 1;
                 sLine = objReader.ReadLine();
                 String nombreVariable = "";
-                while (i <= cant_variables && sLine != "")
+
+                int p = 0;
+                while (i <= cant_variables && sLine != "" && p < variables_seleccion.Count )
                 {
-                    String aux = "Var" + i + ": ";
-                    if ((sLine.Substring(0, aux.Length) == aux))
+                    if ((i-1) == variables_seleccion[p]) //es i-1 porque en el archivo ZF el i comienza en 1 y la seleccion de variable comienza en 0
                     {
-                        nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
-                        Variable variable = new Variable(nombreVariable);
-                        this.agregarVariable(variable);
+                        String aux = "Var" + i + ": ";
+                        if ((sLine.Substring(0, aux.Length) == aux))
+                        {
+                            nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
+                            Variable variable = new Variable(nombreVariable);
+                            this.agregarVariable(variable);
+                        }
+                        p++;
                     }
                     i++;
                     sLine = objReader.ReadLine();
@@ -153,6 +175,17 @@ class Zonificacion
             sLine = objReader.ReadLine();
         }  //fin while de datos generales
 
+        //se setea el puntoOrigen
+        this.puntoOrigen = new ESRI.ArcGIS.Geometry.PointClass();
+        this.puntoOrigen.X = xinicial;
+        this.puntoOrigen.Y = yinicial - Rows * cellSize;
+
+        //se setea el puntoOpuesto
+        this.puntoOpuesto = new ESRI.ArcGIS.Geometry.PointClass();
+        this.puntoOpuesto.X = xinicial + Cols * cellSize;
+        this.puntoOpuesto.Y = yinicial;
+
+        //comienza el proceso de los puntos de la zonificacion
         for (int iy = 1; iy <= this.Filas; iy++)
         {
             for (int ix = 1; ix <= this.Columnas; ix++)
@@ -166,23 +199,18 @@ class Zonificacion
                 char[] coma = { ';' };
                 string[] datos = null;
                 datos = sLine.Split(coma);
-                bool puntoUtil = false;
-                for (int i = 0; i < cant_variables; i++)
-                {
-                    float dato;
-                    if (datos[i] == NAN)
+                bool puntoUtil = true;
+
+                for (int i = 0; i < variables_seleccion.Count; i++){
+                    if (datos[variables_seleccion[i]] == NAN)
                     {
-                        dato = 0;
+                        puntoUtil = false;
+                        break;
                     }
                     else
-                    {
-                        puntoUtil = true;
-                        dato = float.Parse(datos[i]);
-                    }
-                    ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, dato);
-                    ptoZonificacion.Util = puntoUtil;
-
+                        ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, float.Parse(datos[variables_seleccion[i]]));                    
                 }
+                ptoZonificacion.Util = puntoUtil;
                 //agrego el punto solo si tiene datos
                 if (ptoZonificacion.Util)
                     this.agregarPuntoZonificacion(ptoZonificacion);
@@ -191,12 +219,15 @@ class Zonificacion
 
         //cierro el archivo
         objReader.Close();
+    }
 
-        this.calcularVariabilidad();
-
-        IMap map = ArcMap.Document.FocusMap;
-        String capaPuntosZonificacion = System.DateTime.Now.ToString("ddHHmmss");
-        IFeatureClass capaClass =  this.crearNuevaCapa(map, capaPuntosZonificacion, puntosZonificacion);
+    //Calcula la distancia entre dos puntos y devuelve la distancia en metros luego de redondear el resultado
+    public int calcularDistancia(int i, int j)
+    {
+        double cuadX = (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X) * (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X);
+        double cuadY = (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y) * (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y);
+        double distancia = Math.Sqrt(cuadX + cuadY);
+        return (int)Math.Round(distancia);
 
         SSA ssa = new SSA();
         List<PuntoZonificacion> puntosMuestrear = ssa.SimulatedAnnealing2(puntosZonificacion);
@@ -235,7 +266,6 @@ class Zonificacion
         
 
         //IEnumLayer enumlayers = map.get_Layers();
-
         ////se busca la capa de puntos
         //enumlayers.Reset();
         //ILayer layerPuntos = enumlayers.Next();
@@ -283,9 +313,10 @@ class Zonificacion
     
 
 
+
     public void calcularVariabilidad()
-    {
-        for (int i=0; i < this.Variables.Count; i++) { this.Variables[i].calcularMedia(this.puntosZonificacion); }
+    {        
+        for (int i = 0; i < this.Variables.Count; i++) { this.Variables[i].calcularMedia(this.puntosZonificacion); }                       
         for (int i = 0; i < this.puntosZonificacion.Count; i++) { this.puntosZonificacion[i].calcularVariabilidad(); }
 
         double cuadX = (this.puntosZonificacion[10].Coordenada.X - this.puntosZonificacion[2800].Coordenada.X) * (this.puntosZonificacion[10].Coordenada.X - this.puntosZonificacion[2800].Coordenada.X);
@@ -308,286 +339,6 @@ class Zonificacion
             this.puntosZonificacion = new List<PuntoZonificacion>();
 
         this.puntosZonificacion.Add(punto);
-                
     }
-
-    #region "Create FeatureClass"
-
-    ///<summary>Simple helper to create a featureclass in a geodatabase.</summary>
-    /// 
-    ///<param name="workspace">An IWorkspace2 interface</param>
-    ///<param name="featureDataset">An IFeatureDataset interface or Nothing</param>
-    ///<param name="featureClassName">A System.String that contains the name of the feature class to open or create. Example: "states"</param>
-    ///<param name="fields">An IFields interface</param>
-    ///<param name="CLSID">A UID value or Nothing. Example "esriGeoDatabase.Feature" or Nothing</param>
-    ///<param name="CLSEXT">A UID value or Nothing (this is the class extension if you want to reference a class extension when creating the feature class).</param>
-    ///<param name="strConfigKeyword">An empty System.String or RDBMS table string for ArcSDE. Example: "myTable" or ""</param>
-    ///  
-    ///<returns>An IFeatureClass interface or a Nothing</returns>
-    ///  
-    ///<remarks>
-    ///  (1) If a 'featureClassName' already exists in the workspace a reference to that feature class 
-    ///      object will be returned.
-    ///  (2) If an IFeatureDataset is passed in for the 'featureDataset' argument the feature class
-    ///      will be created in the dataset. If a Nothing is passed in for the 'featureDataset'
-    ///      argument the feature class will be created in the workspace.
-    ///  (3) When creating a feature class in a dataset the spatial reference is inherited 
-    ///      from the dataset object.
-    ///  (4) If an IFields interface is supplied for the 'fields' collection it will be used to create the
-    ///      table. If a Nothing value is supplied for the 'fields' collection, a table will be created using 
-    ///      default values in the method.
-    ///  (5) The 'strConfigurationKeyword' parameter allows the application to control the physical layout 
-    ///      for this table in the underlying RDBMS—for example, in the case of an Oracle database, the 
-    ///      configuration keyword controls the tablespace in which the table is created, the initial and 
-    ///     next extents, and other properties. The 'strConfigurationKeywords' for an ArcSDE instance are 
-    ///      set up by the ArcSDE data administrator, the list of available keywords supported by a workspace 
-    ///      may be obtained using the IWorkspaceConfiguration interface. For more information on configuration 
-    ///      keywords, refer to the ArcSDE documentation. When not using an ArcSDE table use an empty 
-    ///      string (ex: "").
-    ///</remarks>
-    public IFeatureClass CreateFeatureClass(IWorkspace2 workspace, IFeatureDataset featureDataset, String featureClassName, IFields fields, UID CLSID, UID CLSEXT, String strConfigKeyword)
-    {
-        if (featureClassName == "") return null; // name was not passed in 
-
-        IFeatureClass featureClass;
-        IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)workspace; // Explicit Cast
-
-        if (workspace.get_NameExists(esriDatasetType.esriDTFeatureClass, featureClassName)) //feature class with that name already exists 
-        {
-            featureClass = featureWorkspace.OpenFeatureClass(featureClassName);
-            return featureClass;
-        }
-
-        // assign the class id value if not assigned
-        if (CLSID == null)
-        {
-            CLSID = new UIDClass();
-            CLSID.Value = "esriGeoDatabase.Feature";
-        }
-
-        IObjectClassDescription objectClassDescription = new FeatureClassDescriptionClass();
-
-        // if a fields collection is not passed in then supply our own
-        if (fields == null)
-        {
-            // create the fields using the required fields method
-            fields = objectClassDescription.RequiredFields;
-            IFieldsEdit fieldsEdit = (IFieldsEdit)fields; // Explicit Cast
-            IField field = new FieldClass();
-
-            // create a user defined text field
-            IFieldEdit fieldEdit = (IFieldEdit)field; // Explicit Cast
-
-            // setup field properties
-            fieldEdit.Name_2 = "Valor";
-            fieldEdit.Type_2 = esriFieldType.esriFieldTypeDouble;
-            fieldEdit.IsNullable_2 = true;
-            fieldEdit.AliasName_2 = "Valor";
-            fieldEdit.DefaultValue_2 = 0;
-            fieldEdit.Editable_2 = true;
-            
-            // add field to field collection
-            fieldsEdit.AddField(field);
-            //fields = (IFields)fieldsEdit; // Explicit Cast
-
-
-            IField puntoField = new FieldClass();
-
-            
-            // create a user defined text field
-            IFieldEdit puntoFieldEdit = (IFieldEdit)puntoField; // Explicit Cast
-
-            // setup field properties
-            puntoFieldEdit.Name_2 = "Punto";
-            puntoFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
-            puntoFieldEdit.IsNullable_2 = true;
-            puntoFieldEdit.AliasName_2 = "Punto";
-            puntoFieldEdit.DefaultValue_2 = 0;
-            puntoFieldEdit.Editable_2 = true;
-
-            // Modify the GeometryDef object before using the fields collection to create a 
-            // feature class.
-            IGeometryDef geometryDef = new GeometryDefClass();
-            IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
-            
-            // Alter the feature class geometry type to lines (default is polygons).
-            geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
-            puntoFieldEdit.GeometryDef_2 = geometryDefEdit;
-            // add field to field collection
-            fieldsEdit.AddField(puntoField);
-            fields = (IFields)fieldsEdit; // Explicit Cast
-        }
-
-        String strShapeField = "";
-
-        // locate the shape field
-        for (int j = 0; j < fields.FieldCount; j++)
-        {
-            if (fields.get_Field(j).Type == esriFieldType.esriFieldTypeGeometry)
-            {
-                strShapeField = fields.get_Field(j).Name;
-            }
-        }
-
-        // Use IFieldChecker to create a validated fields collection.
-        IFieldChecker fieldChecker = new FieldCheckerClass();
-        IEnumFieldError enumFieldError = null;
-        IFields validatedFields = null;
-        fieldChecker.ValidateWorkspace = (IWorkspace)workspace;
-        fieldChecker.Validate(fields, out enumFieldError, out validatedFields);
-
-        // The enumFieldError enumerator can be inspected at this point to determine 
-        // which fields were modified during validation.
-
-
-        // finally create and return the feature class
-        if (featureDataset == null)// if no feature dataset passed in, create at the workspace level
-        {
-            featureClass = featureWorkspace.CreateFeatureClass(featureClassName, validatedFields, CLSID, CLSEXT, esriFeatureType.esriFTSimple, /*strShapeField*/"", strConfigKeyword);
-        }
-        else
-        {
-            featureClass = featureDataset.CreateFeatureClass(featureClassName, validatedFields, CLSID, CLSEXT, esriFeatureType.esriFTSimple, strShapeField, strConfigKeyword);
-        }
-        return featureClass;
-    }
-    #endregion
-
-
-    public IFeatureClass createFeatureClassWithFields(String featureClassName, IFeatureWorkspace featureWorkspace)
-    {
-        IFeatureClassDescription fcDescription = new FeatureClassDescriptionClass();
-        IObjectClassDescription ocDescription = (IObjectClassDescription)fcDescription;
-        //IFields fields = ocDescription.RequiredFields;
-
-
-        // Create a fields collection for the feature class.
-        IFields fields = new FieldsClass();
-        IFieldsEdit fieldsEdit = (IFieldsEdit)fields;
-
-        // Add an Object ID field to the fields collection. This is mandatory for feature classes.
-        IField oidField = new FieldClass();
-        IFieldEdit oidFieldEdit = (IFieldEdit)oidField;
-        oidFieldEdit.Name_2 = "OID";
-        oidFieldEdit.Type_2 = esriFieldType.esriFieldTypeOID;
-        fieldsEdit.AddField(oidField);
-
-        // Create a geometry definition (and spatial reference) for the feature class.
-        IGeometryDef geometryDef = new GeometryDefClass();
-        IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
-        geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
-        ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
-        ISpatialReference spatialReference = spatialReferenceFactory.CreateProjectedCoordinateSystem((int)esriSRProjCSType.esriSRProjCS_WGS1984UTM_21S);
-        ISpatialReferenceResolution spatialReferenceResolution = (ISpatialReferenceResolution)spatialReference;
-        spatialReferenceResolution.ConstructFromHorizon();
-        spatialReferenceResolution.SetDefaultXYResolution();
-        ISpatialReferenceTolerance spatialReferenceTolerance = (ISpatialReferenceTolerance)spatialReference;
-        spatialReferenceTolerance.SetDefaultXYTolerance();
-        geometryDefEdit.SpatialReference_2 = spatialReference;
-
-        // Add a geometry field to the fields collection. This is where the geometry definition is applied.
-        IField geometryField = new FieldClass();
-        IFieldEdit geometryFieldEdit = (IFieldEdit)geometryField;
-        geometryFieldEdit.Name_2 = "Shape";
-        geometryFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
-        geometryFieldEdit.GeometryDef_2 = geometryDef;
-        fieldsEdit.AddField(geometryField);
-
-        // Create a Name text field for the fields collection.
-        IField valorField = new FieldClass();
-        IFieldEdit valorFieldEdit = (IFieldEdit)valorField;
-        valorFieldEdit.Name_2 = "Valor";
-        valorFieldEdit.Type_2 = esriFieldType.esriFieldTypeDouble;
-        fieldsEdit.AddField(valorField);
-
-        // Use IFieldChecker to create a validated fields collection.
-        IFieldChecker fieldChecker = new FieldCheckerClass();
-        IEnumFieldError enumFieldError = null;
-        IFields validatedFields = null;
-        fieldChecker.ValidateWorkspace = (IWorkspace)featureWorkspace;
-        fieldChecker.Validate(fields, out enumFieldError, out validatedFields);
-
-        // The enumFieldError enumerator can be inspected at this point to determine 
-        // which fields were modified during validation.
-
-        // Create the feature class. Note that the CLSID parameter is null—this indicates to use the
-        // default CLSID, esriGeodatabase.Feature (acceptable in most cases for feature classes).
-        IFeatureClass featureClass = featureWorkspace.CreateFeatureClass(featureClassName,
-                                                                            validatedFields, null, ocDescription.ClassExtensionCLSID,
-                                                                            esriFeatureType.esriFTSimple, "Shape", "");
-
-        return featureClass;
-    }
-
-    public IFeatureClass crearNuevaCapa(IMap map, string nombreFeatureClass, List<PuntoZonificacion> listaPuntos)
-    {
-
-        IWorkspace ws = ((IDataset)map.Layer[0]).Workspace;
-        IWorkspace2 ws2 = (IWorkspace2)ws;
-        IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)ws2; // Explicit Cast
-
-        IFeatureClass nuevaFeatureClass = this.createFeatureClassWithFields(nombreFeatureClass, featureWorkspace);
-
-        IFeatureBuffer featureBuffer = nuevaFeatureClass.CreateFeatureBuffer();
-        IFeatureCursor FeatureCursor = nuevaFeatureClass.Insert(true);
-
-        IWorkspaceEdit workspaceEdit = (IWorkspaceEdit)ws;
-
-        //Start an edit session and operation
-        workspaceEdit.StartEditing(true);
-        workspaceEdit.StartEditOperation();
-
-        object featureOID;
-
-        //With a feature buffer you have the ability to set the attribute for a specific field to be
-        //the same for all features added to the buffer.
-        //featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), 0);
-
-        //Here you can set the featurebuffers's shape by setting the featureBuffer.Shape
-        //to a geomerty that matched the featureclasses.
-        //Create 100 features using FeatureBuffer and insert into a feature cursor
-        ESRI.ArcGIS.Geometry.IPoint point;// = new ESRI.ArcGIS.Geometry.PointClass();
-        
-        foreach (PuntoZonificacion aux in listaPuntos)
-        {
-            point = new ESRI.ArcGIS.Geometry.PointClass();
-            point.X = aux.Coordenada.X;
-            point.Y = aux.Coordenada.Y;
-
-            featureBuffer.Shape = point;
-            featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.Variabilidad);
-
-            //Insert the feature into the feature cursor
-            featureOID = FeatureCursor.InsertFeature(featureBuffer);
-            
-        }
-        //Flush the feature cursor to the database
-        //Calling flush allows you to handle any errors at a known time rather then on the cursor destruction.
-        FeatureCursor.Flush();
-
-        //Stop editing
-        workspaceEdit.StopEditOperation();
-        workspaceEdit.StopEditing(true);
-
-        //Release the Cursor
-        System.Runtime.InteropServices.Marshal.ReleaseComObject(FeatureCursor);
-
-        IFeatureLayer featureLayer = new FeatureLayerClass();
-
-        featureLayer.FeatureClass = nuevaFeatureClass;
-
-        ILayer layer = (ILayer)featureLayer;
-        layer.Name = featureLayer.FeatureClass.AliasName;
-        // Add the Layer to the focus map
-        map.AddLayer(layer);
-
-        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
-        activeView.Refresh();
-
-        return nuevaFeatureClass;
-    }
-
-    
-
 
 }

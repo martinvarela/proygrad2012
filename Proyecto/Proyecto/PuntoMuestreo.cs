@@ -5,6 +5,10 @@ using System.Text;
 
 class PuntoMuestreo : Punto
 {
+    public PuntoMuestreo()
+    {
+        this.Coordenada = new Coordenada();
+    }
 
     public void calcularValor(List<PuntoZonificacion> pts)
     {
