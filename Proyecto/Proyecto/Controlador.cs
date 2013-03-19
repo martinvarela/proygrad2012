@@ -46,8 +46,12 @@ class Controlador
 
     public Muestreo muestreoOptimo(String rutaEntrada, int filas, int columnas)
     {
+        int [] variables = new int [3];
+        variables[0] = 2;
+        variables[1] = 4;
+        variables[2] = 7;
         //paso 1
-        Zonificacion zonificacion = new Zonificacion(rutaEntrada);
+        Zonificacion zonificacion = new Zonificacion(rutaEntrada,variables);
 
         //paso 2
         zonificacion.calcularVariabilidad();

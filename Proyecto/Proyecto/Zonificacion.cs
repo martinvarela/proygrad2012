@@ -67,10 +67,10 @@ class Zonificacion
         return coordenada;
 
     }
-    
-    
 
-    public Zonificacion(String rutaEntrada)
+
+
+    public Zonificacion(String rutaEntrada, int[] variables_seleccion)
     {
         //Obtengo el archivo
         StreamReader objReader = new StreamReader(rutaEntrada);
@@ -130,14 +130,21 @@ class Zonificacion
                 int i = 1;
                 sLine = objReader.ReadLine();
                 String nombreVariable = "";
-                while (i <= cant_variables && sLine != "")
+                 // for (int i = 0; i < variables_seleccion.Length; i++){
+                   // if (datos[variables_seleccion[i]] == NAN)
+                int p = 0;
+                while (i <= cant_variables && sLine != "" && p < variables_seleccion.Length )
                 {
-                    String aux = "Var" + i + ": ";
-                    if ((sLine.Substring(0, aux.Length) == aux))
+                    if ((i-1) == variables_seleccion[p]) //es i-1 porque en el archivo ZF el i comienza en 1 y la seleccion de variable comienza en 0
                     {
-                        nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
-                        Variable variable = new Variable(nombreVariable);
-                        this.agregarVariable(variable);
+                        String aux = "Var" + i + ": ";
+                        if ((sLine.Substring(0, aux.Length) == aux))
+                        {
+                            nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
+                            Variable variable = new Variable(nombreVariable);
+                            this.agregarVariable(variable);
+                        }
+                        p++;
                     }
                     i++;
                     sLine = objReader.ReadLine();
@@ -165,13 +172,25 @@ class Zonificacion
                 string[] datos = null;
                 datos = sLine.Split(coma);
                 bool puntoUtil = true;
-                for (int i = 0; i < cant_variables; i++){                    
-                    if (datos[i] == NAN){
+
+                /*for (int i = 0; i < cant_variables; i++)
+                {
+                    if (datos[i] == NAN)
+                    {
                         puntoUtil = false;
                         break;
                     }
                     else
-                        ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, float.Parse(datos[i]));                    
+                        ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, float.Parse(datos[i]));
+                }*/
+                for (int i = 0; i < variables_seleccion.Length; i++){
+                    if (datos[variables_seleccion[i]] == NAN)
+                    {
+                        puntoUtil = false;
+                        break;
+                    }
+                    else
+                        ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, float.Parse(datos[variables_seleccion[i]]));                    
                 }
                 ptoZonificacion.Util = puntoUtil;
                 //agrego el punto solo si tiene datos
@@ -318,11 +337,15 @@ class Zonificacion
     */
     /****************************************************************************************************************************************/
 
-    
+
     public void calcularVariabilidad()
-    {
+    {        
         for (int i = 0; i < this.Variables.Count; i++) { this.Variables[i].calcularMedia(this.puntosZonificacion); }                       
         for (int i = 0; i < this.puntosZonificacion.Count; i++) { this.puntosZonificacion[i].calcularVariabilidad(); }
+        //Lo hace para todas las variables seleccionadas
+      /*  for (int i = 0; i < variables_seleccion.Length; i++) { this.Variables[variables_seleccion[i]].calcularMedia(this.puntosZonificacion); }
+
+        for (int i = 0; i < this.puntosZonificacion.Count; i++) { this.puntosZonificacion[i].calcularVariabilidad(variables_seleccion); }*/
     }
 
     public void agregarVariable(Variable variable)
