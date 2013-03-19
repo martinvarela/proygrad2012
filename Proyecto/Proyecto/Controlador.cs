@@ -45,7 +45,7 @@ class Controlador
 
     }
 
-    public Muestreo muestreoOptimo(String rutaEntrada, int filas, int columnas)
+    public Muestreo muestreoOptimoFilasColumnas(String rutaEntrada, int filas, int columnas, List<int> variablesMarcadas)
     {
         //paso 1
         Zonificacion zonificacion = new Zonificacion(rutaEntrada);
@@ -77,7 +77,7 @@ class Controlador
 
         return new Muestreo();
     }
-    public Muestreo muestreoOptimo(String rutaEntrada, float alto, float ancho)
+    public Muestreo muestreoOptimoAltoAncho(String rutaEntrada, int alto, int ancho, List<int> variablesMarcadas)
     {
         //HACER!!!
         return new Muestreo();
@@ -400,13 +400,6 @@ class Controlador
     }
     public void crearRed(IMap targetMap, string nombreLayer, IPoint puntoOrigen, IPoint puntoOpuesto, int nroFilas, int nroColumnas, bool selectable)
     {
-
-        //// Create a FeatureLayer and assign a shapefile to it.
-        //IFeatureLayer featureLayer = new FeatureLayerClass();
-        //IEnumLayer enumlayers = targetMap.get_Layers();
-
-        //enumlayers.Reset();
-        //ILayer capa = enumlayers.Next();
 
         Geoprocessor gp = new Geoprocessor();
 
