@@ -219,6 +219,7 @@ class Zonificacion
 
         //cierro el archivo
         objReader.Close();
+
     }
 
     //Calcula la distancia entre dos puntos y devuelve la distancia en metros luego de redondear el resultado
@@ -228,86 +229,6 @@ class Zonificacion
         double cuadY = (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y) * (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y);
         double distancia = Math.Sqrt(cuadX + cuadY);
         return (int)Math.Round(distancia);
-
-        SSA ssa = new SSA();
-        List<PuntoZonificacion> puntosMuestrear = ssa.SimulatedAnnealing2(puntosZonificacion);
-       // this.crearNuevaCapa(map, "capaMuestreo", puntosMuestrear);
-
-        String capaPuntosMuestreo = "m" + System.DateTime.Now.ToString("ddHHmmss");
-
-        IFeatureClass vecinosClass = this.crearNuevaCapa(map, capaPuntosMuestreo, puntosMuestrear);
-
-        String capaVecinos = "v" + System.DateTime.Now.ToString("ddHHmmss");
-
-        Geoprocessor gp = new Geoprocessor();
-        ESRI.ArcGIS.GeostatisticalAnalystTools.IDW vecinos = new ESRI.ArcGIS.GeostatisticalAnalystTools.IDW();
-        vecinos.in_features = vecinosClass;
-        vecinos.out_ga_layer = capaVecinos;
-        vecinos.z_field = vecinosClass.FindField("Valor");
-        
-        gp.AddOutputsToMap = true;
-        gp.Execute(vecinos, null);
-        
-        for (int i = 0; i < gp.MessageCount; i++)
-            System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
-
-
-        String capaVecinosOut = "vOut" + System.DateTime.Now.ToString("ddHHmmss");
-
-
-        Geoprocessor gp2 = new Geoprocessor();
-        ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints estimacion = new ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints();
-        //estimacion.in_geostat_layer = vecinos.out_ga_layer;
-        estimacion.in_locations = vecinosClass;
-        estimacion.out_feature_class = capaVecinosOut;
-        estimacion.z_field = "Valor";
-        estimacion.in_geostat_layer = vecinos.out_ga_layer;
-        
-        
-
-        //IEnumLayer enumlayers = map.get_Layers();
-        ////se busca la capa de puntos
-        //enumlayers.Reset();
-        //ILayer layerPuntos = enumlayers.Next();
-        //while ((layerPuntos != null) && (layerPuntos.Name != "nuevaCapavecinos2"))
-        //{
-        //    layerPuntos = enumlayers.Next();
-        //}
-        //IFeatureLayer ifeaturelayerPuntos = layerPuntos as FeatureLayer;
-        //IFeatureClass featureclassPuntos = ifeaturelayerPuntos.FeatureClass;
-        //if(layerPuntos != null)
-        //    estimacion.in_geostat_layer = layerPuntos;
-
-        //string sPath = System.IO.Path.GetDirectoryName (System.Reflection.Assembly.GetExecutingAssembly().Location);
-
-        //estimacion.in_geostat_layer = "C:\\Users\\Martin\\Desktop\\Proyecto Grado\\New folder\\Datos\\Mapas\\Muestras\\nuevaCapavecinos2.lyr";
-
-        //estimacion.in_geostat_layer = "C:\\nuevaCapavecinos2.lyr";
-
-        //gp2.AddOutputsToMap = true;
-
-        try
-        {
-            System.Diagnostics.Debug.WriteLine("Executing the try statement.");
-            gp2.Execute(estimacion, null);
-        }
-        catch (NullReferenceException e)
-        {
-            System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
-        }
-        catch
-        {
-            for (int i = 0; i < gp2.MessageCount; i++)
-                System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
-            System.Diagnostics.Debug.WriteLine("Caught exception #2.");
-        }
-        finally
-        {
-            for (int i = 0; i < gp2.MessageCount; i++)
-                System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
-            System.Diagnostics.Debug.WriteLine("Executing finally block.");
-        }
-       
     }
 
     

@@ -2,44 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ESRI.ArcGIS.Geoprocessor;
+using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Geometry;
+using Proyecto;
 
 class SSA
 {
-
-    public static int largo = 10;
     public static int cantMuestras = 40;
-    public int[] muestras = new int[cantMuestras];
-    public int[,] resultado = new int[largo, largo];
-    public int[] aux_muestras = new int[cantMuestras];
-    public int[,] aux_resultado = new int[largo, largo];
-
     public List<int> muestreados;
     public List<int> todos;
-    
 
-    public List<PuntoZonificacion> SimulatedAnnealing2(List<PuntoZonificacion> puntos)
+    public List<PuntoMuestreo> SimulatedAnnealing2(List<PuntoMuestreo> puntos)
     {
-        List<PuntoZonificacion> resultado = new List<PuntoZonificacion>();
+        List<PuntoMuestreo> resultado = new List<PuntoMuestreo>();
+        PuntoMuestreo aux;
+        Coordenada coordAux;
         
-        //esto reduce el conjunto de puntos a 400 para luego hacer SSA con esos puntos
-        //cuando este lo de promediar zonas no es necesario, ya que eso va a reducir la cant de puntos
-        int indAct = puntos.Count / 400;
-        while (indAct < puntos.Count)
-        {
-            PuntoZonificacion puntoRes = new PuntoZonificacion();
-            Coordenada coordenada = new Coordenada();
-            coordenada.X = puntos[indAct].Coordenada.X;
-            coordenada.Y = puntos[indAct].Coordenada.Y;
-            puntoRes.Coordenada = coordenada;
-            puntoRes.Variabilidad = puntos[indAct].Variabilidad;
-            indAct = indAct + (puntos.Count / 400);
-            resultado.Add(puntoRes);
-        }
-
         //a partir de los puntos, selecciona als muestras iniciales
         //List<PuntoZonificacion> zonif =  Inicializar2(resultado);
         //List<PuntoZonificacion> zonif =  ClonarZonif(resultado);
-        Inicializar3(resultado);
+        Inicializar3(puntos);
         //Imprimir2(todos);
         //Imprimir2(muestreados);
         //List<PuntoZonificacion> zonifAux;
@@ -56,10 +40,10 @@ class SSA
         double temperature = 400.0;
         double epsilon = 0.0000001;
         double delta;
-        fitness = CalcularFitness2(resultado, muestreados);
+        fitness = CalcularFitness2(puntos, muestreados);
 
         System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
-        while (iteration < 10000/*temperature > epsilon*/ )
+        while (iteration < 100/*temperature > epsilon*/ )
         {
             iteration++;
 
@@ -67,9 +51,9 @@ class SSA
             auxMuestreados = ClonarLista(muestreados);
             auxTodos = ClonarLista(todos);
             MoverMuestra2(auxMuestreados, auxTodos);
-            auxFitness = CalcularFitness2(resultado, auxMuestreados);
+            auxFitness = CalcularFitness2(puntos, auxMuestreados);
             System.Diagnostics.Debug.WriteLine(" auxFitnens: " + auxFitness);
-            delta = fitness - auxFitness;
+            delta = auxFitness - fitness;
             //if the new distance is better accept it and assign it
             if (delta < 0)
             {
@@ -96,7 +80,7 @@ class SSA
             //cooling process on every iteration
             temperature *= alpha;
             //print every 400 iterations
-            if (iteration % 400 == 0)
+            if (iteration % 10 == 0)
             {
                 System.Diagnostics.Debug.WriteLine(fitness);
                 Imprimir2(todos);
@@ -105,139 +89,94 @@ class SSA
                 System.Diagnostics.Debug.WriteLine("iter: " + iteration);
             }
         }
-        
-        
+
+        //creo la lista de PuntosMuestreo con los puntos a muestrear 
+        for (int i = 0; i < muestreados.Count; i++)
+        {
+            aux = new PuntoMuestreo();
+            coordAux = new Coordenada();
+            coordAux.X = puntos[muestreados[i]].Coordenada.X;
+            coordAux.Y = puntos[muestreados[i]].Coordenada.Y;
+            aux.Coordenada = coordAux;
+            aux.Valor = puntos[muestreados[i]].Valor;
+            resultado.Add(aux);
+        }
+
         return resultado;
 
 
     }
 
-    //public int[,] SimulatedAnnealing(int[,] variabilidad)
-    //{
-    //    for (int i = 0; i < largo; i++)
-    //    {
-    //        for (int j = 0; j < largo; j++)
-    //        {
-    //            resultado[i, j] = 0;
-    //        }
-    //    }
-    //    //Imprimir(resultado);
-    //    Inicializar(resultado);
-    //    //Imprimir(resultado);
-    //    //ImprimirMuestras(resultado);
-    //    Random rnd = new Random();
-    //    int iteration = -1;
-    //    //the probability
-    //    double proba;
-    //    double alpha = 0.999;
-    //    double temperature = 400.0;
-    //    double epsilon = 0.0000001;
-    //    double delta;
-    //    double fitnnes = CalcularFitness(muestras, variabilidad);
-    //    Console.WriteLine(" fitnens: " + fitnnes);
-    //    while (true /*temperature > epsilon*/ )
-    //    {
-    //        iteration++;
-
-    //        aux_muestras = (int[])muestras.Clone();
-    //        aux_resultado = (int[,])resultado.Clone();
-    //        MoverMuestra(aux_resultado);
-    //        double aux_fitnnes = CalcularFitness(aux_muestras, variabilidad);
-    //        //Console.WriteLine(" aux_fitnens: " + aux_fitnnes);
-    //        delta = fitnnes - aux_fitnnes;
-    //        //if the new distance is better accept it and assign it
-    //        if (delta < 0)
-    //        {
-    //            muestras = aux_muestras;
-    //            resultado = aux_resultado;
-    //            fitnnes = aux_fitnnes;
-    //        }
-    //        /*else
-    //        {
-    //            proba = rnd.NextDouble();
-    //            //if the new distance is worse accept 
-    //            //it but with a probability level
-    //            //if the probability is less than 
-    //            //E to the power -delta/temperature.
-    //            //otherwise the old value is kept
-    //            if (proba < Math.Exp(-delta / temperature))
-    //            {
-    //                Console.WriteLine("acepto una peor");
-    //                muestras = aux_muestras;
-    //                resultado = aux_resultado;
-    //                fitnnes = aux_fitnnes;
-    //            }
-    //        }*/
-    //        //cooling process on every iteration
-    //        temperature *= alpha;
-    //        //print every 400 iterations
-    //        if (iteration % 400 == 0)
-    //        {
-    //            Console.WriteLine(fitnnes);
-    //            Imprimir2(todos);
-    //            Imprimir2(muestreados);
-    //            Console.WriteLine("temp: " + temperature + " delta: " + delta + " fitnnes: " + fitnnes + " aux_fitnnes: " + aux_fitnnes);
-    //            Console.WriteLine("iter: " + iteration);
-    //        }
-    //    }
-    //    return resultado;
-    //}
-
+    
     //el fitness es el error cuadratico medio entre los valores en los puntos reales 
     //y los valores en los puntos interpolados con las muestras
-    private double CalcularFitness(int[] m, int[,] variabilidad)
+    private double CalcularFitness(List<PuntoMuestreo> zonif, List<int> muestras)
     {
-        int valor = 0;
-        for (int i = 0; i < cantMuestras; i++)
+        IMap map = ArcMap.Document.FocusMap; 
+        String capaPuntosMuestreo = "m" + System.DateTime.Now.ToString("ddHHmmss");
+
+        //agregar como parametro 
+        IFeatureClass vecinosClass = this.crearCapaPuntosMuestreo(map, capaPuntosMuestreo, zonif);
+        String capaIDW = "v" + System.DateTime.Now.ToString("ddHHmmss");
+
+        Geoprocessor gp = new Geoprocessor();
+        ESRI.ArcGIS.GeostatisticalAnalystTools.IDW vecinosIDW = new ESRI.ArcGIS.GeostatisticalAnalystTools.IDW();
+        vecinosIDW.in_features = vecinosClass;
+        vecinosIDW.out_ga_layer = capaIDW;
+        vecinosIDW.z_field = vecinosClass.FindField("Valor");
+
+        gp.AddOutputsToMap = true;
+        gp.Execute(vecinosIDW, null);
+
+        String capaEstimacion = "vOut" + System.DateTime.Now.ToString("ddHHmmss");
+
+        Geoprocessor gp2 = new Geoprocessor();
+        ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints estimacion = new ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints();
+        //esta tiene que ser la capa con todos los puntos!!!!!!!!!!!!!!!!!
+        estimacion.in_locations = capaPuntosMuestreo;
+        estimacion.out_feature_class = capaEstimacion;
+        estimacion.z_field = "Valor";
+        estimacion.in_geostat_layer = vecinosIDW.out_ga_layer;
+
+        try
         {
-            int posi = m[i] / 10;
-            int posj = m[i] % 10;
-            //Console.WriteLine("m[i]: " + m[i] + " posi: "+ posi+ " posj: " + posj);
-            valor += variabilidad[posi, posj];
+            System.Diagnostics.Debug.WriteLine("Executing the try statement.");
+            gp2.Execute(estimacion, null);
         }
-        return valor;
+        catch (NullReferenceException e)
+        {
+            System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
+        }
+        catch
+        {
+            for (int i = 0; i < gp2.MessageCount; i++)
+                System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
+            System.Diagnostics.Debug.WriteLine("Caught exception #2.");
+        }
+
+
+        //recorrer la capa capaEstimacion, hacer el cuadrado de cada error y sumarlos
+
+        //return suma errores
+        return 1000;
+
     }
 
     //el fitness es el error cuadratico medio entre los valores en los puntos reales 
     //y los valores en los puntos interpolados con las muestras
-    public double CalcularFitness2(List<PuntoZonificacion> zonif, List<int> muestras)
+    public double CalcularFitness2(List<PuntoMuestreo> zonif, List<int> muestras)
     {   
         double valor = 0;
         int pos;
         for (int i = 0; i < muestras.Count; i++)
         {
             pos = muestras[i];
-            valor += zonif[pos].Variabilidad;
+            valor += zonif[pos].Valor;
         }
         return valor;
     }
 
-    //aca voy a tener una lista con los indices de los puntos de muestreo y voy a modificar uno al azar
-    private void MoverMuestra(int[,] aux_resultado)
-    {
-        Random rnd = new Random();
-        int mover = rnd.Next(cantMuestras); // creates a number between 0 and cantMuestras
-        //obtengo el x e y del punto que voy a quitar
-        int xMover = aux_muestras[mover] / 10;
-        int yMover = aux_muestras[mover] % 10;
-        //encontrar un punto aleatorio que no este marcado para muestrear
-        bool encontre = false;
-        while (!encontre)
-        {
-            int posi = rnd.Next(largo);
-            int posj = rnd.Next(largo);
-            //el punto no estaba muestreado
-            if (aux_resultado[posi, posj] == 0)
-            {
-                aux_resultado[posi, posj] = 1;
-                aux_resultado[xMover, yMover] = 0;
-                aux_muestras[mover] = posi * largo + posj;
-                encontre = true;
-
-            }
-        }
-    }
-
+    
     //aca voy a tener una lista con los indices de los puntos de muestreo y voy a modificar uno al azar
     public void MoverMuestra2(List<int> auxMuestreados, List<int> auxTodos)
     {
@@ -260,18 +199,7 @@ class SSA
         }
     }
 
-    //funcion auxiliar para imprimir las muestra seleccionadas en determinado momento
-    //es para debuggear, hay que adaptarla a la nueva forma de los puntos
-    public void Imprimir(int[,] resultado)
-    {
-        for (int i = 0; i < largo; i++)
-        {
-            for (int j = 0; j < largo; j++)
-            {
-                Console.Write(resultado[i, j]);
-            } Console.WriteLine();
-        } Console.WriteLine();
-    }
+    
 
     public void Imprimir2(List<int> aux_todos)
     {
@@ -282,39 +210,8 @@ class SSA
         } System.Diagnostics.Debug.WriteLine("");
     }
 
+  
     
-    private void ImprimirMuestras(int[,] resultado)
-    {
-        for (int i = 0; i < muestras.Length; i++)
-        {
-            System.Diagnostics.Debug.WriteLine(muestras[i] + " ");
-
-        } System.Diagnostics.Debug.WriteLine("");
-    }
-
-    //funcion para inicializar los puntos a muestrear, esto depende de la cantidad de muestras a seleccionar
-    //armar un estilo de grilla con puntos equiespaciados ó seleccionar los puntos al azar
-    private void Inicializar(int[,] resultado)
-    {
-        //int cantPuntos = largo * largo;
-        //int cantMuestras = cantPuntos / 10;
-        int muestra = 0;
-        for (int i = 0; i < largo; i++)
-        {
-            for (int j = 0; j < largo; j++)
-            {
-                if (j % 2 == 1)
-                    if (i % 2 == 1)
-                    {
-                        resultado[i, j] = 1;
-                        this.muestras[muestra] = i * largo + j;
-                        muestra++;
-                    }
-            }
-        }
-
-    }
-
     //funcion para inicializar los puntos a muestrear, esto depende de la cantidad de muestras a seleccionar
     //armar un estilo de grilla con puntos equiespaciados ó seleccionar los puntos al azar
     private List<PuntoZonificacion> Inicializar2(List<PuntoZonificacion> listaZonificacion)
@@ -347,13 +244,13 @@ class SSA
 
     //funcion para inicializar los puntos a muestrear, esto depende de la cantidad de muestras a seleccionar
     //armar un estilo de grilla con puntos equiespaciados ó seleccionar los puntos al azar
-    private void Inicializar3(List<PuntoZonificacion> listaZonificacion)
+    private void Inicializar3(List<PuntoMuestreo> listaMuestreo)
     {
         this.todos = new List<int>();
         this.muestreados = new List<int>();
-        for (int ind = 0; ind < listaZonificacion.Count; ind++)
+        for (int ind = 0; ind < listaMuestreo.Count; ind++)
         {
-            if (((ind + 1) % (listaZonificacion.Count / cantMuestras)) == 0)
+            if (((ind + 1) % (listaMuestreo.Count / cantMuestras)) == 0)
             {
                 this.todos.Add(1);
                 this.muestreados.Add(ind);
@@ -403,7 +300,136 @@ class SSA
     
     }
 
-    
+    public IFeatureClass crearCapaPuntosMuestreo(IMap map, string nombreFeatureClass, List<PuntoMuestreo> listaPuntos)
+    {
+
+        IWorkspace ws = ((IDataset)map.Layer[0]).Workspace;
+        IWorkspace2 ws2 = (IWorkspace2)ws;
+        IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)ws2; // Explicit Cast
+
+        IFeatureClass nuevaFeatureClass = this.crearFeatureClassConFields(nombreFeatureClass, featureWorkspace);
+
+        IFeatureBuffer featureBuffer = nuevaFeatureClass.CreateFeatureBuffer();
+        IFeatureCursor FeatureCursor = nuevaFeatureClass.Insert(true);
+
+        IWorkspaceEdit workspaceEdit = (IWorkspaceEdit)ws;
+
+        //Start an edit session and operation
+        workspaceEdit.StartEditing(true);
+        workspaceEdit.StartEditOperation();
+
+        object featureOID;
+
+        //With a feature buffer you have the ability to set the attribute for a specific field to be
+        //the same for all features added to the buffer.
+        //featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), 0);
+
+        //Here you can set the featurebuffers's shape by setting the featureBuffer.Shape
+        //to a geomerty that matched the featureclasses.
+        //Create 100 features using FeatureBuffer and insert into a feature cursor
+        ESRI.ArcGIS.Geometry.IPoint point;// = new ESRI.ArcGIS.Geometry.PointClass();
+
+        foreach (PuntoMuestreo aux in listaPuntos)
+        {
+            point = new ESRI.ArcGIS.Geometry.PointClass();
+            point.X = aux.Coordenada.X;
+            point.Y = aux.Coordenada.Y;
+
+            featureBuffer.Shape = point;
+            featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.Valor);
+
+            //Insert the feature into the feature cursor
+            featureOID = FeatureCursor.InsertFeature(featureBuffer);
+
+        }
+        //Flush the feature cursor to the database
+        //Calling flush allows you to handle any errors at a known time rather then on the cursor destruction.
+        FeatureCursor.Flush();
+
+        //Stop editing
+        workspaceEdit.StopEditOperation();
+        workspaceEdit.StopEditing(true);
+
+        //Release the Cursor
+        System.Runtime.InteropServices.Marshal.ReleaseComObject(FeatureCursor);
+
+        IFeatureLayer featureLayer = new FeatureLayerClass();
+
+        featureLayer.FeatureClass = nuevaFeatureClass;
+
+        ILayer layer = (ILayer)featureLayer;
+        layer.Name = featureLayer.FeatureClass.AliasName;
+        // Add the Layer to the focus map
+        map.AddLayer(layer);
+
+        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
+        activeView.Refresh();
+
+        return nuevaFeatureClass;
+    }
+
+    public IFeatureClass crearFeatureClassConFields(String featureClassName, IFeatureWorkspace featureWorkspace)
+    {
+        IFeatureClassDescription fcDescription = new FeatureClassDescriptionClass();
+        IObjectClassDescription ocDescription = (IObjectClassDescription)fcDescription;
+
+        // Create a fields collection for the feature class.
+        IFields fields = new FieldsClass();
+        IFieldsEdit fieldsEdit = (IFieldsEdit)fields;
+
+        // Add an Object ID field to the fields collection. This is mandatory for feature classes.
+        IField oidField = new FieldClass();
+        IFieldEdit oidFieldEdit = (IFieldEdit)oidField;
+        oidFieldEdit.Name_2 = "OID";
+        oidFieldEdit.Type_2 = esriFieldType.esriFieldTypeOID;
+        fieldsEdit.AddField(oidField);
+
+        // Create a geometry definition (and spatial reference) for the feature class.
+        IGeometryDef geometryDef = new GeometryDefClass();
+        IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
+        geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
+        ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
+        ISpatialReference spatialReference = spatialReferenceFactory.CreateProjectedCoordinateSystem((int)esriSRProjCSType.esriSRProjCS_WGS1984UTM_21S);
+        ISpatialReferenceResolution spatialReferenceResolution = (ISpatialReferenceResolution)spatialReference;
+        spatialReferenceResolution.ConstructFromHorizon();
+        spatialReferenceResolution.SetDefaultXYResolution();
+        ISpatialReferenceTolerance spatialReferenceTolerance = (ISpatialReferenceTolerance)spatialReference;
+        spatialReferenceTolerance.SetDefaultXYTolerance();
+        geometryDefEdit.SpatialReference_2 = spatialReference;
+
+        // Add a geometry field to the fields collection. This is where the geometry definition is applied.
+        IField geometryField = new FieldClass();
+        IFieldEdit geometryFieldEdit = (IFieldEdit)geometryField;
+        geometryFieldEdit.Name_2 = "Shape";
+        geometryFieldEdit.Type_2 = esriFieldType.esriFieldTypeGeometry;
+        geometryFieldEdit.GeometryDef_2 = geometryDef;
+        fieldsEdit.AddField(geometryField);
+
+        // Create a Name text field for the fields collection.
+        IField valorField = new FieldClass();
+        IFieldEdit valorFieldEdit = (IFieldEdit)valorField;
+        valorFieldEdit.Name_2 = "Valor";
+        valorFieldEdit.Type_2 = esriFieldType.esriFieldTypeDouble;
+        fieldsEdit.AddField(valorField);
+
+        // Use IFieldChecker to create a validated fields collection.
+        IFieldChecker fieldChecker = new FieldCheckerClass();
+        IEnumFieldError enumFieldError = null;
+        IFields validatedFields = null;
+        fieldChecker.ValidateWorkspace = (IWorkspace)featureWorkspace;
+        fieldChecker.Validate(fields, out enumFieldError, out validatedFields);
+
+        // The enumFieldError enumerator can be inspected at this point to determine 
+        // which fields were modified during validation.
+
+        // Create the feature class. Note that the CLSID parameter is null—this indicates to use the
+        // default CLSID, esriGeodatabase.Feature (acceptable in most cases for feature classes).
+        IFeatureClass featureClass = featureWorkspace.CreateFeatureClass(featureClassName,
+                                                                            validatedFields, null, ocDescription.ClassExtensionCLSID,
+                                                                            esriFeatureType.esriFTSimple, "Shape", "");
+
+        return featureClass;
+    }
 
 
 }

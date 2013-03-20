@@ -15,7 +15,7 @@ class Controlador
     //atributos
     private Zonificacion zonificacion { get; set; }
     private List<Capa> capas;
-    private List<PuntoMuestreo> puntosMuestreo;
+    //private List<PuntoMuestreo> puntosMuestreo;
     private Muestreo muestreo { get; set; }
     private Blackmore blackmore;
 
@@ -67,16 +67,38 @@ class Controlador
         //se crea la capa de red con las filas y columnas pasadas como parametro
         //hacer!!
         String nombreCapaPoligonos = "CR" + ahora;
-        String nombreCapaPuntosMuestreos = "CR" + ahora + "_label";
+        String nombreCapaPuntosPosibles = "CR" + ahora + "_label";
         this.crearRed(map, nombreCapaPoligonos, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filas, columnas, true, nombreCapaPuntosZonificacion);
+        
+        IFeatureClass capaPuntosPosibles;
+        IEnumLayer enumlayers = map.get_Layers();
 
+        //se busca la capa de puntos de muestreo
+        enumlayers.Reset();
+        ILayer layerPuntos = enumlayers.Next();
+        while ((layerPuntos != null) && (layerPuntos.Name != nombreCapaPuntosPosibles))
+        {
+            layerPuntos = enumlayers.Next();
+        }
+        IFeatureLayer ifeaturelayerPuntos = layerPuntos as FeatureLayer;
+        capaPuntosPosibles = ifeaturelayerPuntos.FeatureClass;
+        
 
         //paso 5
         //calcula los valores de los puntos de muestreo haciendo promedio en los puntos que "caen" dentro de la celda de la capa de poligonos
         //agrega cada punto de muestreo a la lista de la instancia de muestreo.
-        this.cargarValoresPuntosMuestreo(map, muestreo, nombreCapaPuntosZonificacion, nombreCapaPoligonos, nombreCapaPuntosMuestreos, 2, 2);
+        this.cargarValoresPuntosMuestreo(map, muestreo, nombreCapaPuntosZonificacion, nombreCapaPoligonos, nombreCapaPuntosPosibles, 2, 2);
+
+
+        //paso6
+        //SSA
+        SSA ssa = new SSA();
+        List<PuntoMuestreo> puntosMuestrear = ssa.SimulatedAnnealing2(this.muestreo.PuntosMuestreo);
+        
+        //CREAR LA CAPA CON LOS PUNTOS A MUESTREAR Y MOSTRARLA EN EL MAPA
 
         return new Muestreo();
+    
     }
     public Muestreo muestreoOptimoAltoAncho(String rutaEntrada, int alto, int ancho, List<int> variablesMarcadas)
     {
@@ -138,6 +160,74 @@ class Controlador
 
             featureBuffer.Shape = point;
             featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.Variabilidad);
+
+            //Insert the feature into the feature cursor
+            featureOID = FeatureCursor.InsertFeature(featureBuffer);
+
+        }
+        //Flush the feature cursor to the database
+        //Calling flush allows you to handle any errors at a known time rather then on the cursor destruction.
+        FeatureCursor.Flush();
+
+        //Stop editing
+        workspaceEdit.StopEditOperation();
+        workspaceEdit.StopEditing(true);
+
+        //Release the Cursor
+        System.Runtime.InteropServices.Marshal.ReleaseComObject(FeatureCursor);
+
+        IFeatureLayer featureLayer = new FeatureLayerClass();
+
+        featureLayer.FeatureClass = nuevaFeatureClass;
+
+        ILayer layer = (ILayer)featureLayer;
+        layer.Name = featureLayer.FeatureClass.AliasName;
+        // Add the Layer to the focus map
+        map.AddLayer(layer);
+
+        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
+        activeView.Refresh();
+
+        return nuevaFeatureClass;
+    }
+
+    public IFeatureClass crearCapaPuntosMuestreo(IMap map, string nombreFeatureClass, List<PuntoMuestreo> listaPuntos)
+    {
+
+        IWorkspace ws = ((IDataset)map.Layer[0]).Workspace;
+        IWorkspace2 ws2 = (IWorkspace2)ws;
+        IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)ws2; // Explicit Cast
+
+        IFeatureClass nuevaFeatureClass = this.crearFeatureClassConFields(nombreFeatureClass, featureWorkspace);
+
+        IFeatureBuffer featureBuffer = nuevaFeatureClass.CreateFeatureBuffer();
+        IFeatureCursor FeatureCursor = nuevaFeatureClass.Insert(true);
+
+        IWorkspaceEdit workspaceEdit = (IWorkspaceEdit)ws;
+
+        //Start an edit session and operation
+        workspaceEdit.StartEditing(true);
+        workspaceEdit.StartEditOperation();
+
+        object featureOID;
+
+        //With a feature buffer you have the ability to set the attribute for a specific field to be
+        //the same for all features added to the buffer.
+        //featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), 0);
+
+        //Here you can set the featurebuffers's shape by setting the featureBuffer.Shape
+        //to a geomerty that matched the featureclasses.
+        //Create 100 features using FeatureBuffer and insert into a feature cursor
+        ESRI.ArcGIS.Geometry.IPoint point;// = new ESRI.ArcGIS.Geometry.PointClass();
+
+        foreach (PuntoMuestreo aux in listaPuntos)
+        {
+            point = new ESRI.ArcGIS.Geometry.PointClass();
+            point.X = aux.Coordenada.X;
+            point.Y = aux.Coordenada.Y;
+
+            featureBuffer.Shape = point;
+            featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.Valor);
 
             //Insert the feature into the feature cursor
             featureOID = FeatureCursor.InsertFeature(featureBuffer);

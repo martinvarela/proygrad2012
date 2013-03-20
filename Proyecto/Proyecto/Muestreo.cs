@@ -11,6 +11,12 @@ class Muestreo
     //private SistemaCoordenada sistemaCoordinada { get; set; }
     private List<PuntoMuestreo> puntosMuestreo;
 
+    internal List<PuntoMuestreo> PuntosMuestreo
+    {
+        get { return puntosMuestreo; }
+        set { puntosMuestreo = value; }
+    }
+
     public void agregarPuntoMuestreo(PuntoMuestreo puntoMuestreo)
     {
         if (this.puntosMuestreo == null)
