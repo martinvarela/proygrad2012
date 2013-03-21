@@ -24,12 +24,6 @@ class PuntoZonificacion
         get { return variables; }
         set { variables = value; }
     }
-    private bool util;
-    public bool Util
-    {
-        get { return util; }
-        set { util = value; }
-    }
     public PuntoZonificacion() { }
 
     public void calcularVariabilidad()
