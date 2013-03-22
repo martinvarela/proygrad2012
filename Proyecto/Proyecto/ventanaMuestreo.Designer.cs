@@ -40,6 +40,14 @@
             this.txtMuestreo = new System.Windows.Forms.TextBox();
             this.btnAyuda = new System.Windows.Forms.Button();
             this.panelAyuda = new System.Windows.Forms.Panel();
+            this.lblDescripcionRed7 = new System.Windows.Forms.Label();
+            this.lblDescripcionRed6 = new System.Windows.Forms.Label();
+            this.lblDescripcionRed4 = new System.Windows.Forms.Label();
+            this.lblDescripcionRed3 = new System.Windows.Forms.Label();
+            this.lblDescripcionRed5 = new System.Windows.Forms.Label();
+            this.lblDescripcionRed2 = new System.Windows.Forms.Label();
+            this.lblDescripcionRed1 = new System.Windows.Forms.Label();
+            this.lblTituloRed = new System.Windows.Forms.Label();
             this.labelDescripcionMuestreo = new System.Windows.Forms.Label();
             this.labelTituloMuestreo = new System.Windows.Forms.Label();
             this.labelDescripcionZonificacion = new System.Windows.Forms.Label();
@@ -57,14 +65,7 @@
             this.lblVertical = new System.Windows.Forms.Label();
             this.ptoVerdeVertical = new System.Windows.Forms.PictureBox();
             this.ptoVerdeHorizontal = new System.Windows.Forms.PictureBox();
-            this.lblTituloRed = new System.Windows.Forms.Label();
-            this.lblDescripcionRed1 = new System.Windows.Forms.Label();
-            this.lblDescripcionRed2 = new System.Windows.Forms.Label();
-            this.lblDescripcionRed5 = new System.Windows.Forms.Label();
-            this.lblDescripcionRed3 = new System.Windows.Forms.Label();
-            this.lblDescripcionRed4 = new System.Windows.Forms.Label();
-            this.lblDescripcionRed6 = new System.Windows.Forms.Label();
-            this.lblDescripcionRed7 = new System.Windows.Forms.Label();
+            this.lblProgressBar = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).BeginInit();
             this.panelAyuda.SuspendLayout();
@@ -76,16 +77,18 @@
             // txtArchivoZF
             // 
             this.txtArchivoZF.Enabled = false;
+            this.txtArchivoZF.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtArchivoZF.Location = new System.Drawing.Point(31, 34);
             this.txtArchivoZF.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtArchivoZF.Name = "txtArchivoZF";
-            this.txtArchivoZF.Size = new System.Drawing.Size(377, 22);
+            this.txtArchivoZF.Size = new System.Drawing.Size(377, 21);
             this.txtArchivoZF.TabIndex = 0;
             this.txtArchivoZF.TextChanged += new System.EventHandler(this.txtArchivoZF_TextChanged);
             this.txtArchivoZF.GotFocus += new System.EventHandler(this.txtArchivoZF_GotFocus);
             // 
             // botonAbrir
             // 
+            this.botonAbrir.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.botonAbrir.Image = ((System.Drawing.Image)(resources.GetObject("botonAbrir.Image")));
             this.botonAbrir.Location = new System.Drawing.Point(420, 32);
             this.botonAbrir.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -97,7 +100,7 @@
             // 
             // btnAceptar
             // 
-            this.btnAceptar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAceptar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAceptar.Location = new System.Drawing.Point(31, 479);
             this.btnAceptar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAceptar.Name = "btnAceptar";
@@ -109,11 +112,12 @@
             // 
             // lblOpenFileZF
             // 
+            this.lblOpenFileZF.AutoEllipsis = true;
             this.lblOpenFileZF.AutoSize = true;
-            this.lblOpenFileZF.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOpenFileZF.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblOpenFileZF.Location = new System.Drawing.Point(28, 13);
             this.lblOpenFileZF.Name = "lblOpenFileZF";
-            this.lblOpenFileZF.Size = new System.Drawing.Size(140, 16);
+            this.lblOpenFileZF.Size = new System.Drawing.Size(130, 15);
             this.lblOpenFileZF.TabIndex = 3;
             this.lblOpenFileZF.Text = "Archivo de zonificación";
             // 
@@ -140,10 +144,10 @@
             // lblMuestreo
             // 
             this.lblMuestreo.AutoSize = true;
-            this.lblMuestreo.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMuestreo.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblMuestreo.Location = new System.Drawing.Point(28, 298);
             this.lblMuestreo.Name = "lblMuestreo";
-            this.lblMuestreo.Size = new System.Drawing.Size(114, 16);
+            this.lblMuestreo.Size = new System.Drawing.Size(110, 15);
             this.lblMuestreo.TabIndex = 7;
             this.lblMuestreo.Text = "Capa de muestreo";
             // 
@@ -160,17 +164,18 @@
             // 
             // txtMuestreo
             // 
+            this.txtMuestreo.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMuestreo.Location = new System.Drawing.Point(31, 319);
             this.txtMuestreo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMuestreo.Name = "txtMuestreo";
-            this.txtMuestreo.Size = new System.Drawing.Size(377, 22);
+            this.txtMuestreo.Size = new System.Drawing.Size(377, 21);
             this.txtMuestreo.TabIndex = 5;
             this.txtMuestreo.TextChanged += new System.EventHandler(this.txtMuestreo_TextChanged);
             this.txtMuestreo.GotFocus += new System.EventHandler(this.txtMuestreo_GotFocus);
             // 
             // btnAyuda
             // 
-            this.btnAyuda.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnAyuda.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAyuda.Location = new System.Drawing.Point(294, 479);
             this.btnAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAyuda.Name = "btnAyuda";
@@ -201,6 +206,82 @@
             this.panelAyuda.Name = "panelAyuda";
             this.panelAyuda.Size = new System.Drawing.Size(442, 478);
             this.panelAyuda.TabIndex = 10;
+            // 
+            // lblDescripcionRed7
+            // 
+            this.lblDescripcionRed7.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionRed7.Location = new System.Drawing.Point(36, 276);
+            this.lblDescripcionRed7.Name = "lblDescripcionRed7";
+            this.lblDescripcionRed7.Size = new System.Drawing.Size(384, 22);
+            this.lblDescripcionRed7.TabIndex = 11;
+            this.lblDescripcionRed7.Text = "Ancho - Ancho de las celdas con las que se construira la red.";
+            // 
+            // lblDescripcionRed6
+            // 
+            this.lblDescripcionRed6.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionRed6.Location = new System.Drawing.Point(36, 258);
+            this.lblDescripcionRed6.Name = "lblDescripcionRed6";
+            this.lblDescripcionRed6.Size = new System.Drawing.Size(384, 16);
+            this.lblDescripcionRed6.TabIndex = 10;
+            this.lblDescripcionRed6.Text = "Alto - Alto de las celdas con las que se construira la red.";
+            // 
+            // lblDescripcionRed4
+            // 
+            this.lblDescripcionRed4.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionRed4.Location = new System.Drawing.Point(36, 157);
+            this.lblDescripcionRed4.Name = "lblDescripcionRed4";
+            this.lblDescripcionRed4.Size = new System.Drawing.Size(409, 18);
+            this.lblDescripcionRed4.TabIndex = 9;
+            this.lblDescripcionRed4.Text = "Columnas - Cantidad de columnas con las que se construira la red.";
+            // 
+            // lblDescripcionRed3
+            // 
+            this.lblDescripcionRed3.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionRed3.Location = new System.Drawing.Point(36, 139);
+            this.lblDescripcionRed3.Name = "lblDescripcionRed3";
+            this.lblDescripcionRed3.Size = new System.Drawing.Size(384, 16);
+            this.lblDescripcionRed3.TabIndex = 8;
+            this.lblDescripcionRed3.Text = "Filas - Cantidad de filas con las que se construira la red.";
+            // 
+            // lblDescripcionRed5
+            // 
+            this.lblDescripcionRed5.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionRed5.Location = new System.Drawing.Point(19, 196);
+            this.lblDescripcionRed5.Name = "lblDescripcionRed5";
+            this.lblDescripcionRed5.Size = new System.Drawing.Size(384, 56);
+            this.lblDescripcionRed5.TabIndex = 7;
+            this.lblDescripcionRed5.Text = "Tamaño de celdas - Determina que se hara la generalización de puntos mediante una" +
+                " red construida en base al ancho y alto de cada celda.";
+            // 
+            // lblDescripcionRed2
+            // 
+            this.lblDescripcionRed2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionRed2.Location = new System.Drawing.Point(19, 80);
+            this.lblDescripcionRed2.Name = "lblDescripcionRed2";
+            this.lblDescripcionRed2.Size = new System.Drawing.Size(384, 56);
+            this.lblDescripcionRed2.TabIndex = 6;
+            this.lblDescripcionRed2.Text = "Cantidad de celdas - Determina que se hara la generalización de puntos mediante u" +
+                "na red construida en base a cantidad de filas y columnas.";
+            // 
+            // lblDescripcionRed1
+            // 
+            this.lblDescripcionRed1.AutoSize = true;
+            this.lblDescripcionRed1.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionRed1.Location = new System.Drawing.Point(19, 57);
+            this.lblDescripcionRed1.Name = "lblDescripcionRed1";
+            this.lblDescripcionRed1.Size = new System.Drawing.Size(81, 16);
+            this.lblDescripcionRed1.TabIndex = 5;
+            this.lblDescripcionRed1.Text = "Tipo de red";
+            // 
+            // lblTituloRed
+            // 
+            this.lblTituloRed.AutoSize = true;
+            this.lblTituloRed.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTituloRed.Location = new System.Drawing.Point(18, 20);
+            this.lblTituloRed.Name = "lblTituloRed";
+            this.lblTituloRed.Size = new System.Drawing.Size(204, 19);
+            this.lblTituloRed.TabIndex = 4;
+            this.lblTituloRed.Text = "Generalización de puntos";
             // 
             // labelDescripcionMuestreo
             // 
@@ -244,7 +325,7 @@
             // 
             // btnCancelar
             // 
-            this.btnCancelar.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCancelar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancelar.Location = new System.Drawing.Point(162, 479);
             this.btnCancelar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCancelar.Name = "btnCancelar";
@@ -268,10 +349,10 @@
             // lblVariables
             // 
             this.lblVariables.AutoSize = true;
-            this.lblVariables.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVariables.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblVariables.Location = new System.Drawing.Point(28, 65);
             this.lblVariables.Name = "lblVariables";
-            this.lblVariables.Size = new System.Drawing.Size(61, 16);
+            this.lblVariables.Size = new System.Drawing.Size(58, 15);
             this.lblVariables.TabIndex = 13;
             this.lblVariables.Text = "Variables";
             // 
@@ -295,20 +376,22 @@
             // 
             // txtHorizontal
             // 
+            this.txtHorizontal.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtHorizontal.Location = new System.Drawing.Point(234, 247);
             this.txtHorizontal.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtHorizontal.Name = "txtHorizontal";
-            this.txtHorizontal.Size = new System.Drawing.Size(174, 22);
+            this.txtHorizontal.Size = new System.Drawing.Size(174, 21);
             this.txtHorizontal.TabIndex = 17;
             this.txtHorizontal.GotFocus += new System.EventHandler(this.txtHorizontal_GotFucus);
             this.txtHorizontal.LostFocus += new System.EventHandler(this.txtHorizontal_LostFocus);
             // 
             // txtVertical
             // 
+            this.txtVertical.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtVertical.Location = new System.Drawing.Point(31, 247);
             this.txtVertical.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtVertical.Name = "txtVertical";
-            this.txtVertical.Size = new System.Drawing.Size(174, 22);
+            this.txtVertical.Size = new System.Drawing.Size(174, 21);
             this.txtVertical.TabIndex = 19;
             this.txtVertical.GotFocus += new System.EventHandler(this.txtVertical_GotFucus);
             this.txtVertical.LostFocus += new System.EventHandler(this.txtVertical_LostFocus);
@@ -316,45 +399,45 @@
             // cboTipoRed
             // 
             this.cboTipoRed.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTipoRed.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboTipoRed.FormattingEnabled = true;
             this.cboTipoRed.Items.AddRange(new object[] {
             "Cantidad de celdas",
             "Tamaño de celdas"});
             this.cboTipoRed.Location = new System.Drawing.Point(31, 196);
             this.cboTipoRed.Name = "cboTipoRed";
-            this.cboTipoRed.Size = new System.Drawing.Size(174, 24);
+            this.cboTipoRed.Size = new System.Drawing.Size(174, 23);
             this.cboTipoRed.TabIndex = 21;
             this.cboTipoRed.SelectedIndexChanged += new System.EventHandler(this.cboTipoRed_SelectedIndexChanged);
             this.cboTipoRed.GotFocus += new System.EventHandler(this.cboTipoRed_GotFucus);
-            this.cboTipoRed.SelectedIndex = 0;
             // 
             // lblTipoRed
             // 
             this.lblTipoRed.AutoSize = true;
-            this.lblTipoRed.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTipoRed.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTipoRed.Location = new System.Drawing.Point(28, 176);
             this.lblTipoRed.Name = "lblTipoRed";
-            this.lblTipoRed.Size = new System.Drawing.Size(72, 16);
+            this.lblTipoRed.Size = new System.Drawing.Size(69, 15);
             this.lblTipoRed.TabIndex = 22;
             this.lblTipoRed.Text = "Tipo de red";
             // 
             // lblHorizontal
             // 
             this.lblHorizontal.AutoSize = true;
-            this.lblHorizontal.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHorizontal.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblHorizontal.Location = new System.Drawing.Point(231, 227);
             this.lblHorizontal.Name = "lblHorizontal";
-            this.lblHorizontal.Size = new System.Drawing.Size(66, 16);
+            this.lblHorizontal.Size = new System.Drawing.Size(65, 15);
             this.lblHorizontal.TabIndex = 23;
             this.lblHorizontal.Text = "Columnas";
             // 
             // lblVertical
             // 
             this.lblVertical.AutoSize = true;
-            this.lblVertical.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblVertical.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblVertical.Location = new System.Drawing.Point(28, 227);
             this.lblVertical.Name = "lblVertical";
-            this.lblVertical.Size = new System.Drawing.Size(36, 16);
+            this.lblVertical.Size = new System.Drawing.Size(34, 15);
             this.lblVertical.TabIndex = 24;
             this.lblVertical.Text = "Filas";
             // 
@@ -378,87 +461,20 @@
             this.ptoVerdeHorizontal.TabIndex = 26;
             this.ptoVerdeHorizontal.TabStop = false;
             // 
-            // lblTituloRed
+            // lblProgressBar
             // 
-            this.lblTituloRed.AutoSize = true;
-            this.lblTituloRed.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTituloRed.Location = new System.Drawing.Point(18, 20);
-            this.lblTituloRed.Name = "lblTituloRed";
-            this.lblTituloRed.Size = new System.Drawing.Size(204, 19);
-            this.lblTituloRed.TabIndex = 4;
-            this.lblTituloRed.Text = "Generalización de puntos";
-            // 
-            // lblDescripcionRed1
-            // 
-            this.lblDescripcionRed1.AutoSize = true;
-            this.lblDescripcionRed1.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescripcionRed1.Location = new System.Drawing.Point(19, 57);
-            this.lblDescripcionRed1.Name = "lblDescripcionRed1";
-            this.lblDescripcionRed1.Size = new System.Drawing.Size(81, 16);
-            this.lblDescripcionRed1.TabIndex = 5;
-            this.lblDescripcionRed1.Text = "Tipo de red";
-            // 
-            // lblDescripcionRed2
-            // 
-            this.lblDescripcionRed2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescripcionRed2.Location = new System.Drawing.Point(19, 80);
-            this.lblDescripcionRed2.Name = "lblDescripcionRed2";
-            this.lblDescripcionRed2.Size = new System.Drawing.Size(384, 56);
-            this.lblDescripcionRed2.TabIndex = 6;
-            this.lblDescripcionRed2.Text = "Cantidad de celdas - Determina que se hara la generalización de puntos mediante u" +
-                "na red construida en base a cantidad de filas y columnas.";
-            // 
-            // lblDescripcionRed5
-            // 
-            this.lblDescripcionRed5.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescripcionRed5.Location = new System.Drawing.Point(19, 196);
-            this.lblDescripcionRed5.Name = "lblDescripcionRed5";
-            this.lblDescripcionRed5.Size = new System.Drawing.Size(384, 56);
-            this.lblDescripcionRed5.TabIndex = 7;
-            this.lblDescripcionRed5.Text = "Tamaño de celdas - Determina que se hara la generalización de puntos mediante una" +
-                " red construida en base al ancho y alto de cada celda.";
-            // 
-            // lblDescripcionRed3
-            // 
-            this.lblDescripcionRed3.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescripcionRed3.Location = new System.Drawing.Point(36, 139);
-            this.lblDescripcionRed3.Name = "lblDescripcionRed3";
-            this.lblDescripcionRed3.Size = new System.Drawing.Size(384, 16);
-            this.lblDescripcionRed3.TabIndex = 8;
-            this.lblDescripcionRed3.Text = "Filas - Cantidad de filas con las que se construira la red.";
-            // 
-            // lblDescripcionRed4
-            // 
-            this.lblDescripcionRed4.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescripcionRed4.Location = new System.Drawing.Point(36, 157);
-            this.lblDescripcionRed4.Name = "lblDescripcionRed4";
-            this.lblDescripcionRed4.Size = new System.Drawing.Size(409, 18);
-            this.lblDescripcionRed4.TabIndex = 9;
-            this.lblDescripcionRed4.Text = "Columnas - Cantidad de columnas con las que se construira la red.";
-            // 
-            // lblDescripcionRed6
-            // 
-            this.lblDescripcionRed6.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescripcionRed6.Location = new System.Drawing.Point(36, 258);
-            this.lblDescripcionRed6.Name = "lblDescripcionRed6";
-            this.lblDescripcionRed6.Size = new System.Drawing.Size(384, 16);
-            this.lblDescripcionRed6.TabIndex = 10;
-            this.lblDescripcionRed6.Text = "Alto - Alto de las celdas con las que se construira la red.";
-            // 
-            // lblDescripcionRed7
-            // 
-            this.lblDescripcionRed7.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescripcionRed7.Location = new System.Drawing.Point(36, 276);
-            this.lblDescripcionRed7.Name = "lblDescripcionRed7";
-            this.lblDescripcionRed7.Size = new System.Drawing.Size(384, 22);
-            this.lblDescripcionRed7.TabIndex = 11;
-            this.lblDescripcionRed7.Text = "Ancho - Ancho de las celdas con las que se construira la red.";
+            this.lblProgressBar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblProgressBar.Location = new System.Drawing.Point(31, 408);
+            this.lblProgressBar.Name = "lblProgressBar";
+            this.lblProgressBar.Size = new System.Drawing.Size(420, 20);
+            this.lblProgressBar.TabIndex = 27;
             // 
             // ventanaMuestreo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 518);
+            this.Controls.Add(this.lblProgressBar);
             this.Controls.Add(this.ptoVerdeHorizontal);
             this.Controls.Add(this.ptoVerdeVertical);
             this.Controls.Add(this.lblVertical);
@@ -488,6 +504,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "ventanaMuestreo";
             this.Text = "Optimización de muestreo";
+            this.TopMost = true;
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).EndInit();
             this.panelAyuda.ResumeLayout(false);
@@ -538,6 +555,7 @@
         public System.Windows.Forms.Label lblDescripcionRed2;
         private System.Windows.Forms.Label lblDescripcionRed1;
         private System.Windows.Forms.Label lblTituloRed;
+        private System.Windows.Forms.Label lblProgressBar;
 
     }
 }

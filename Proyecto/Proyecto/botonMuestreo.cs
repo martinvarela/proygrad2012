@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 
 
 namespace Proyecto
@@ -24,6 +25,10 @@ namespace Proyecto
             ventana.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 
             ventana.Visible = true;
+
+            //Controlador c1 = Controlador.getInstancia;
+            //c1.numero = 3;
+            //MessageBox.Show("en muestreo se creo el controlador c1 y tiene numero " + c1.numero);
         }
 
         protected override void OnUpdate()

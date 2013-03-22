@@ -88,7 +88,7 @@ class Zonificacion
 
 
 
-    public Zonificacion(String rutaEntrada, List<int> variables_seleccion)
+    public Zonificacion(String rutaEntrada, List<int> variables_seleccion, System.Windows.Forms.ProgressBar pBar)
     {
         //Obtengo el archivo
         StreamReader objReader = new StreamReader(rutaEntrada);
@@ -185,6 +185,13 @@ class Zonificacion
         this.puntoOpuesto.X = xinicial + Cols * cellSize;
         this.puntoOpuesto.Y = yinicial;
 
+        //seteo el progressBar
+        pBar.Minimum = 1;
+        pBar.Maximum = Rows * Cols;
+        pBar.Value = 1;
+        pBar.Step = 1;
+        pBar.Visible = true;
+
         //comienza el proceso de los puntos de la zonificacion
         for (int iy = 1; iy <= this.Filas; iy++)
         {
@@ -210,15 +217,20 @@ class Zonificacion
                     else
                         ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, float.Parse(datos[variables_seleccion[i]]));                    
                 }
-                ptoZonificacion.Util = puntoUtil;
                 //agrego el punto solo si tiene datos
-                if (ptoZonificacion.Util)
+                if (puntoUtil)
                     this.agregarPuntoZonificacion(ptoZonificacion);
+
+                //actualizo el progressBar.
+                pBar.PerformStep();
             }
         }
 
         //cierro el archivo
         objReader.Close();
+
+        //cierro el progressBar
+        pBar.Visible = false;
 
     }
 
@@ -235,15 +247,30 @@ class Zonificacion
 
 
 
-    public void calcularVariabilidad()
-    {        
-        for (int i = 0; i < this.Variables.Count; i++) { this.Variables[i].calcularMedia(this.puntosZonificacion); }                       
-        for (int i = 0; i < this.puntosZonificacion.Count; i++) { this.puntosZonificacion[i].calcularVariabilidad(); }
+    public void calcularVariabilidad(System.Windows.Forms.ProgressBar pBar)
+    {
+        //inicializo el progressBar
+        pBar.Minimum = 1;
+        pBar.Maximum = this.variables.Count * this.puntosZonificacion.Count;
+        pBar.Step = 1;
+        pBar.Value = 1;
+        pBar.Visible = true;
+        for (int i = 0; i < this.Variables.Count; i++)
+        {
+            this.Variables[i].calcularMedia(this.puntosZonificacion);
+            pBar.PerformStep();
+        }                       
+        for (int i = 0; i < this.puntosZonificacion.Count; i++)
+        {
+            this.puntosZonificacion[i].calcularVariabilidad();
+            pBar.PerformStep();
+        }
+        pBar.Visible = false;
 
-        double cuadX = (this.puntosZonificacion[10].Coordenada.X - this.puntosZonificacion[2800].Coordenada.X) * (this.puntosZonificacion[10].Coordenada.X - this.puntosZonificacion[2800].Coordenada.X);
-        double cuadY = (this.puntosZonificacion[10].Coordenada.Y - this.puntosZonificacion[2800].Coordenada.Y) * (this.puntosZonificacion[10].Coordenada.Y - this.puntosZonificacion[2800].Coordenada.Y);
-        double distancia = Math.Sqrt(cuadX + cuadY);
-        MessageBox.Show("distancia" + distancia.ToString());
+        //double cuadX = (this.puntosZonificacion[10].Coordenada.X - this.puntosZonificacion[2800].Coordenada.X) * (this.puntosZonificacion[10].Coordenada.X - this.puntosZonificacion[2800].Coordenada.X);
+        //double cuadY = (this.puntosZonificacion[10].Coordenada.Y - this.puntosZonificacion[2800].Coordenada.Y) * (this.puntosZonificacion[10].Coordenada.Y - this.puntosZonificacion[2800].Coordenada.Y);
+        //double distancia = Math.Sqrt(cuadX + cuadY);
+        //MessageBox.Show("distancia" + distancia.ToString());
     }
 
     public void agregarVariable(Variable variable)

@@ -31,12 +31,9 @@ class Variable
         for (int i = 0; i < this.puntosZonificacion.Count; i++)
         {
             PuntoZonificacion p = this.puntosZonificacion[i];
-            if (p.Util)
-            {
-                medicion = p.getMedicion(this.Nombre);
-                temp += medicion;
-                cant++;
-            }
+            medicion = p.getMedicion(this.Nombre);
+            temp += medicion;
+            cant++;
         }
         this.media = temp / cant;
 

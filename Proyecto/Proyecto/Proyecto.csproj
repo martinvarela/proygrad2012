@@ -130,6 +130,7 @@
   <ItemGroup>
     <Compile Include="Blackmore.cs" />
     <Compile Include="botonMuestreo.cs" />
+    <Compile Include="botonOptimizar.cs" />
     <Compile Include="Capa.cs" />
     <Compile Include="Celda.cs" />
     <Compile Include="classBlackmore.cs" />
@@ -230,6 +231,9 @@
     <Content Include="Images\blackmoore1.ico" />
     <Content Include="Images\blackmoore2.ico" />
     <AddInContent Include="Images\botonMuestreo_1.png" />
+    <AddInContent Include="Images\botonOptimizar.png" />
+    <AddInContent Include="Images\botonOptimizar_1.png" />
+    <Content Include="Images\botonSSA.png" />
     <Content Include="Images\folderOpen.ico" />
     <Content Include="Images\optimizacion.ico" />
     <Content Include="Images\puntoVerde.png" />

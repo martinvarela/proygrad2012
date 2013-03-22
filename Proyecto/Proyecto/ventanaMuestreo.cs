@@ -33,11 +33,11 @@ namespace Proyecto
         private void Zonificacion_Click(object sender, EventArgs e)
         {
             //txtArchivoZF.Text = "C:\\Users\\Gonzalo\\Desktop\\New folder\\20110608_153342\\Sur_todvar.ZF";
-            txtMuestreo.Text = "C:\\Users\\Gonzalo\\Desktop\\asdas";
+            //txtMuestreo.Text = "C:\\Users\\Gonzalo\\Desktop\\asdas";
             if (!ptoVerdeZF.Visible)
             {
 
-                Controlador controlador = new Controlador();
+                Controlador controlador = Controlador.getInstancia;
                 List<int> variables = new List<int>();
                 for (int i = 0; i < chkLstVariables.Items.Count; i++)
                 {
@@ -46,34 +46,34 @@ namespace Proyecto
                 }
                 if (this.cboTipoRed.SelectedIndex == 0)
                 {
-                    controlador.muestreoOptimoFilasColumnas(txtArchivoZF.Text, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables);
+                    controlador.muestreoFilasColumnas(txtArchivoZF.Text, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, this.lblProgressBar);
                 }
                 else if (this.cboTipoRed.SelectedIndex == 1)
                 {
                     //controlador.muestreoOptimoAltoAncho(txtArchivoZF.Text, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables);
                 }
                 
-                // Display the ProgressBar control.
-                pBar.Visible = true;
-                // Set Minimum to 1 to represent the first file being copied.
-                pBar.Minimum = 1;
-                // Set Maximum to the total number of files to copy.
-                pBar.Maximum = 50;
-                // Set the initial value of the ProgressBar.
-                pBar.Value = 1;
-                // Set the Step property to a value of 1 to represent each file being copied.
-                pBar.Step = 1;
+                //// Display the ProgressBar control.
+                //pBar.Visible = true;
+                //// Set Minimum to 1 to represent the first file being copied.
+                //pBar.Minimum = 1;
+                //// Set Maximum to the total number of files to copy.
+                //pBar.Maximum = 50;
+                //// Set the initial value of the ProgressBar.
+                //pBar.Value = 1;
+                //// Set the Step property to a value of 1 to represent each file being copied.
+                //pBar.Step = 1;
 
-                // Loop through all files to copy.
-                for (int x = 1; x <= 50; x++)
-                {
-                    System.Threading.Thread.Sleep(500);                    
-                    // Perform the increment on the ProgressBar.
-                    pBar.PerformStep();
-                }
+                //// Loop through all files to copy.
+                //for (int x = 1; x <= 50; x++)
+                //{
+                //    System.Threading.Thread.Sleep(500);                    
+                //    // Perform the increment on the ProgressBar.
+                //    pBar.PerformStep();
+                //}
 
-                pBar.Visible = false;
-                //this.Close();
+                //pBar.Visible = false;
+                this.Close();
             }
         }
 
@@ -97,11 +97,6 @@ namespace Proyecto
             StreamReader objReader = new StreamReader(rutaZF);
             //Incicializo la variable donde voy a guardar cada linea que leo y la variable donde voy a guardar en memoria el contenido del archivo
             string sLine = "";
-            int Rows = 0;
-            int Cols = 0;
-            double xinicial = 0;
-            double yinicial = 0;
-            int cellSize = 0;
             int cant_variables = 0;
             string string_cant_variables = "VarQty:";
 
