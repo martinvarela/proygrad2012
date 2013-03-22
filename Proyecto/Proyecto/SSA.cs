@@ -10,20 +10,41 @@ using Proyecto;
 
 class SSA
 {
-    public static int cantMuestras = 40;
+    public int cantMuestras = 5;
     public List<int> muestreados;
     public List<int> todos;
 
-    public List<PuntoMuestreo> SimulatedAnnealing2(List<PuntoMuestreo> puntos)
+    public IFeatureClass SimulatedAnnealing2(IFeatureClass capaPuntosMuestreo)
     {
-        List<PuntoMuestreo> resultado = new List<PuntoMuestreo>();
-        PuntoMuestreo aux;
-        Coordenada coordAux;
+        IFeatureClass capaPuntosMuestreoOptimo;
         
+        //creo lista de puntos de muestreo
+        List<PuntoMuestreo> listaPuntosMuestreo = new List<PuntoMuestreo>();
+        IFeatureCursor cursorPuntosMuestreo = capaPuntosMuestreo.Search(null, false);
+
+        int indice = capaPuntosMuestreo.FindField("Valor");
+
+        IFeature featurePunto = cursorPuntosMuestreo.NextFeature();
+        
+        while (featurePunto != null)
+        {
+            IGeometry g = featurePunto.Shape;
+            IPoint p = g as IPoint;
+            Coordenada c = new Coordenada();
+            c.X = p.X;
+            c.Y = p.Y;
+            PuntoMuestreo puntoMuestreo = new PuntoMuestreo();
+            puntoMuestreo.Coordenada = c;
+            puntoMuestreo.Valor = (double) featurePunto.get_Value(indice); 
+            listaPuntosMuestreo.Add(puntoMuestreo);
+
+            featurePunto = cursorPuntosMuestreo.NextFeature();
+        }
+
         //a partir de los puntos, selecciona als muestras iniciales
         //List<PuntoZonificacion> zonif =  Inicializar2(resultado);
         //List<PuntoZonificacion> zonif =  ClonarZonif(resultado);
-        Inicializar3(puntos);
+        Inicializar(listaPuntosMuestreo);
         //Imprimir2(todos);
         //Imprimir2(muestreados);
         //List<PuntoZonificacion> zonifAux;
@@ -40,18 +61,17 @@ class SSA
         double temperature = 400.0;
         double epsilon = 0.0000001;
         double delta;
-        fitness = CalcularFitness2(puntos, muestreados);
+        fitness = CalcularFitness(listaPuntosMuestreo, muestreados, capaPuntosMuestreo);
 
         System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
-        while (iteration < 100/*temperature > epsilon*/ )
+        while (iteration < 10/*temperature > epsilon*/ )
         {
             iteration++;
 
-            //zonifAux = ClonarZonif(zonif);
             auxMuestreados = ClonarLista(muestreados);
             auxTodos = ClonarLista(todos);
             MoverMuestra2(auxMuestreados, auxTodos);
-            auxFitness = CalcularFitness2(puntos, auxMuestreados);
+            auxFitness = CalcularFitness(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
             System.Diagnostics.Debug.WriteLine(" auxFitnens: " + auxFitness);
             delta = auxFitness - fitness;
             //if the new distance is better accept it and assign it
@@ -91,18 +111,27 @@ class SSA
         }
 
         //creo la lista de PuntosMuestreo con los puntos a muestrear 
-        for (int i = 0; i < muestreados.Count; i++)
-        {
-            aux = new PuntoMuestreo();
-            coordAux = new Coordenada();
-            coordAux.X = puntos[muestreados[i]].Coordenada.X;
-            coordAux.Y = puntos[muestreados[i]].Coordenada.Y;
-            aux.Coordenada = coordAux;
-            aux.Valor = puntos[muestreados[i]].Valor;
-            resultado.Add(aux);
-        }
+        //for (int i = 0; i < muestreados.Count; i++)
+        //{
+        //    aux = new PuntoMuestreo();
+        //    coordAux = new Coordenada();
+        //    coordAux.X = puntos[muestreados[i]].Coordenada.X;
+        //    coordAux.Y = puntos[muestreados[i]].Coordenada.Y;
+        //    aux.Coordenada = coordAux;
+        //    aux.Valor = puntos[muestreados[i]].Valor;
+        //    resultado.Add(aux);
+        //}
 
-        return resultado;
+        //return resultado;
+
+        IMap map = ArcMap.Document.FocusMap;
+
+
+        String nombreCapaPuntosMuestreoOptimo = muestreados.Count.ToString() + "MO" + System.DateTime.Now.ToString("ddHHmmss");
+
+        //agregar como parametro 
+        return this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, muestreados);
+        
 
 
     }
@@ -110,38 +139,40 @@ class SSA
     
     //el fitness es el error cuadratico medio entre los valores en los puntos reales 
     //y los valores en los puntos interpolados con las muestras
-    private double CalcularFitness(List<PuntoMuestreo> zonif, List<int> muestras)
+    private double CalcularFitness(List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestras, IFeatureClass capaPuntosMuestreo)
     {
         IMap map = ArcMap.Document.FocusMap; 
-        String capaPuntosMuestreo = "m" + System.DateTime.Now.ToString("ddHHmmss");
+        
+        
+        String nombreCapaPuntosMuestreoOptimo = "MO" + System.DateTime.Now.ToString("ddHHmmss");
 
         //agregar como parametro 
-        IFeatureClass vecinosClass = this.crearCapaPuntosMuestreo(map, capaPuntosMuestreo, zonif);
-        String capaIDW = "v" + System.DateTime.Now.ToString("ddHHmmss");
+        IFeatureClass capaPuntosMuestreoOptimo = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, listaIndicesMuestras);
+        String nombreCapaIDW = "IDW" + System.DateTime.Now.ToString("ddHHmmss");
 
         Geoprocessor gp = new Geoprocessor();
-        ESRI.ArcGIS.GeostatisticalAnalystTools.IDW vecinosIDW = new ESRI.ArcGIS.GeostatisticalAnalystTools.IDW();
-        vecinosIDW.in_features = vecinosClass;
-        vecinosIDW.out_ga_layer = capaIDW;
-        vecinosIDW.z_field = vecinosClass.FindField("Valor");
+        ESRI.ArcGIS.GeostatisticalAnalystTools.IDW capaIDW = new ESRI.ArcGIS.GeostatisticalAnalystTools.IDW();
+        capaIDW.in_features = capaPuntosMuestreoOptimo;
+        capaIDW.out_ga_layer = nombreCapaIDW;
+        capaIDW.z_field = capaPuntosMuestreoOptimo.FindField("Valor");
 
         gp.AddOutputsToMap = true;
-        gp.Execute(vecinosIDW, null);
+        gp.Execute(capaIDW, null);
 
-        String capaEstimacion = "vOut" + System.DateTime.Now.ToString("ddHHmmss");
+        String nombreCapaEstimacion = "Estimacion" + System.DateTime.Now.ToString("ddHHmmss");
 
         Geoprocessor gp2 = new Geoprocessor();
-        ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints estimacion = new ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints();
+        ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints capaEstimacion = new ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints();
         //esta tiene que ser la capa con todos los puntos!!!!!!!!!!!!!!!!!
-        estimacion.in_locations = capaPuntosMuestreo;
-        estimacion.out_feature_class = capaEstimacion;
-        estimacion.z_field = "Valor";
-        estimacion.in_geostat_layer = vecinosIDW.out_ga_layer;
+        capaEstimacion.in_locations = capaPuntosMuestreo;
+        capaEstimacion.out_feature_class = nombreCapaEstimacion;
+        capaEstimacion.z_field = "Valor";
+        capaEstimacion.in_geostat_layer = nombreCapaIDW;
 
         try
         {
             System.Diagnostics.Debug.WriteLine("Executing the try statement.");
-            gp2.Execute(estimacion, null);
+            gp2.Execute(capaEstimacion, null);
         }
         catch (NullReferenceException e)
         {
@@ -156,26 +187,34 @@ class SSA
 
 
         //recorrer la capa capaEstimacion, hacer el cuadrado de cada error y sumarlos
-
-        //return suma errores
-        return 1000;
-
-    }
-
-    //el fitness es el error cuadratico medio entre los valores en los puntos reales 
-    //y los valores en los puntos interpolados con las muestras
-    public double CalcularFitness2(List<PuntoMuestreo> zonif, List<int> muestras)
-    {   
-        double valor = 0;
-        int pos;
-        for (int i = 0; i < muestras.Count; i++)
+        IEnumLayer enumlayers = map.get_Layers();
+        ILayer layerPuntosEstimados = enumlayers.Next();
+        while ((layerPuntosEstimados != null) && (layerPuntosEstimados.Name != nombreCapaEstimacion))
         {
-            pos = muestras[i];
-            valor += zonif[pos].Valor;
+            layerPuntosEstimados = enumlayers.Next();
         }
-        return valor;
+        IFeatureLayer ifeaturelayerPuntosEstimados = layerPuntosEstimados as FeatureLayer;
+
+
+        IFeatureCursor cursorEstimacion = ifeaturelayerPuntosEstimados.FeatureClass.Search(null, false);
+        int indiceError = ifeaturelayerPuntosEstimados.FeatureClass.FindField("Error");
+        
+        IFeature featureEstimacion = cursorEstimacion.NextFeature();
+        //gets the column ID where we can find the report ID
+        double errorTotal = 0;
+        while (featureEstimacion != null)
+        {
+            double errorPunto = (double) featureEstimacion.get_Value(indiceError);
+            errorTotal += Math.Pow(errorPunto, 2);
+
+            featureEstimacion = cursorEstimacion.NextFeature();
+        }
+        //return suma errores
+        return errorTotal;
+
     }
 
+    
     
     //aca voy a tener una lista con los indices de los puntos de muestreo y voy a modificar uno al azar
     public void MoverMuestra2(List<int> auxMuestreados, List<int> auxTodos)
@@ -244,13 +283,13 @@ class SSA
 
     //funcion para inicializar los puntos a muestrear, esto depende de la cantidad de muestras a seleccionar
     //armar un estilo de grilla con puntos equiespaciados ó seleccionar los puntos al azar
-    private void Inicializar3(List<PuntoMuestreo> listaMuestreo)
+    private void Inicializar(List<PuntoMuestreo> listaMuestreo)
     {
         this.todos = new List<int>();
         this.muestreados = new List<int>();
         for (int ind = 0; ind < listaMuestreo.Count; ind++)
         {
-            if (((ind + 1) % (listaMuestreo.Count / cantMuestras)) == 0)
+            if (((ind + 1) % (listaMuestreo.Count / this.cantMuestras)) == 0)
             {
                 this.todos.Add(1);
                 this.muestreados.Add(ind);
@@ -300,10 +339,10 @@ class SSA
     
     }
 
-    public IFeatureClass crearCapaPuntosMuestreo(IMap map, string nombreFeatureClass, List<PuntoMuestreo> listaPuntos)
+    public IFeatureClass crearCapaPuntosMuestreo(IMap map, string nombreFeatureClass, List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestreo)
     {
 
-        IWorkspace ws = ((IDataset)map.Layer[0]).Workspace;
+        IWorkspace ws = ((IDataset)map.Layer[map.LayerCount-1]).Workspace;
         IWorkspace2 ws2 = (IWorkspace2)ws;
         IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)ws2; // Explicit Cast
 
@@ -328,15 +367,16 @@ class SSA
         //to a geomerty that matched the featureclasses.
         //Create 100 features using FeatureBuffer and insert into a feature cursor
         ESRI.ArcGIS.Geometry.IPoint point;// = new ESRI.ArcGIS.Geometry.PointClass();
-
-        foreach (PuntoMuestreo aux in listaPuntos)
+        int indiceValor = nuevaFeatureClass.FindField("Valor");
+        //foreach (PuntoMuestreo aux in listaPuntosMuestreo)
+        foreach (int i in listaIndicesMuestreo)
         {
             point = new ESRI.ArcGIS.Geometry.PointClass();
-            point.X = aux.Coordenada.X;
-            point.Y = aux.Coordenada.Y;
+            point.X = listaPuntosMuestreo[i].Coordenada.X;
+            point.Y = listaPuntosMuestreo[i].Coordenada.Y;
 
             featureBuffer.Shape = point;
-            featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.Valor);
+            featureBuffer.set_Value(indiceValor, listaPuntosMuestreo[i].Valor);
 
             //Insert the feature into the feature cursor
             featureOID = FeatureCursor.InsertFeature(featureBuffer);
@@ -359,6 +399,7 @@ class SSA
 
         ILayer layer = (ILayer)featureLayer;
         layer.Name = featureLayer.FeatureClass.AliasName;
+        
         // Add the Layer to the focus map
         map.AddLayer(layer);
 

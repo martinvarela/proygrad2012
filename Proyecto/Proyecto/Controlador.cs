@@ -89,17 +89,25 @@ class Controlador
         //agrega cada punto de muestreo a la lista de la instancia de muestreo.
         this.cargarValoresPuntosMuestreo(map, muestreo, nombreCapaPuntosZonificacion, nombreCapaPoligonos, nombreCapaPuntosPosibles, 2, 2);
 
+        //paso 6, se llama al SSA
+        optimizarMuestras(capaPuntosPosibles);
 
-        //paso6
-        //SSA
-        SSA ssa = new SSA();
-        List<PuntoMuestreo> puntosMuestrear = ssa.SimulatedAnnealing2(this.muestreo.PuntosMuestreo);
         
         //CREAR LA CAPA CON LOS PUNTOS A MUESTREAR Y MOSTRARLA EN EL MAPA
 
         return new Muestreo();
     
     }
+
+    public void optimizarMuestras(IFeatureClass capaPuntosMuestreo)
+    {
+        //SSA
+        SSA ssa = new SSA();
+        IFeatureClass capaPuntosMuestreoOptimo = ssa.SimulatedAnnealing2(capaPuntosMuestreo);
+    
+    }
+
+
     public Muestreo muestreoOptimoAltoAncho(String rutaEntrada, int alto, int ancho, List<int> variablesMarcadas)
     {
         //HACER!!!
@@ -363,7 +371,7 @@ class Controlador
         IFeatureClass featureclassPuntosMuestreo = ifeaturelayerPuntosMuestreo.FeatureClass;
 
         //se crea el campo Promedio en la capa de Puntos de Muestreos
-        int indicePromedioFieldPuntosMuestreo = this.crearFieldAFeatureClass(featureclassPuntosMuestreo, "Promedio", esriFieldType.esriFieldTypeDouble);
+        int indicePromedioFieldPuntosMuestreo = this.crearFieldAFeatureClass(featureclassPuntosMuestreo, "Valor", esriFieldType.esriFieldTypeDouble);
 
         //Creo el updateCursorPoligono para iterar en las filas de los poligonos (poligono por poligono).
         IFeatureCursor updateCursorPoligono = ifeaturelayerPoligono.FeatureClass.Update(null, false);
