@@ -36,7 +36,6 @@ namespace Proyecto
             //txtMuestreo.Text = "C:\\Users\\Gonzalo\\Desktop\\asdas";
             if (!ptoVerdeZF.Visible)
             {
-
                 Controlador controlador = Controlador.getInstancia;
                 List<int> variables = new List<int>();
                 for (int i = 0; i < chkLstVariables.Items.Count; i++)
@@ -44,13 +43,17 @@ namespace Proyecto
                     if (chkLstVariables.GetItemChecked(i))
                         variables.Add(i);
                 }
-                if (this.cboTipoRed.SelectedIndex == 0)
+                if (chkSinRed.Checked)
                 {
-                    controlador.muestreoFilasColumnas(txtArchivoZF.Text, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, this.lblProgressBar);
+                    controlador.crearPuntosMuestreo(false, txtArchivoZF.Text, true, 0, 0, variables, pBar, this.lblProgressBar);
+                }
+                else if (this.cboTipoRed.SelectedIndex == 0)
+                {
+                    controlador.crearPuntosMuestreo(true, txtArchivoZF.Text, true, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, this.lblProgressBar);
                 }
                 else if (this.cboTipoRed.SelectedIndex == 1)
                 {
-                    //controlador.muestreoOptimoAltoAncho(txtArchivoZF.Text, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables);
+                    controlador.crearPuntosMuestreo(true, txtArchivoZF.Text, false, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, this.lblProgressBar);
                 }
                 
                 //// Display the ProgressBar control.
@@ -208,6 +211,13 @@ namespace Proyecto
             }
         }
 
+        private void chkLstVariables_GotFocus(object sender, EventArgs e)
+        {
+            panelAyuda.Controls.Clear();
+            panelAyuda.Controls.Add(lblTituloVariables);
+            panelAyuda.Controls.Add(lblDescripcionVariables);
+        }
+
         private void cboTipoRed_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.cboTipoRed.SelectedIndex == 0)
@@ -229,25 +239,19 @@ namespace Proyecto
             panelAyuda.Controls.Clear();
             panelAyuda.Controls.Add(lblTituloRed);
             panelAyuda.Controls.Add(lblDescripcionRed1);
-            panelAyuda.Controls.Add(lblDescripcionRed2);
+            panelAyuda.Controls.Add(lblDescripcionVariables);
             panelAyuda.Controls.Add(lblDescripcionRed3);
             panelAyuda.Controls.Add(lblDescripcionRed4);
             panelAyuda.Controls.Add(lblDescripcionRed5);
             panelAyuda.Controls.Add(lblDescripcionRed6);
             panelAyuda.Controls.Add(lblDescripcionRed7);
+            panelAyuda.Controls.Add(lblDescripcionRed8);
+            panelAyuda.Controls.Add(lblDescripcionRed9);
         }
 
         private void txtVertical_GotFucus(object sender, EventArgs e)
         {
-            panelAyuda.Controls.Clear();
-            panelAyuda.Controls.Add(lblTituloRed);
-            panelAyuda.Controls.Add(lblDescripcionRed1);
-            panelAyuda.Controls.Add(lblDescripcionRed2);
-            panelAyuda.Controls.Add(lblDescripcionRed3);
-            panelAyuda.Controls.Add(lblDescripcionRed4);
-            panelAyuda.Controls.Add(lblDescripcionRed5);
-            panelAyuda.Controls.Add(lblDescripcionRed6);
-            panelAyuda.Controls.Add(lblDescripcionRed7);
+            cboTipoRed_GotFucus(sender, e);
         }
 
         private void txtVertical_LostFocus(object sender, EventArgs e)
@@ -266,15 +270,7 @@ namespace Proyecto
 
         private void txtHorizontal_GotFucus(object sender, EventArgs e)
         {
-            panelAyuda.Controls.Clear();
-            panelAyuda.Controls.Add(lblTituloRed);
-            panelAyuda.Controls.Add(lblDescripcionRed1);
-            panelAyuda.Controls.Add(lblDescripcionRed2);
-            panelAyuda.Controls.Add(lblDescripcionRed3);
-            panelAyuda.Controls.Add(lblDescripcionRed4);
-            panelAyuda.Controls.Add(lblDescripcionRed5);
-            panelAyuda.Controls.Add(lblDescripcionRed6);
-            panelAyuda.Controls.Add(lblDescripcionRed7);
+            cboTipoRed_GotFucus(sender, e);
         }
 
         private void txtHorizontal_LostFocus(object sender, EventArgs e)
@@ -290,5 +286,31 @@ namespace Proyecto
                 ptoVerdeHorizontal.Visible = true;
             }
         }
+
+        private void chkSinRed_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkSinRed.Checked)
+            {
+                cboTipoRed.Enabled = false;
+                txtHorizontal.Enabled = false;
+                txtVertical.Enabled = false;
+                ptoVerdeHorizontal.Visible = false;
+                ptoVerdeVertical.Visible = false;
+            }
+            else
+            {
+                cboTipoRed.Enabled = true;
+                txtHorizontal.Enabled = true;
+                txtVertical.Enabled = true;
+                ptoVerdeHorizontal.Visible = true;
+                ptoVerdeVertical.Visible = true;
+            }
+        }
+
+        private void chkSinRed_GotFocus(object sender, EventArgs e)
+        {
+            cboTipoRed_GotFucus(sender, e);
+        }
+
     }
 }

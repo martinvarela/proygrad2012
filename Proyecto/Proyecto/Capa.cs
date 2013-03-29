@@ -5,7 +5,14 @@ using System.Text;
 
 class Capa
 {
-    private String nombre { get; set; }
-    //private SistemaCoordenadas sistemaCoordenada { get; set; }
+    private String nombre;
 
+    public String getNombre()
+    {
+        return this.nombre;
+    }
+    public void setNombre(String s)
+    {
+        this.nombre = s;
+    }
 }

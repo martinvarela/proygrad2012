@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
 class Variable
 {
     private String nombre;
@@ -12,7 +11,7 @@ class Variable
         get { return nombre; }
         set { nombre = value; }
     }
-    private float media { get; set; }
+    private float media; //{ get; set; }
     private List<PuntoZonificacion> puntosZonificacion;
     
     public Variable() { }
@@ -39,11 +38,11 @@ class Variable
 
 
     }
-    private void actualizar() { }
+//    private void actualizar() { }
 
     public DTVariable getDatos()
+
     {
         return new DTVariable(this.nombre,this.media);
     }
-
 }

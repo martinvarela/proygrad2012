@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using ESRI.ArcGIS.Carto;
 
 
 namespace Proyecto
@@ -14,6 +15,16 @@ namespace Proyecto
 
         protected override void OnClick()
         {
+            //se crea la ventana principal del SSA
+            ventanaSSA ventana = new ventanaSSA();
+            //no se puede minimizar
+            ventana.MinimizeBox = false;
+            //no se puede maximizar
+            ventana.MaximizeBox = false;
+            //no se puede cambiar el tamano
+            ventana.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+
+            ventana.Visible = true;
         }
 
         protected override void OnUpdate()

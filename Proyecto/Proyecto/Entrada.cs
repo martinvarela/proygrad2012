@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-//esto es una linea para probar el gittt
-//linea que pongo yo (Gonzalo)
-//esta linea la meto yo (martin)
 class Entrada : Capa
 {
-    private String nombreAtributo { get; set; }
-    private double media { get; set; }
+    private String nombreAtributo;
+    private double media;
     private List<PuntoCapa> puntosCapa;
 
     public double setearMedias()
@@ -22,7 +19,7 @@ class Entrada : Capa
 
             foreach (PuntoCapa puntoCapa in this.puntosCapa)
             {
-                temp += puntoCapa.Valor;
+                temp += puntoCapa.getValor();
                 cant++;
             }
 
@@ -32,7 +29,6 @@ class Entrada : Capa
 
         return this.media;
     }
-
     public DTDatosDM calcularDsYMedia(Celda celda)
     {
         List<PuntoCapa> puntos = this.interseccion(celda);
@@ -40,14 +36,14 @@ class Entrada : Capa
         int cant = 0;
         foreach (PuntoCapa p in puntos)
         {
-            temp += Math.Pow((p.Valor - this.media),2);
+            temp += Math.Pow((p.getValor() - this.media),2);
             cant++;
         }
         DTDatosDM datosCelda = new DTDatosDM((double)(temp / cant), this.media);
         return datosCelda;
 
     }
-    private List<PuntoCapa> interseccion(Celda celda)
+    public List<PuntoCapa> interseccion(Celda celda)
     {
         //:HACER!!
 
@@ -61,5 +57,13 @@ class Entrada : Capa
         this.puntosCapa.Add(puntoCapa);
     }
 
+    public void setNombreAtributo(String s)
+    {
+        this.nombreAtributo = s;
+    }
+    public String getNombreAtributo()
+    {
+        return this.nombreAtributo;
+    }
 
 }

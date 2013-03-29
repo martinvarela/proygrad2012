@@ -20,9 +20,8 @@ using ESRI.ArcGIS.Geoprocessor;
 
 class Zonificacion
 {
-
-    public SSA ssa; 
-
+    public SSA ssa;
+ 
     private int columnas;
     public int Columnas
     {
@@ -61,32 +60,18 @@ class Zonificacion
     }
 
     private ESRI.ArcGIS.Geometry.IPoint puntoOrigen;
-
     public ESRI.ArcGIS.Geometry.IPoint PuntoOrigen
     {
         get { return puntoOrigen; }
         set { puntoOrigen = value; }
     }
+    
     private ESRI.ArcGIS.Geometry.IPoint puntoOpuesto;
-
     public ESRI.ArcGIS.Geometry.IPoint PuntoOpuesto
     {
         get { return puntoOpuesto; }
         set { puntoOpuesto = value; }
     }
-
-    //Dada la coordenada inicial y el tamamio de la celda, calculamos la siguiente coordenada en base al x e y actual (desplazamiento en celdas
-    //desde la posicion (x,y)=(0,0) hasta la posicion actual x,y pasada por parametro)
-    public Coordenada calcularCoordenada(Coordenada coordenadaInicial, int TamanoCelda, int x, int y)
-    {
-        Coordenada coordenada = new Coordenada();
-        coordenada.X = coordenadaInicial.X + TamanoCelda * x;
-        coordenada.Y = coordenadaInicial.Y - TamanoCelda * y;
-        return coordenada;
-
-    }
-
-
 
     public Zonificacion(String rutaEntrada, List<int> variables_seleccion, System.Windows.Forms.ProgressBar pBar)
     {
@@ -121,7 +106,7 @@ class Zonificacion
             {
                 Rows = Int32.Parse(sLine.Substring(string_rows.Length, sLine.Length - string_rows.Length));
                 this.Filas = Rows;
-            } 
+            }
             else if (((sLine != "") && sLine.Substring(0, string_cols.Length) == string_cols))
             {
                 Cols = Int32.Parse(sLine.Substring(string_cols.Length, sLine.Length - string_cols.Length));
@@ -130,14 +115,14 @@ class Zonificacion
             else if (((sLine != "") && (sLine.Length >= string_Xinicial.Length) && sLine.Substring(0, string_Xinicial.Length) == string_Xinicial))
             {
                 xinicial = Double.Parse(sLine.Substring(string_Xinicial.Length, sLine.Length - string_Xinicial.Length));
-                this.coordenadaInicial.X = xinicial; 
+                this.coordenadaInicial.X = xinicial;
             }
-            else if (((sLine != "") && (sLine.Length >= string_Yinicial.Length)  && sLine.Substring(0, string_Yinicial.Length) == string_Yinicial))
+            else if (((sLine != "") && (sLine.Length >= string_Yinicial.Length) && sLine.Substring(0, string_Yinicial.Length) == string_Yinicial))
             {
                 yinicial = Double.Parse(sLine.Substring(string_Yinicial.Length, sLine.Length - string_Yinicial.Length));
                 this.coordenadaInicial.Y = yinicial;
             }
-            else if (((sLine != "") && (sLine.Length >= string_CellSize.Length)  && sLine.Substring(0, string_CellSize.Length) == string_CellSize))
+            else if (((sLine != "") && (sLine.Length >= string_CellSize.Length) && sLine.Substring(0, string_CellSize.Length) == string_CellSize))
             {
                 cellSize = Int32.Parse(sLine.Substring(string_CellSize.Length, sLine.Length - string_CellSize.Length));
                 this.TamanoCelda = cellSize;
@@ -150,9 +135,9 @@ class Zonificacion
                 String nombreVariable = "";
 
                 int p = 0;
-                while (i <= cant_variables && sLine != "" && p < variables_seleccion.Count )
+                while (i <= cant_variables && sLine != "" && p < variables_seleccion.Count)
                 {
-                    if ((i-1) == variables_seleccion[p]) //es i-1 porque en el archivo ZF el i comienza en 1 y la seleccion de variable comienza en 0
+                    if ((i - 1) == variables_seleccion[p]) //es i-1 porque en el archivo ZF el i comienza en 1 y la seleccion de variable comienza en 0
                     {
                         String aux = "Var" + i + ": ";
                         if ((sLine.Substring(0, aux.Length) == aux))
@@ -197,10 +182,10 @@ class Zonificacion
         {
             for (int ix = 1; ix <= this.Columnas; ix++)
             {
-                sLine = objReader.ReadLine(); 
-                
+                sLine = objReader.ReadLine();
+
                 PuntoZonificacion ptoZonificacion = new PuntoZonificacion();
-                ptoZonificacion.Coordenada = calcularCoordenada(this.coordenadaInicial, this.TamanoCelda, ix-1, iy-1);
+                ptoZonificacion.Coordenada = calcularCoordenada(this.coordenadaInicial, this.TamanoCelda, ix - 1, iy - 1);
                 ptoZonificacion.Variables = this.Variables;
 
                 char[] coma = { ';' };
@@ -208,14 +193,15 @@ class Zonificacion
                 datos = sLine.Split(coma);
                 bool puntoUtil = true;
 
-                for (int i = 0; i < variables_seleccion.Count; i++){
+                for (int i = 0; i < variables_seleccion.Count; i++)
+                {
                     if (datos[variables_seleccion[i]] == NAN)
                     {
                         puntoUtil = false;
                         break;
                     }
                     else
-                        ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, float.Parse(datos[variables_seleccion[i]]));                    
+                        ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, float.Parse(datos[variables_seleccion[i]]));
                 }
                 //agrego el punto solo si tiene datos
                 if (puntoUtil)
@@ -234,19 +220,6 @@ class Zonificacion
 
     }
 
-    //Calcula la distancia entre dos puntos y devuelve la distancia en metros luego de redondear el resultado
-    public int calcularDistancia(int i, int j)
-    {
-        double cuadX = (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X) * (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X);
-        double cuadY = (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y) * (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y);
-        double distancia = Math.Sqrt(cuadX + cuadY);
-        return (int)Math.Round(distancia);
-    }
-
-    
-
-
-
     public void calcularVariabilidad(System.Windows.Forms.ProgressBar pBar)
     {
         //inicializo el progressBar
@@ -259,7 +232,7 @@ class Zonificacion
         {
             this.Variables[i].calcularMedia(this.puntosZonificacion);
             pBar.PerformStep();
-        }                       
+        }
         for (int i = 0; i < this.puntosZonificacion.Count; i++)
         {
             this.puntosZonificacion[i].calcularVariabilidad();
@@ -287,6 +260,26 @@ class Zonificacion
             this.puntosZonificacion = new List<PuntoZonificacion>();
 
         this.puntosZonificacion.Add(punto);
+    }
+
+    //Dada la coordenada inicial y el tamamio de la celda, calculamos la siguiente coordenada en base al x e y actual (desplazamiento en celdas
+    //desde la posicion (x,y)=(0,0) hasta la posicion actual x,y pasada por parametro)
+    private Coordenada calcularCoordenada(Coordenada coordenadaInicial, int TamanoCelda, int x, int y)
+    {
+        Coordenada coordenada = new Coordenada();
+        coordenada.X = coordenadaInicial.X + TamanoCelda * x;
+        coordenada.Y = coordenadaInicial.Y - TamanoCelda * y;
+        return coordenada;
+
+    }
+
+    //Calcula la distancia entre dos puntos y devuelve la distancia en metros luego de redondear el resultado
+    private int calcularDistancia(int i, int j)
+    {
+        double cuadX = (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X) * (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X);
+        double cuadY = (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y) * (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y);
+        double distancia = Math.Sqrt(cuadX + cuadY);
+        return (int)Math.Round(distancia);
     }
 
 }

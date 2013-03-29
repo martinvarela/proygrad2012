@@ -10,10 +10,32 @@ using Proyecto;
 
 class SSA
 {
+    private double temperaturaInicial;
+    private double factorReduccion;
+    private double epsilon;
+
     public static int cantMuestras = 40;
     public List<int> muestreados;
     public List<int> todos;
 
+    public SSA()
+    {
+        this.temperaturaInicial = 100;
+        this.factorReduccion = 0.01;
+        this.epsilon = 0.000001;
+    }
+
+    public double getTemperaturaInicial() { return this.temperaturaInicial; }
+    public void setTemperaturaInicial(double t) { this.temperaturaInicial = t; }
+
+    public double getFactorReduccion() { return this.factorReduccion; }
+    public void setFactorReduccion(double f) { this.factorReduccion = f; }
+
+    public double getEpsilon() { return this.epsilon; }
+    public void setEpsilon(double e) { this.epsilon = e; }
+
+
+    
     public List<PuntoMuestreo> SimulatedAnnealing2(List<PuntoMuestreo> puntos)
     {
         List<PuntoMuestreo> resultado = new List<PuntoMuestreo>();
@@ -95,10 +117,10 @@ class SSA
         {
             aux = new PuntoMuestreo();
             coordAux = new Coordenada();
-            coordAux.X = puntos[muestreados[i]].Coordenada.X;
-            coordAux.Y = puntos[muestreados[i]].Coordenada.Y;
-            aux.Coordenada = coordAux;
-            aux.Valor = puntos[muestreados[i]].Valor;
+            coordAux.X = puntos[muestreados[i]].getCoordenada().X;
+            coordAux.Y = puntos[muestreados[i]].getCoordenada().Y;
+            aux.setCoordenada(coordAux);
+            aux.setValor(puntos[muestreados[i]].getValor());
             resultado.Add(aux);
         }
 
@@ -171,7 +193,7 @@ class SSA
         for (int i = 0; i < muestras.Count; i++)
         {
             pos = muestras[i];
-            valor += zonif[pos].Valor;
+            valor += zonif[pos].getValor();
         }
         return valor;
     }
@@ -332,11 +354,11 @@ class SSA
         foreach (PuntoMuestreo aux in listaPuntos)
         {
             point = new ESRI.ArcGIS.Geometry.PointClass();
-            point.X = aux.Coordenada.X;
-            point.Y = aux.Coordenada.Y;
+            point.X = aux.getCoordenada().X;
+            point.Y = aux.getCoordenada().Y;
 
             featureBuffer.Shape = point;
-            featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.Valor);
+            featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.getValor());
 
             //Insert the feature into the feature cursor
             featureOID = FeatureCursor.InsertFeature(featureBuffer);

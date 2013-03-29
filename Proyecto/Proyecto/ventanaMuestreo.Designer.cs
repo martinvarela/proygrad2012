@@ -40,18 +40,21 @@
             this.txtMuestreo = new System.Windows.Forms.TextBox();
             this.btnAyuda = new System.Windows.Forms.Button();
             this.panelAyuda = new System.Windows.Forms.Panel();
+            this.labelDescripcionZonificacion = new System.Windows.Forms.Label();
+            this.labelTituloZonificacion = new System.Windows.Forms.Label();
+            this.lblTituloVariables = new System.Windows.Forms.Label();
+            this.lblDescripcionRed9 = new System.Windows.Forms.Label();
+            this.lblDescripcionRed8 = new System.Windows.Forms.Label();
             this.lblDescripcionRed7 = new System.Windows.Forms.Label();
             this.lblDescripcionRed6 = new System.Windows.Forms.Label();
             this.lblDescripcionRed4 = new System.Windows.Forms.Label();
             this.lblDescripcionRed3 = new System.Windows.Forms.Label();
             this.lblDescripcionRed5 = new System.Windows.Forms.Label();
-            this.lblDescripcionRed2 = new System.Windows.Forms.Label();
+            this.lblDescripcionVariables = new System.Windows.Forms.Label();
             this.lblDescripcionRed1 = new System.Windows.Forms.Label();
             this.lblTituloRed = new System.Windows.Forms.Label();
             this.labelDescripcionMuestreo = new System.Windows.Forms.Label();
             this.labelTituloMuestreo = new System.Windows.Forms.Label();
-            this.labelDescripcionZonificacion = new System.Windows.Forms.Label();
-            this.labelTituloZonificacion = new System.Windows.Forms.Label();
             this.btnCancelar = new System.Windows.Forms.Button();
             this.chkLstVariables = new System.Windows.Forms.CheckedListBox();
             this.lblVariables = new System.Windows.Forms.Label();
@@ -66,6 +69,7 @@
             this.ptoVerdeVertical = new System.Windows.Forms.PictureBox();
             this.ptoVerdeHorizontal = new System.Windows.Forms.PictureBox();
             this.lblProgressBar = new System.Windows.Forms.Label();
+            this.chkSinRed = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).BeginInit();
             this.panelAyuda.SuspendLayout();
@@ -105,7 +109,7 @@
             this.btnAceptar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAceptar.Name = "btnAceptar";
             this.btnAceptar.Size = new System.Drawing.Size(110, 28);
-            this.btnAceptar.TabIndex = 2;
+            this.btnAceptar.TabIndex = 8;
             this.btnAceptar.Text = "Aceptar";
             this.btnAceptar.UseVisualStyleBackColor = true;
             this.btnAceptar.Click += new System.EventHandler(this.Zonificacion_Click);
@@ -124,7 +128,7 @@
             // ptoVerdeZF
             // 
             this.ptoVerdeZF.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeZF.Image")));
-            this.ptoVerdeZF.Location = new System.Drawing.Point(13, 34);
+            this.ptoVerdeZF.Location = new System.Drawing.Point(12, 34);
             this.ptoVerdeZF.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ptoVerdeZF.Name = "ptoVerdeZF";
             this.ptoVerdeZF.Size = new System.Drawing.Size(19, 20);
@@ -134,7 +138,7 @@
             // ptoVerdeDestino
             // 
             this.ptoVerdeDestino.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeDestino.Image")));
-            this.ptoVerdeDestino.Location = new System.Drawing.Point(13, 319);
+            this.ptoVerdeDestino.Location = new System.Drawing.Point(11, 319);
             this.ptoVerdeDestino.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ptoVerdeDestino.Name = "ptoVerdeDestino";
             this.ptoVerdeDestino.Size = new System.Drawing.Size(19, 20);
@@ -158,7 +162,7 @@
             this.botonAbrirMuestreo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.botonAbrirMuestreo.Name = "botonAbrirMuestreo";
             this.botonAbrirMuestreo.Size = new System.Drawing.Size(31, 28);
-            this.botonAbrirMuestreo.TabIndex = 6;
+            this.botonAbrirMuestreo.TabIndex = 7;
             this.botonAbrirMuestreo.UseVisualStyleBackColor = true;
             this.botonAbrirMuestreo.Click += new System.EventHandler(this.botonAbrirMuestreo_Click);
             // 
@@ -169,7 +173,7 @@
             this.txtMuestreo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtMuestreo.Name = "txtMuestreo";
             this.txtMuestreo.Size = new System.Drawing.Size(377, 21);
-            this.txtMuestreo.TabIndex = 5;
+            this.txtMuestreo.TabIndex = 6;
             this.txtMuestreo.TextChanged += new System.EventHandler(this.txtMuestreo_TextChanged);
             this.txtMuestreo.GotFocus += new System.EventHandler(this.txtMuestreo_GotFocus);
             // 
@@ -180,7 +184,7 @@
             this.btnAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAyuda.Name = "btnAyuda";
             this.btnAyuda.Size = new System.Drawing.Size(157, 28);
-            this.btnAyuda.TabIndex = 9;
+            this.btnAyuda.TabIndex = 10;
             this.btnAyuda.Text = "Mostrar ayuda >>";
             this.btnAyuda.UseVisualStyleBackColor = true;
             this.btnAyuda.Click += new System.EventHandler(this.botonAyuda_Click);
@@ -189,16 +193,6 @@
             // 
             this.panelAyuda.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.panelAyuda.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelAyuda.Controls.Add(this.lblDescripcionRed7);
-            this.panelAyuda.Controls.Add(this.lblDescripcionRed6);
-            this.panelAyuda.Controls.Add(this.lblDescripcionRed4);
-            this.panelAyuda.Controls.Add(this.lblDescripcionRed3);
-            this.panelAyuda.Controls.Add(this.lblDescripcionRed5);
-            this.panelAyuda.Controls.Add(this.lblDescripcionRed2);
-            this.panelAyuda.Controls.Add(this.lblDescripcionRed1);
-            this.panelAyuda.Controls.Add(this.lblTituloRed);
-            this.panelAyuda.Controls.Add(this.labelDescripcionMuestreo);
-            this.panelAyuda.Controls.Add(this.labelTituloMuestreo);
             this.panelAyuda.Controls.Add(this.labelDescripcionZonificacion);
             this.panelAyuda.Controls.Add(this.labelTituloZonificacion);
             this.panelAyuda.Location = new System.Drawing.Point(475, 27);
@@ -206,6 +200,56 @@
             this.panelAyuda.Name = "panelAyuda";
             this.panelAyuda.Size = new System.Drawing.Size(442, 478);
             this.panelAyuda.TabIndex = 10;
+            // 
+            // labelDescripcionZonificacion
+            // 
+            this.labelDescripcionZonificacion.AutoSize = true;
+            this.labelDescripcionZonificacion.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelDescripcionZonificacion.Location = new System.Drawing.Point(19, 86);
+            this.labelDescripcionZonificacion.Name = "labelDescripcionZonificacion";
+            this.labelDescripcionZonificacion.Size = new System.Drawing.Size(301, 16);
+            this.labelDescripcionZonificacion.TabIndex = 1;
+            this.labelDescripcionZonificacion.Text = "Ingrese el archivo correspondiente a la zonificación";
+            // 
+            // labelTituloZonificacion
+            // 
+            this.labelTituloZonificacion.AutoSize = true;
+            this.labelTituloZonificacion.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelTituloZonificacion.Location = new System.Drawing.Point(14, 20);
+            this.labelTituloZonificacion.Name = "labelTituloZonificacion";
+            this.labelTituloZonificacion.Size = new System.Drawing.Size(188, 19);
+            this.labelTituloZonificacion.TabIndex = 0;
+            this.labelTituloZonificacion.Text = "Archivo de zonificación";
+            // 
+            // lblTituloVariables
+            // 
+            this.lblTituloVariables.AutoSize = true;
+            this.lblTituloVariables.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTituloVariables.Location = new System.Drawing.Point(18, 20);
+            this.lblTituloVariables.Name = "lblTituloVariables";
+            this.lblTituloVariables.Size = new System.Drawing.Size(79, 19);
+            this.lblTituloVariables.TabIndex = 14;
+            this.lblTituloVariables.Text = "Variables";
+            // 
+            // lblDescripcionRed9
+            // 
+            this.lblDescripcionRed9.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionRed9.Location = new System.Drawing.Point(19, 344);
+            this.lblDescripcionRed9.Name = "lblDescripcionRed9";
+            this.lblDescripcionRed9.Size = new System.Drawing.Size(384, 56);
+            this.lblDescripcionRed9.TabIndex = 13;
+            this.lblDescripcionRed9.Text = "Se puede no realizar la generalización de puntos. En este caso, los posibles punt" +
+                "os de muestreo serán todos los puntos generados en la zonificación.";
+            // 
+            // lblDescripcionRed8
+            // 
+            this.lblDescripcionRed8.AutoSize = true;
+            this.lblDescripcionRed8.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionRed8.Location = new System.Drawing.Point(19, 311);
+            this.lblDescripcionRed8.Name = "lblDescripcionRed8";
+            this.lblDescripcionRed8.Size = new System.Drawing.Size(128, 16);
+            this.lblDescripcionRed8.TabIndex = 12;
+            this.lblDescripcionRed8.Text = "Sin generalización";
             // 
             // lblDescripcionRed7
             // 
@@ -253,15 +297,16 @@
             this.lblDescripcionRed5.Text = "Tamaño de celdas - Determina que se hara la generalización de puntos mediante una" +
                 " red construida en base al ancho y alto de cada celda.";
             // 
-            // lblDescripcionRed2
+            // lblDescripcionVariables
             // 
-            this.lblDescripcionRed2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescripcionRed2.Location = new System.Drawing.Point(19, 80);
-            this.lblDescripcionRed2.Name = "lblDescripcionRed2";
-            this.lblDescripcionRed2.Size = new System.Drawing.Size(384, 56);
-            this.lblDescripcionRed2.TabIndex = 6;
-            this.lblDescripcionRed2.Text = "Cantidad de celdas - Determina que se hara la generalización de puntos mediante u" +
-                "na red construida en base a cantidad de filas y columnas.";
+            this.lblDescripcionVariables.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionVariables.Location = new System.Drawing.Point(19, 80);
+            this.lblDescripcionVariables.Name = "lblDescripcionVariables";
+            this.lblDescripcionVariables.Size = new System.Drawing.Size(384, 56);
+            this.lblDescripcionVariables.TabIndex = 6;
+            this.lblDescripcionVariables.Text = "Estas variables son las que aparacen en la zonificación. Se deben seleccionar cua" +
+                "les se desean considerar para el estudio de la variabilidad. Se deberá seleccion" +
+                "ar al menos una.";
             // 
             // lblDescripcionRed1
             // 
@@ -303,26 +348,6 @@
             this.labelTituloMuestreo.TabIndex = 2;
             this.labelTituloMuestreo.Text = "Capa de muestreo";
             // 
-            // labelDescripcionZonificacion
-            // 
-            this.labelDescripcionZonificacion.AutoSize = true;
-            this.labelDescripcionZonificacion.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelDescripcionZonificacion.Location = new System.Drawing.Point(19, 86);
-            this.labelDescripcionZonificacion.Name = "labelDescripcionZonificacion";
-            this.labelDescripcionZonificacion.Size = new System.Drawing.Size(301, 16);
-            this.labelDescripcionZonificacion.TabIndex = 1;
-            this.labelDescripcionZonificacion.Text = "Ingrese el archivo correspondiente a la zonificación";
-            // 
-            // labelTituloZonificacion
-            // 
-            this.labelTituloZonificacion.AutoSize = true;
-            this.labelTituloZonificacion.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelTituloZonificacion.Location = new System.Drawing.Point(14, 20);
-            this.labelTituloZonificacion.Name = "labelTituloZonificacion";
-            this.labelTituloZonificacion.Size = new System.Drawing.Size(188, 19);
-            this.labelTituloZonificacion.TabIndex = 0;
-            this.labelTituloZonificacion.Text = "Archivo de zonificación";
-            // 
             // btnCancelar
             // 
             this.btnCancelar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -330,7 +355,7 @@
             this.btnCancelar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(110, 28);
-            this.btnCancelar.TabIndex = 11;
+            this.btnCancelar.TabIndex = 9;
             this.btnCancelar.Text = "Cancelar";
             this.btnCancelar.UseVisualStyleBackColor = true;
             this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
@@ -343,8 +368,9 @@
             this.chkLstVariables.Location = new System.Drawing.Point(31, 85);
             this.chkLstVariables.Name = "chkLstVariables";
             this.chkLstVariables.Size = new System.Drawing.Size(377, 84);
-            this.chkLstVariables.TabIndex = 12;
+            this.chkLstVariables.TabIndex = 2;
             this.chkLstVariables.SelectedIndexChanged += new System.EventHandler(this.chkLstVariables_SelectedIndexChanged);
+            this.chkLstVariables.GotFocus += new System.EventHandler(this.chkLstVariables_GotFocus);
             // 
             // lblVariables
             // 
@@ -359,7 +385,7 @@
             // ptoVerdeVariables
             // 
             this.ptoVerdeVariables.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeVariables.Image")));
-            this.ptoVerdeVariables.Location = new System.Drawing.Point(12, 85);
+            this.ptoVerdeVariables.Location = new System.Drawing.Point(11, 85);
             this.ptoVerdeVariables.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ptoVerdeVariables.Name = "ptoVerdeVariables";
             this.ptoVerdeVariables.Size = new System.Drawing.Size(19, 20);
@@ -377,22 +403,24 @@
             // txtHorizontal
             // 
             this.txtHorizontal.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtHorizontal.Location = new System.Drawing.Point(234, 247);
+            this.txtHorizontal.Location = new System.Drawing.Point(237, 247);
             this.txtHorizontal.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtHorizontal.Name = "txtHorizontal";
             this.txtHorizontal.Size = new System.Drawing.Size(174, 21);
-            this.txtHorizontal.TabIndex = 17;
+            this.txtHorizontal.TabIndex = 6;
+            this.txtHorizontal.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtHorizontal.GotFocus += new System.EventHandler(this.txtHorizontal_GotFucus);
             this.txtHorizontal.LostFocus += new System.EventHandler(this.txtHorizontal_LostFocus);
             // 
             // txtVertical
             // 
             this.txtVertical.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtVertical.Location = new System.Drawing.Point(31, 247);
+            this.txtVertical.Location = new System.Drawing.Point(34, 247);
             this.txtVertical.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtVertical.Name = "txtVertical";
             this.txtVertical.Size = new System.Drawing.Size(174, 21);
-            this.txtVertical.TabIndex = 19;
+            this.txtVertical.TabIndex = 5;
+            this.txtVertical.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtVertical.GotFocus += new System.EventHandler(this.txtVertical_GotFucus);
             this.txtVertical.LostFocus += new System.EventHandler(this.txtVertical_LostFocus);
             // 
@@ -407,7 +435,7 @@
             this.cboTipoRed.Location = new System.Drawing.Point(31, 196);
             this.cboTipoRed.Name = "cboTipoRed";
             this.cboTipoRed.Size = new System.Drawing.Size(174, 23);
-            this.cboTipoRed.TabIndex = 21;
+            this.cboTipoRed.TabIndex = 3;
             this.cboTipoRed.SelectedIndexChanged += new System.EventHandler(this.cboTipoRed_SelectedIndexChanged);
             this.cboTipoRed.GotFocus += new System.EventHandler(this.cboTipoRed_GotFucus);
             // 
@@ -444,7 +472,7 @@
             // ptoVerdeVertical
             // 
             this.ptoVerdeVertical.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeVertical.Image")));
-            this.ptoVerdeVertical.Location = new System.Drawing.Point(13, 247);
+            this.ptoVerdeVertical.Location = new System.Drawing.Point(11, 247);
             this.ptoVerdeVertical.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ptoVerdeVertical.Name = "ptoVerdeVertical";
             this.ptoVerdeVertical.Size = new System.Drawing.Size(19, 20);
@@ -464,16 +492,31 @@
             // lblProgressBar
             // 
             this.lblProgressBar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProgressBar.Location = new System.Drawing.Point(31, 408);
+            this.lblProgressBar.Location = new System.Drawing.Point(31, 410);
             this.lblProgressBar.Name = "lblProgressBar";
             this.lblProgressBar.Size = new System.Drawing.Size(420, 20);
             this.lblProgressBar.TabIndex = 27;
+            // 
+            // chkSinRed
+            // 
+            this.chkSinRed.AutoSize = true;
+            this.chkSinRed.Checked = true;
+            this.chkSinRed.CheckState = System.Windows.Forms.CheckState.Unchecked;
+            this.chkSinRed.Location = new System.Drawing.Point(234, 201);
+            this.chkSinRed.Name = "chkSinRed";
+            this.chkSinRed.Size = new System.Drawing.Size(133, 20);
+            this.chkSinRed.TabIndex = 4;
+            this.chkSinRed.Text = "Sin generalización";
+            this.chkSinRed.UseVisualStyleBackColor = true;
+            this.chkSinRed.CheckedChanged += new System.EventHandler(this.chkSinRed_CheckedChanged);
+            this.chkSinRed.GotFocus += new System.EventHandler(this.chkSinRed_GotFocus);
             // 
             // ventanaMuestreo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 518);
+            this.Controls.Add(this.chkSinRed);
             this.Controls.Add(this.lblProgressBar);
             this.Controls.Add(this.ptoVerdeHorizontal);
             this.Controls.Add(this.ptoVerdeVertical);
@@ -514,7 +557,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeHorizontal)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
@@ -552,10 +594,14 @@
         public System.Windows.Forms.Label lblDescripcionRed4;
         public System.Windows.Forms.Label lblDescripcionRed3;
         public System.Windows.Forms.Label lblDescripcionRed5;
-        public System.Windows.Forms.Label lblDescripcionRed2;
+        public System.Windows.Forms.Label lblDescripcionVariables;
         private System.Windows.Forms.Label lblDescripcionRed1;
         private System.Windows.Forms.Label lblTituloRed;
         private System.Windows.Forms.Label lblProgressBar;
+        private System.Windows.Forms.CheckBox chkSinRed;
+        public System.Windows.Forms.Label lblDescripcionRed9;
+        private System.Windows.Forms.Label lblDescripcionRed8;
+        private System.Windows.Forms.Label lblTituloVariables;
 
     }
 }
