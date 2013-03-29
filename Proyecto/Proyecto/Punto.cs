@@ -6,19 +6,23 @@ using System.Text;
 class Punto
 {
     private Coordenada coordenada;
-
-    internal Coordenada Coordenada
-    {
-        get { return coordenada; }
-        set { coordenada = value; }
-    }
     private double valor;
 
-    public double Valor
+    public void setCoordenada(Coordenada c)
     {
-        get { return valor; }
-        set { valor = value; }
+        this.coordenada = c;
+    }
+    public Coordenada getCoordenada()
+    {
+        return this.coordenada;
     }
 
-
+    public void setValor(double v)
+    {
+        this.valor = v;
+    }
+    public double getValor()
+    {
+        return this.valor;
+    }
 }

@@ -11,19 +11,24 @@ class PuntoZonificacion
         get { return coordenada; }
         set { coordenada = value; }
     }
+
     private float variabilidad;
     public float Variabilidad
     {
         get { return variabilidad; }
         set { variabilidad = value; }
     }
+    
     private Hashtable hashDato;
+    
     private List<Variable> variables;
     internal List<Variable> Variables
     {
         get { return variables; }
         set { variables = value; }
     }
+    
+
     public PuntoZonificacion() { }
 
     public void calcularVariabilidad()

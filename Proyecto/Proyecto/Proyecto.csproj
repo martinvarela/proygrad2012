@@ -172,6 +172,18 @@
     <Compile Include="ventanaMuestreo.Designer.cs">
       <DependentUpon>ventanaMuestreo.cs</DependentUpon>
     </Compile>
+    <Compile Include="ventanaParametrosSSA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ventanaParametrosSSA.Designer.cs">
+      <DependentUpon>ventanaParametrosSSA.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ventanaSSA.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ventanaSSA.Designer.cs">
+      <DependentUpon>ventanaSSA.cs</DependentUpon>
+    </Compile>
     <Compile Include="Zonificacion.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +234,12 @@
     <EmbeddedResource Include="ventanaMuestreo.resx">
       <DependentUpon>ventanaMuestreo.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ventanaParametrosSSA.resx">
+      <DependentUpon>ventanaParametrosSSA.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ventanaSSA.resx">
+      <DependentUpon>ventanaSSA.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -6,17 +6,16 @@ using System.Text;
 
 class Blackmore : Capa
 {
-    private float ancho { get; set; }
-    private float alto { get; set; }
-    private int filas { get; set; }
-    private int columnas { get; set; }
+    private int ancho;
+    private int alto;
+    private int filas;
+    private int columnas;
     private float parametroDST { get; set; }
     private List<Celda> celdas;
 
-    internal List<Celda> Celdas
+    public List<Celda> getCeldas()
     {
-        get { return celdas; }
-        set { celdas = value; }
+        return this.celdas;
     }
 
     public void setDatos(Celda celda, DTDatosDM datosCelda)
@@ -32,15 +31,18 @@ class Blackmore : Capa
     }
 
 
-    public Blackmore(int filas, int columnas)
+    public Blackmore(bool filasColumnas, int vertical, int horizontal)
     {
-        this.filas = filas;
-        this.columnas = columnas;
+        if (filasColumnas)
+        {
+            this.filas = vertical;
+            this.columnas = horizontal;
+        }
+        else
+        {
+            this.ancho = horizontal;
+            this.alto = vertical;
+        }
     }
 
-    public Blackmore(float ancho, float alto)
-    {
-        this.ancho = ancho;
-        this.alto  = alto;
-    }
 }

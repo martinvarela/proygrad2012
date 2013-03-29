@@ -7,9 +7,15 @@ class PuntoMuestreo : Punto
 {
     public PuntoMuestreo()
     {
-        this.Coordenada = new Coordenada();
+        this.setCoordenada(new Coordenada());
     }
 
+    public void setCoordenadaXY(double x, double y)
+    {
+        Coordenada c = this.getCoordenada();
+        c.X = x;
+        c.Y = y;
+    }
     public void calcularValor(List<PuntoZonificacion> pts)
     {
         //paso 1
@@ -26,11 +32,10 @@ class PuntoMuestreo : Punto
             cant++;
         }
         //paso 5
-        this.Valor = temp / cant;
+        this.setValor(temp / cant);
 
     }
-
-    private List<PuntoZonificacion> intersectar(List<PuntoZonificacion> pts)
+    public List<PuntoZonificacion> intersectar(List<PuntoZonificacion> pts)
     {
 
         throw new NotImplementedException();

@@ -6,12 +6,10 @@ using System.Text;
 
 class Celda
 {
-    //private Coordenada ubicacion;
     private double desviacion;
     private double media;
     private int clasificacion;
-    //nico
-    //nico2
+
     public Celda() { }
 
     public void setDatos(DTDatosDM datos)
@@ -19,5 +17,12 @@ class Celda
         this.desviacion = datos.Desviacion;
         this.media = datos.Media;
     }
-
+    public void setClasificacion(int c)
+    {
+        this.clasificacion = c;
+    }
+    public int getClasificacion()
+    {
+        return this.clasificacion;
+    }
 }

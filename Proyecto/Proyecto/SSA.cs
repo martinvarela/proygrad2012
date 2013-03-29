@@ -10,11 +10,31 @@ using Proyecto;
 
 class SSA
 {
-    public int cantMuestras = 5;
+    private double temperaturaInicial;
+    private double factorReduccion;
+    private double epsilon;
+
     public List<int> muestreados;
     public List<int> todos;
 
-    public IFeatureClass SimulatedAnnealing2(IFeatureClass capaPuntosMuestreo)
+    public SSA()
+    {
+        this.temperaturaInicial = 100;
+        this.factorReduccion = 0.01;
+        this.epsilon = 0.000001;
+    }
+
+    public double getTemperaturaInicial() { return this.temperaturaInicial; }
+    public void setTemperaturaInicial(double t) { this.temperaturaInicial = t; }
+
+    public double getFactorReduccion() { return this.factorReduccion; }
+    public void setFactorReduccion(double f) { this.factorReduccion = f; }
+
+    public double getEpsilon() { return this.epsilon; }
+    public void setEpsilon(double e) { this.epsilon = e; }
+
+
+    
     {
         IFeatureClass capaPuntosMuestreoOptimo;
         
@@ -125,6 +145,10 @@ class SSA
         }
 
         IMap map = ArcMap.Document.FocusMap;
+            coordAux.X = puntos[muestreados[i]].getCoordenada().X;
+            coordAux.Y = puntos[muestreados[i]].getCoordenada().Y;
+            aux.setCoordenada(coordAux);
+            aux.setValor(puntos[muestreados[i]].getValor());
 
 
         String nombreCapaPuntosMuestreoOptimo = muestreados.Count.ToString() + "MO" + System.DateTime.Now.ToString("ddHHmmss");
@@ -240,7 +264,7 @@ class SSA
         try
         {
             System.Diagnostics.Debug.WriteLine("Executing the try statement.");
-            gp.Execute(capaKR, null);
+            valor += zonif[pos].getValor();
         }
         catch (NullReferenceException e)
         {
@@ -479,11 +503,11 @@ class SSA
         foreach (int i in listaIndicesMuestreo)
         {
             point = new ESRI.ArcGIS.Geometry.PointClass();
-            point.X = listaPuntosMuestreo[i].Coordenada.X;
-            point.Y = listaPuntosMuestreo[i].Coordenada.Y;
+            point.X = aux.getCoordenada().X;
+            point.Y = aux.getCoordenada().Y;
 
             featureBuffer.Shape = point;
-            featureBuffer.set_Value(indiceValor, listaPuntosMuestreo[i].Valor);
+            featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.getValor());
 
             //Insert the feature into the feature cursor
             featureOID = FeatureCursor.InsertFeature(featureBuffer);
