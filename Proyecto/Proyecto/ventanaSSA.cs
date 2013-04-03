@@ -56,5 +56,26 @@ namespace Proyecto
         {
             this.Close();
         }
+
+        private void btnAceptar_Click(object sender, EventArgs e)
+        {
+            IMap targetMap = ArcMap.Document.FocusMap;
+
+            IEnumLayer enumLayers = targetMap.get_Layers();
+            enumLayers.Reset();
+            ILayer layer = enumLayers.Next();
+            while (layer != null && layer.Name != cboCapaMuestreo.SelectedItem.ToString())
+            {
+                layer = enumLayers.Next();
+            }
+
+            IFeatureLayer featureLayer = layer as IFeatureLayer;
+            IFeatureClass featureClass = featureLayer.FeatureClass;
+
+            Controlador controlador = Controlador.getInstancia;
+            controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), int.Parse(txtError.Text.ToString()), double.Parse(txtRango.Text.ToString()));
+
+
+        }
     }
 }

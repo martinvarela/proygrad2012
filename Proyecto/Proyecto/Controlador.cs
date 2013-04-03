@@ -130,20 +130,9 @@ class Controlador
 
             pBar.Visible = false;
             lblProgressBar.Text = "";
-        //paso 6, se llama al SSA
-        optimizarMuestras(capaPuntosPosibles);
-
+     
         }
         else
-    public void optimizarMuestras(IFeatureClass capaPuntosMuestreo)
-    {
-        //SSA
-        SSA ssa = new SSA();
-        IFeatureClass capaPuntosMuestreoOptimo = ssa.SimulatedAnnealing2(capaPuntosMuestreo);
-    
-    }
-
-
         {
             //esto en el caso de que se quiera trabajar con todos los puntos de zonificacion.
             this.capaPuntosMuestreo = this.capaPuntosZonificacion as FeatureLayer;
@@ -152,6 +141,15 @@ class Controlador
         return muestreo;
     
     }
+
+    //capaPuntosMuestreo es la capa seleccionada por el usuario
+    //metodoInterpolacion puede ser IDW o Kriging
+    //rango ??? o cantmuestras
+    //error maximo aceptado en % ej: 5
+    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error)
+    {
+       IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, rango, error);    
+    } 
 
     public void crearBlackmore(bool filaColumna, int vertical, int horizontal)
     {
