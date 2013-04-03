@@ -90,7 +90,7 @@ class SSA
         System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
         
         //LOOP principal
-        while (iteration < 100  && temperature > epsilon )
+        while (iteration < 1000  && temperature > epsilon )
         {
             iteration++;
 
@@ -155,6 +155,8 @@ class SSA
         ILayer layerResult = (ILayer)featureLayerResult;
         layerResult.Name = featureLayerResult.FeatureClass.AliasName;
         map.AddLayer(layerResult);
+        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
+        activeView.Refresh();
         
         return result;
         
