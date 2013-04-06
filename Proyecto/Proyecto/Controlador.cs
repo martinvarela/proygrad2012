@@ -136,10 +136,8 @@ class Controlador
         {
             //esto en el caso de que se quiera trabajar con todos los puntos de zonificacion.
             this.capaPuntosMuestreo = this.capaPuntosZonificacion as FeatureLayer;
-
         }
         return muestreo;
-    
     }
 
     public void crearBlackmore(bool filaColumna, int vertical, int horizontal)
