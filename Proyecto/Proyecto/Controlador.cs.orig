@@ -118,6 +118,41 @@ class Controlador
             //paso 5
             lblProgressBar.Text = "Creando layer con los puntos de red...";
 
+<<<<<<< HEAD
+        pBar.Visible = false;
+        lblProgressBar.Text = "";
+        //paso 6, se llama al SSA
+        optimizarMuestras(capaPuntosPosibles);
+
+//        SSA ssa = new SSA();
+//        List<PuntoMuestreo> puntosMuestrear = ssa.SimulatedAnnealing2(this.muestreo.PuntosMuestreo);
+        
+        //CREAR LA CAPA CON LOS PUNTOS A MUESTREAR Y MOSTRARLA EN EL MAPA
+
+        return muestreo;
+    
+    }
+
+    public void optimizarMuestras(IFeatureClass capaPuntosMuestreo)
+    {
+        //SSA
+        SSA ssa = new SSA();
+        IFeatureClass capaPuntosMuestreoOptimo = ssa.SimulatedAnnealing2(capaPuntosMuestreo);
+    
+    }
+
+
+    public Muestreo muestreoOptimoAltoAncho(String rutaEntrada, int alto, int ancho, List<int> variablesMarcadas)
+    {
+        //HACER!!!
+        return new Muestreo();
+    }
+    public void crearBlackmore(int filas, int columnas)
+    {
+        this.blackmore = new Blackmore(filas, columnas);
+        List<Celda> celdas = this.blackmore.Celdas;
+        foreach (Celda c in celdas)
+=======
             pBar.Minimum = 1;
             pBar.Maximum = vertical * horizontal;
             pBar.Step = 1;
@@ -130,24 +165,18 @@ class Controlador
 
             pBar.Visible = false;
             lblProgressBar.Text = "";
-     
+
         }
         else
+>>>>>>> e1819abe4d008c10b6e6111b0f242a1a6599102d
         {
             //esto en el caso de que se quiera trabajar con todos los puntos de zonificacion.
             this.capaPuntosMuestreo = this.capaPuntosZonificacion as FeatureLayer;
+
         }
         return muestreo;
+    
     }
-
-    //capaPuntosMuestreo es la capa seleccionada por el usuario
-    //metodoInterpolacion puede ser IDW o Kriging
-    //rango ??? o cantmuestras
-    //error maximo aceptado en % ej: 5
-    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error)
-    {
-       IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, rango, error);    
-    } 
 
     public void crearBlackmore(bool filaColumna, int vertical, int horizontal)
     {

@@ -7,14 +7,21 @@ using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Geometry;
 using Proyecto;
-using ESRI.ArcGIS.Geoprocessing;
 
 class SSA
 {
+<<<<<<< HEAD
+    public int cantMuestras = 5;
+    public List<int> muestreados;
+    public List<int> todos;
+
+    public IFeatureClass SimulatedAnnealing2(IFeatureClass capaPuntosMuestreo)
+=======
     private double temperaturaInicial;
     private double factorReduccion;
     private double epsilon;
-    public int cantMuestras = 10;
+
+    public static int cantMuestras = 40;
     public List<int> muestreados;
     public List<int> todos;
 
@@ -35,15 +42,20 @@ class SSA
     public void setEpsilon(double e) { this.epsilon = e; }
 
 
-
-    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error)
+    
+    public List<PuntoMuestreo> SimulatedAnnealing2(List<PuntoMuestreo> puntos)
+>>>>>>> e1819abe4d008c10b6e6111b0f242a1a6599102d
     {
-
-        //creo la lista de PuntosMuestreo a partir de la IFeatureClass
+        IFeatureClass capaPuntosMuestreoOptimo;
+        
+        //creo lista de puntos de muestreo
         List<PuntoMuestreo> listaPuntosMuestreo = new List<PuntoMuestreo>();
         IFeatureCursor cursorPuntosMuestreo = capaPuntosMuestreo.Search(null, false);
+
         int indice = capaPuntosMuestreo.FindField("Valor");
+
         IFeature featurePunto = cursorPuntosMuestreo.NextFeature();
+        
         while (featurePunto != null)
         {
             IGeometry g = featurePunto.Shape;
@@ -52,8 +64,8 @@ class SSA
             c.X = p.X;
             c.Y = p.Y;
             PuntoMuestreo puntoMuestreo = new PuntoMuestreo();
-            puntoMuestreo.setCoordenada(c);
-            puntoMuestreo.setValor((double) featurePunto.get_Value(indice)); 
+            puntoMuestreo.Coordenada = c;
+            puntoMuestreo.Valor = (double) featurePunto.get_Value(indice); 
             listaPuntosMuestreo.Add(puntoMuestreo);
 
             featurePunto = cursorPuntosMuestreo.NextFeature();
@@ -75,9 +87,8 @@ class SSA
         double temperature = 400.0;
         double epsilon = 0.0000001;
         double delta;
-        
-        //calculo fitness del muestreo inicial
-        if (metodoInterpolacion == "Kriging")
+        String tipoFitness = "IDW";
+        if (tipoFitness == "Kriging")
         {
             fitness = CalcularFitnessKriging(listaPuntosMuestreo, muestreados, capaPuntosMuestreo);
         }
@@ -88,16 +99,14 @@ class SSA
 
 
         System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
-        
-        //LOOP principal
-        while (iteration < 1000  && temperature > epsilon )
+        while (iteration < 3  & temperature > epsilon )
         {
             iteration++;
 
             auxMuestreados = ClonarLista(muestreados);
             auxTodos = ClonarLista(todos);
             MoverMuestra2(auxMuestreados, auxTodos);
-            if (metodoInterpolacion == "Kriging")
+            if (tipoFitness == "Kriging")
             {
                 auxFitness = CalcularFitnessKriging(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
             }
@@ -134,8 +143,8 @@ class SSA
             //}
             //cooling process on every iteration
             temperature *= alpha;
-            //print every 100 iterations
-            if (iteration % 100 == 0)
+            //print every 400 iterations
+            if (iteration % 10 == 0)
             {
                 System.Diagnostics.Debug.WriteLine(fitness);
                 Imprimir2(todos);
@@ -145,21 +154,30 @@ class SSA
             }
         }
 
+<<<<<<< HEAD
         IMap map = ArcMap.Document.FocusMap;
+=======
+        //creo la lista de PuntosMuestreo con los puntos a muestrear 
+        for (int i = 0; i < muestreados.Count; i++)
+        {
+            aux = new PuntoMuestreo();
+            coordAux = new Coordenada();
+            coordAux.X = puntos[muestreados[i]].getCoordenada().X;
+            coordAux.Y = puntos[muestreados[i]].getCoordenada().Y;
+            aux.setCoordenada(coordAux);
+            aux.setValor(puntos[muestreados[i]].getValor());
+            resultado.Add(aux);
+        }
+>>>>>>> e1819abe4d008c10b6e6111b0f242a1a6599102d
 
-        //creo y agrego al mapa la capa de muestreo optimo
+
         String nombreCapaPuntosMuestreoOptimo = muestreados.Count.ToString() + "MO" + System.DateTime.Now.ToString("ddHHmmss");
-        IFeatureClass result = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, muestreados);
-        IFeatureLayer featureLayerResult = new FeatureLayerClass();
-        featureLayerResult.FeatureClass = result;
-        ILayer layerResult = (ILayer)featureLayerResult;
-        layerResult.Name = featureLayerResult.FeatureClass.AliasName;
-        map.AddLayer(layerResult);
-        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
-        activeView.Refresh();
-        
-        return result;
-        
+
+        //agregar como parametro 
+        //return this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, muestreados);
+        return null;
+
+
     }
 
     
@@ -174,19 +192,18 @@ class SSA
 
         //agregar como parametro 
         IFeatureClass capaPuntosMuestreoOptimo = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, listaIndicesMuestras);
-        String nombreCapaIDW = "IDW";// +System.DateTime.Now.ToString("ddHHmmss");
+        String nombreCapaIDW = "IDW" + System.DateTime.Now.ToString("ddHHmmss");
 
         Geoprocessor gp = new Geoprocessor();
         ESRI.ArcGIS.GeostatisticalAnalystTools.IDW capaIDW = new ESRI.ArcGIS.GeostatisticalAnalystTools.IDW();
         capaIDW.in_features = capaPuntosMuestreoOptimo;
         capaIDW.out_ga_layer = nombreCapaIDW;
         capaIDW.z_field = capaPuntosMuestreoOptimo.FindField("Valor");
-        gp.TemporaryMapLayers = true;
-        gp.OverwriteOutput = true;
-        gp.AddOutputsToMap = false;
+
+        gp.AddOutputsToMap = true;
         gp.Execute(capaIDW, null);
 
-        String nombreCapaEstimacion = "Estimacion";// +System.DateTime.Now.ToString("ddHHmmss");
+        String nombreCapaEstimacion = "Estimacion" + System.DateTime.Now.ToString("ddHHmmss");
 
         Geoprocessor gp2 = new Geoprocessor();
         ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints capaEstimacion = new ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints();
@@ -195,47 +212,37 @@ class SSA
         capaEstimacion.out_feature_class = nombreCapaEstimacion;
         capaEstimacion.z_field = "Valor";
         capaEstimacion.in_geostat_layer = nombreCapaIDW;
-        gp2.AddOutputsToMap = false;
-        gp2.OverwriteOutput = true;
-        gp2.TemporaryMapLayers = true;
-        IGPUtilities gpUtils = new GPUtilitiesClass();
-        IFeatureClass fc;
-        IQueryFilter qf;
-        
-        //try
-        //{
-            System.Diagnostics.Debug.WriteLine("Executing the try statement.");
-            IGeoProcessorResult result = (IGeoProcessorResult)gp2.Execute(capaEstimacion, null);
-            gpUtils.DecodeFeatureLayer(result.GetOutput(0), out fc, out qf);
-            
-        //}
-        //catch (NullReferenceException e)
-        //{
-        //    System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
-        //}
-        //catch
-        //{
-        //    for (int i = 0; i < gp2.MessageCount; i++)
-        //        System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
-        //    System.Diagnostics.Debug.WriteLine("Caught exception #2.");
-        //}
 
-       
+        try
+        {
+            System.Diagnostics.Debug.WriteLine("Executing the try statement.");
+            gp2.Execute(capaEstimacion, null);
+        }
+        catch (NullReferenceException e)
+        {
+            System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
+        }
+        catch
+        {
+            for (int i = 0; i < gp2.MessageCount; i++)
+                System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
+            System.Diagnostics.Debug.WriteLine("Caught exception #2.");
+        }
+
+
         //recorrer la capa capaEstimacion, hacer el cuadrado de cada error y sumarlos
         IEnumLayer enumlayers = map.get_Layers();
-        //ILayer layerPuntosEstimados = enumlayers.Next();
-        //while ((layerPuntosEstimados != null) && (layerPuntosEstimados.Name != nombreCapaEstimacion))
-        //{
-        //    layerPuntosEstimados = enumlayers.Next();
-        //}
-        //IFeatureLayer ifeaturelayerPuntosEstimados = layerPuntosEstimados as FeatureLayer;
+        ILayer layerPuntosEstimados = enumlayers.Next();
+        while ((layerPuntosEstimados != null) && (layerPuntosEstimados.Name != nombreCapaEstimacion))
+        {
+            layerPuntosEstimados = enumlayers.Next();
+        }
+        IFeatureLayer ifeaturelayerPuntosEstimados = layerPuntosEstimados as FeatureLayer;
 
 
-        //IFeatureCursor cursorEstimacion = ifeaturelayerPuntosEstimados.FeatureClass.Search(null, false);
-        //int indiceError = ifeaturelayerPuntosEstimados.FeatureClass.FindField("Error");
-
-        IFeatureCursor cursorEstimacion = fc.Search(null, false);
-        int indiceError = fc.FindField("Error");
+        IFeatureCursor cursorEstimacion = ifeaturelayerPuntosEstimados.FeatureClass.Search(null, false);
+        int indiceError = ifeaturelayerPuntosEstimados.FeatureClass.FindField("Error");
+        
         IFeature featureEstimacion = cursorEstimacion.NextFeature();
         //gets the column ID where we can find the report ID
         double errorTotal = 0;
@@ -281,7 +288,12 @@ class SSA
         }
         catch (NullReferenceException e)
         {
+<<<<<<< HEAD
             System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
+=======
+            pos = muestras[i];
+            valor += zonif[pos].getValor();
+>>>>>>> e1819abe4d008c10b6e6111b0f242a1a6599102d
         }
         catch
         {
@@ -516,11 +528,19 @@ class SSA
         foreach (int i in listaIndicesMuestreo)
         {
             point = new ESRI.ArcGIS.Geometry.PointClass();
-            point.X = listaPuntosMuestreo[i].getCoordenada().X;
-            point.Y = listaPuntosMuestreo[i].getCoordenada().Y;
+<<<<<<< HEAD
+            point.X = listaPuntosMuestreo[i].Coordenada.X;
+            point.Y = listaPuntosMuestreo[i].Coordenada.Y;
 
             featureBuffer.Shape = point;
-            featureBuffer.set_Value(indiceValor, listaPuntosMuestreo[i].getValor());
+            featureBuffer.set_Value(indiceValor, listaPuntosMuestreo[i].Valor);
+=======
+            point.X = aux.getCoordenada().X;
+            point.Y = aux.getCoordenada().Y;
+
+            featureBuffer.Shape = point;
+            featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.getValor());
+>>>>>>> e1819abe4d008c10b6e6111b0f242a1a6599102d
 
             //Insert the feature into the feature cursor
             featureOID = FeatureCursor.InsertFeature(featureBuffer);
@@ -545,11 +565,11 @@ class SSA
         layer.Name = featureLayer.FeatureClass.AliasName;
         
         // Add the Layer to the focus map
-        //map.AddLayer(layer);
+        map.AddLayer(layer);
 
-        //ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
-        //activeView.Refresh();
-        
+        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
+        activeView.Refresh();
+
         return nuevaFeatureClass;
     }
 
