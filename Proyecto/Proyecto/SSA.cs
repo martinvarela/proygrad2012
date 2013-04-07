@@ -480,22 +480,50 @@ class SSA
 
     //funcion para inicializar los puntos a muestrear, esto depende de la cantidad de muestras a seleccionar
     //armar un estilo de grilla con puntos equiespaciados ó seleccionar los puntos al azar
+    //private void Inicializar(List<PuntoMuestreo> listaMuestreo)
+    //{
+    //    this.todos = new List<int>();
+    //    this.muestreados = new List<int>();
+    //    for (int ind = 0; ind < listaMuestreo.Count; ind++)
+    //    {
+    //        if (((ind + 1) % (listaMuestreo.Count / this.cantMuestras)) == 0)
+    //        {
+    //            this.todos.Add(1);
+    //            this.muestreados.Add(ind);
+    //        }
+    //        else
+    //        {
+    //            this.todos.Add(0);
+    //        }
+    //    }
+    //}
     private void Inicializar(List<PuntoMuestreo> listaMuestreo)
     {
         this.todos = new List<int>();
         this.muestreados = new List<int>();
         for (int ind = 0; ind < listaMuestreo.Count; ind++)
         {
-            if (((ind + 1) % (listaMuestreo.Count / this.cantMuestras)) == 0)
+            this.todos.Add(0);
+        }
+
+        Random rnd = new Random();
+        for (int ind = 0; ind < this.cantMuestras; ind++)
+        {
+            bool encontre = false;
+            while (!encontre)
             {
-                this.todos.Add(1);
-                this.muestreados.Add(ind);
-            }
-            else
-            {
-                this.todos.Add(0);
+                int pos = rnd.Next(this.todos.Count);
+                //el punto no estaba muestreado
+                if (this.todos[pos] == 0)
+                {
+                    this.todos[pos] = 1;
+                    this.muestreados.Add(pos);
+                    encontre = true;
+                }
             }
         }
+
+        
     }
 
     public List<PuntoZonificacion> ClonarZonif(List<PuntoZonificacion> zonif) {
