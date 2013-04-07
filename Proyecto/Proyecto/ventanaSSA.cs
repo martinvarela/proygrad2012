@@ -26,9 +26,7 @@ namespace Proyecto
             {
                 this.cboCapaMuestreo.Items.Add(layer.Name.ToString()); 
                 layer = enumLayers.Next();
-                
             }
-
             //cargo los metodos de interpolacion posibles
             cboMetodoEstimacion.Items.Add("Kriging");
             cboMetodoEstimacion.Items.Add("IDW");

@@ -145,10 +145,8 @@ class Controlador
         {
             //esto en el caso de que se quiera trabajar con todos los puntos de zonificacion.
             this.capaPuntosMuestreo = this.capaPuntosZonificacion as FeatureLayer;
-
         }
         return muestreo;
-    
     }
 
     //capaPuntosMuestreo es la capa seleccionada por el usuario
