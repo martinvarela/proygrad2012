@@ -10,7 +10,6 @@ using ESRI.ArcGIS.Geometry;
 using System.Runtime.InteropServices;
 using ESRI.ArcGIS.Geoprocessor;
 using System.Windows.Forms;
-using ESRI.ArcGIS.DataSourcesGDB;
 using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.DataSourcesFile;
 
@@ -19,13 +18,11 @@ class Controlador
 {
     private static Controlador instancia;
     private IWorkspace wsSSA;
+    private IWorkspace wsZonif;
+
     private Controlador() 
     {
-        IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
-        //esta ruta la indica el usuario
-        IWorkspace workspace = workspaceFactory.OpenFromFile("C:\\temp\\Sample", 0);
-        this.wsSSA = workspace;
-        this.ssa = new SSA(this.wsSSA);
+        this.ssa = new SSA();
         
     }
     public static Controlador getInstancia
@@ -90,6 +87,11 @@ class Controlador
     public Muestreo crearPuntosMuestreo(bool conRed, String rutaEntrada, bool filasColumnas, int vertical, int horizontal, List<int> variablesMarcadas, ProgressBar pBar, Label lblProgressBar)
     {
         IMap map = ArcMap.Document.FocusMap;
+        
+        IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
+        IWorkspace workspaceZonif = workspaceFactory.OpenFromFile("C:\\Temp\\Sample", 0);
+        this.wsZonif = workspaceZonif;
+        
         //paso 1
         lblProgressBar.Text = "Cargando puntos de zonificación...";
         lblProgressBar.Visible = true;
@@ -155,7 +157,12 @@ class Controlador
     //error maximo aceptado en % ej: 5
     public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error)
     {
-       IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, rango, error);    
+        IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
+        //esta ruta la indica el usuario
+        IWorkspace workspace = workspaceFactory.OpenFromFile("C:\\Temp\\Sample", 0);
+        this.wsSSA = workspace;
+        this.ssa.setWorkspace(this.wsSSA);
+        IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, rango, error);    
     } 
 
     public void crearBlackmore(bool filaColumna, int vertical, int horizontal)
@@ -174,7 +181,7 @@ class Controlador
 
     private IFeatureClass crearCapaPuntosZonificacion(IMap map, string nombreFeatureClass, List<PuntoZonificacion> listaPuntos, ProgressBar pBar)
     {
-        IWorkspace ws = ((IDataset)map.Layer[0]).Workspace;
+        IWorkspace ws = this.wsZonif;
         IWorkspace2 ws2 = (IWorkspace2)ws;
         IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)ws2; // Explicit Cast
 
@@ -251,7 +258,7 @@ class Controlador
     private IFeatureClass crearCapaPuntosMuestreo(IMap map, string nombreFeatureClass, List<PuntoMuestreo> listaPuntos)
     {
 
-        IWorkspace ws = ((IDataset)map.Layer[0]).Workspace;
+        IWorkspace ws = this.wsZonif;
         IWorkspace2 ws2 = (IWorkspace2)ws;
         IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)ws2; // Explicit Cast
 
@@ -572,7 +579,7 @@ class Controlador
         Geoprocessor gp = new Geoprocessor();
 
         ESRI.ArcGIS.DataManagementTools.CreateFishnet fishNet = new ESRI.ArcGIS.DataManagementTools.CreateFishnet();
-        fishNet.out_feature_class = nombreCapaPoligonos;
+        fishNet.out_feature_class = this.wsZonif.PathName + "\\" + nombreCapaPoligonos;
 
         fishNet.origin_coord = puntoOrigen.X.ToString() + " " + puntoOrigen.Y.ToString();
 

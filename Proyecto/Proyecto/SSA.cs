@@ -10,24 +10,24 @@ using Proyecto;
 using ESRI.ArcGIS.Geoprocessing;
 using System.IO;
 using ESRI.ArcGIS.esriSystem;
-using ESRI.ArcGIS.DataSourcesGDB;
+
 
 class SSA
 {
     private double temperaturaInicial;
     private double factorReduccion;
     private double epsilon;
-    public int cantMuestras = 15;
+    public int cantMuestras;
     public List<int> muestreados;
     public List<int> todos;
     private IWorkspace ws;
 
-    public SSA(IWorkspace wsSSA)
+    public SSA()
     {
         this.temperaturaInicial = 100;
         this.factorReduccion = 0.01;
         this.epsilon = 0.000001;
-        this.ws = wsSSA;
+        this.cantMuestras = 15;
     }
 
     public double getTemperaturaInicial() { return this.temperaturaInicial; }
@@ -39,11 +39,14 @@ class SSA
     public double getEpsilon() { return this.epsilon; }
     public void setEpsilon(double e) { this.epsilon = e; }
 
-
+    public void setWorkspace(IWorkspace workspace)
+    {
+        this.ws = workspace;
+    }
 
     public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error)
     {
-
+        this.cantMuestras = 15;
         //creo la lista de PuntosMuestreo a partir de la IFeatureClass
         List<PuntoMuestreo> listaPuntosMuestreo = new List<PuntoMuestreo>();
         IFeatureCursor cursorPuntosMuestreo = capaPuntosMuestreo.Search(null, false);
