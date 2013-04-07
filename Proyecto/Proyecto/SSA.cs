@@ -8,21 +8,26 @@ using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Geometry;
 using Proyecto;
 using ESRI.ArcGIS.Geoprocessing;
+using System.IO;
+using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.DataSourcesGDB;
 
 class SSA
 {
     private double temperaturaInicial;
     private double factorReduccion;
     private double epsilon;
-    public int cantMuestras = 10;
+    public int cantMuestras = 15;
     public List<int> muestreados;
     public List<int> todos;
+    private IWorkspace ws;
 
-    public SSA()
+    public SSA(IWorkspace wsSSA)
     {
         this.temperaturaInicial = 100;
         this.factorReduccion = 0.01;
         this.epsilon = 0.000001;
+        this.ws = wsSSA;
     }
 
     public double getTemperaturaInicial() { return this.temperaturaInicial; }
@@ -59,106 +64,144 @@ class SSA
             featurePunto = cursorPuntosMuestreo.NextFeature();
         }
 
-        //a partir de los puntos, selecciona las muestras iniciales
-        Inicializar(listaPuntosMuestreo);
-        
-        List<int> auxMuestreados;
-        List<int> auxTodos;
-        double auxFitness;
-        double fitness;
-        
-        Random rnd = new Random();
-        int iteration = -1;
-        ////the probability
-        double proba;
-        double alpha = 0.999;
-        double temperature = 400.0;
-        double epsilon = 0.0000001;
-        double delta;
-        
-        //calculo fitness del muestreo inicial
-        if (metodoInterpolacion == "Kriging")
-        {
-            fitness = CalcularFitnessKriging(listaPuntosMuestreo, muestreados, capaPuntosMuestreo);
-        }
-        else
-        {
-            fitness = CalcularFitnessIDW(listaPuntosMuestreo, muestreados, capaPuntosMuestreo);
-        }
 
-
-        System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
-        
-        //LOOP principal
-        while (iteration < 1000  && temperature > epsilon )
+        while (this.cantMuestras > 10)
         {
-            iteration++;
+            //a partir de los puntos, selecciona las muestras iniciales
+            Inicializar(listaPuntosMuestreo);
 
-            auxMuestreados = ClonarLista(muestreados);
-            auxTodos = ClonarLista(todos);
-            MoverMuestra2(auxMuestreados, auxTodos);
+            List<int> auxMuestreados;
+            List<int> auxTodos;
+            double auxFitness;
+            double fitness;
+
+            Random rnd = new Random();
+            int iteration = -1;
+            ////the probability
+            double proba;
+            double alpha = 0.999;
+            double temperature = 400.0;
+            double epsilon = 0.0000001;
+            double delta;
+
+            //calculo fitness del muestreo inicial
             if (metodoInterpolacion == "Kriging")
             {
-                auxFitness = CalcularFitnessKriging(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
+                fitness = CalcularFitnessKriging(listaPuntosMuestreo, muestreados, capaPuntosMuestreo);
             }
             else
             {
-                auxFitness = CalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
+                fitness = CalcularFitnessIDW(listaPuntosMuestreo, muestreados, capaPuntosMuestreo);
             }
-            System.Diagnostics.Debug.WriteLine(" auxFitnens: " + auxFitness);
-            delta = auxFitness - fitness;
-            //if the new distance is better accept it and assign it
-            if (delta < 0)
-            {
-                muestreados = auxMuestreados;
-                todos = auxTodos;
-                fitness = auxFitness;
-            }
-            //else
-            //{
-            //    proba = rnd.NextDouble();
-            //    //if the new distance is worse accept 
-            //    //it but with a probability level
-            //    //if the probability is less than 
-            //    //E to the power -delta/temperature.
-            //    //otherwise the old value is kept
 
-            //    //el delta es muy bajo para que funcione bien, el exp siempre da muuy cerca de 1, calibrar!!!!
-            //    if (proba < Math.Exp(-delta / temperature))
-            //    {
-            //        Console.WriteLine("acepto una peor");
-            //        muestreados = auxMuestreados;
-            //        todos = auxTodos;
-            //        fitness = auxFitness;
-            //    }
-            //}
-            //cooling process on every iteration
-            temperature *= alpha;
-            //print every 100 iterations
-            if (iteration % 100 == 0)
+
+            System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
+
+            //LOOP principal
+            while (iteration < 10 && temperature > epsilon)
             {
-                System.Diagnostics.Debug.WriteLine(fitness);
-                Imprimir2(todos);
-                Imprimir2(muestreados);
-                System.Diagnostics.Debug.WriteLine("temp: " + temperature + " delta: " + delta + " fitnnes: " + fitness + " aux_fitnnes: " + auxFitness);
-                System.Diagnostics.Debug.WriteLine("iter: " + iteration);
+                iteration++;
+
+                auxMuestreados = ClonarLista(muestreados);
+                auxTodos = ClonarLista(todos);
+                MoverMuestra2(auxMuestreados, auxTodos);
+                if (metodoInterpolacion == "Kriging")
+                {
+                    auxFitness = CalcularFitnessKriging(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
+                }
+                else
+                {
+                    auxFitness = CalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
+                }
+                System.Diagnostics.Debug.WriteLine(" auxFitnens: " + auxFitness);
+                delta = auxFitness - fitness;
+                //if the new distance is better accept it and assign it
+                if (delta < 0)
+                {
+                    muestreados = auxMuestreados;
+                    todos = auxTodos;
+                    fitness = auxFitness;
+                }
+                //else
+                //{
+                //    proba = rnd.NextDouble();
+                //    //if the new distance is worse accept 
+                //    //it but with a probability level
+                //    //if the probability is less than 
+                //    //E to the power -delta/temperature.
+                //    //otherwise the old value is kept
+
+                //    //el delta es muy bajo para que funcione bien, el exp siempre da muuy cerca de 1, calibrar!!!!
+                //    if (proba < Math.Exp(-delta / temperature))
+                //    {
+                //        Console.WriteLine("acepto una peor");
+                //        muestreados = auxMuestreados;
+                //        todos = auxTodos;
+                //        fitness = auxFitness;
+                //    }
+                //}
+                //cooling process on every iteration
+                temperature *= alpha;
+                //print every 100 iterations
+                if (iteration % 100 == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine(fitness);
+                    Imprimir2(todos);
+                    Imprimir2(muestreados);
+                    System.Diagnostics.Debug.WriteLine("temp: " + temperature + " delta: " + delta + " fitnnes: " + fitness + " aux_fitnnes: " + auxFitness);
+                    System.Diagnostics.Debug.WriteLine("iter: " + iteration);
+                }
             }
+
+            IMap map = ArcMap.Document.FocusMap;
+
+            //creo y agrego al mapa la capa de muestreo optimo
+            String nombreCapaPuntosMuestreoOptimo = "MO" +muestreados.Count.ToString() + "_"  + System.DateTime.Now.ToString("ddMMyyyy_hhmmss");
+            IFeatureClass result = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, muestreados);
+            IFeatureLayer featureLayerResult = new FeatureLayerClass();
+            featureLayerResult.FeatureClass = result;
+            ILayer layerResult = (ILayer)featureLayerResult;
+            layerResult.Name = featureLayerResult.FeatureClass.AliasName;
+            map.AddLayer(layerResult);
+            ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
+            activeView.Refresh();
+
+            try
+            {
+                //string path = @"C:\PruebaArchivo.txt";
+                //string path = capaPuntosMuestreo.FeatureDataset.Workspace.PathName;
+                string path = this.ws.PathName + @"\PruebaArchivo.txt";
+                if (!File.Exists(path))
+                {
+                    StreamWriter sw = File.CreateText(path);
+                    sw.WriteLine("Fecha de creacion del archivo " + System.DateTime.Now.ToString("dd/MM/yyyy hh:mm"));
+                    sw.WriteLine("Estadisticas del Muestreo");
+                    sw.WriteLine("");
+                    sw.WriteLine("Nombre Capa: " + nombreCapaPuntosMuestreoOptimo);
+                    sw.WriteLine("  Cantidad de Muestras: " + cantMuestras.ToString());
+                    sw.WriteLine("  Error: " + fitness.ToString());
+                    sw.WriteLine("  Iteraciones: " + iteration.ToString());
+                    sw.Close();
+                }
+                else if (File.Exists(path))
+                {
+                    TextWriter tw = new StreamWriter(path, true);
+                    tw.WriteLine("");
+                    tw.WriteLine("Nombre Capa: " + nombreCapaPuntosMuestreoOptimo);
+                    tw.WriteLine("  Cantidad de Muestras: " + cantMuestras.ToString());
+                    tw.WriteLine("  Error: " + fitness.ToString());
+                    tw.WriteLine("  Iteraciones: " + iteration.ToString());
+                    tw.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
+
+            this.cantMuestras--;
         }
-
-        IMap map = ArcMap.Document.FocusMap;
-
-        //creo y agrego al mapa la capa de muestreo optimo
-        String nombreCapaPuntosMuestreoOptimo = muestreados.Count.ToString() + "MO" + System.DateTime.Now.ToString("ddHHmmss");
-        IFeatureClass result = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, muestreados);
-        IFeatureLayer featureLayerResult = new FeatureLayerClass();
-        featureLayerResult.FeatureClass = result;
-        ILayer layerResult = (ILayer)featureLayerResult;
-        layerResult.Name = featureLayerResult.FeatureClass.AliasName;
-        map.AddLayer(layerResult);
-        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
-        activeView.Refresh();
-        
-        return result;
+        return null;
         
     }
 
@@ -170,10 +213,10 @@ class SSA
         IMap map = ArcMap.Document.FocusMap; 
         
         
-        String nombreCapaPuntosMuestreoOptimo = "MO" + System.DateTime.Now.ToString("ddHHmmss");
+        String nombreCapaPuntosMuestreoOptimo = "MO" + System.DateTime.Now.ToString("ddHHmmssfff");
 
         //agregar como parametro 
-        IFeatureClass capaPuntosMuestreoOptimo = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, listaIndicesMuestras);
+        IFeatureClass capaPuntosMuestreoOptimo = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, listaIndicesMuestras );
         String nombreCapaIDW = "IDW";// +System.DateTime.Now.ToString("ddHHmmss");
 
         Geoprocessor gp = new Geoprocessor();
@@ -246,6 +289,13 @@ class SSA
 
             featureEstimacion = cursorEstimacion.NextFeature();
         }
+
+        //borro la capa auxiliar creada
+        if (((IDataset)capaPuntosMuestreoOptimo).CanDelete())
+        {
+            ((IDataset)capaPuntosMuestreoOptimo).Delete();
+        }
+
         //return suma errores
         return errorTotal;
 
@@ -485,9 +535,8 @@ class SSA
 
     public IFeatureClass crearCapaPuntosMuestreo(IMap map, string nombreFeatureClass, List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestreo)
     {
-
-        IWorkspace ws = ((IDataset)map.Layer[map.LayerCount-1]).Workspace;
-        IWorkspace2 ws2 = (IWorkspace2)ws;
+        
+        IWorkspace2 ws2 = (IWorkspace2)this.ws;
         IFeatureWorkspace featureWorkspace = (IFeatureWorkspace)ws2; // Explicit Cast
 
         IFeatureClass nuevaFeatureClass = this.crearFeatureClassConFields(nombreFeatureClass, featureWorkspace);
@@ -495,7 +544,7 @@ class SSA
         IFeatureBuffer featureBuffer = nuevaFeatureClass.CreateFeatureBuffer();
         IFeatureCursor FeatureCursor = nuevaFeatureClass.Insert(true);
 
-        IWorkspaceEdit workspaceEdit = (IWorkspaceEdit)ws;
+        IWorkspaceEdit workspaceEdit = (IWorkspaceEdit)this.ws;
 
         //Start an edit session and operation
         workspaceEdit.StartEditing(true);
@@ -609,11 +658,22 @@ class SSA
 
         // Create the feature class. Note that the CLSID parameter is null—this indicates to use the
         // default CLSID, esriGeodatabase.Feature (acceptable in most cases for feature classes).
-        IFeatureClass featureClass = featureWorkspace.CreateFeatureClass(featureClassName,
+        try
+        {
+            System.Diagnostics.Debug.WriteLine("Executing the try statement.");
+            IFeatureClass featureClass = featureWorkspace.CreateFeatureClass(featureClassName,
                                                                             validatedFields, null, ocDescription.ClassExtensionCLSID,
                                                                             esriFeatureType.esriFTSimple, "Shape", "");
+            return featureClass;
+        }
+        catch (Exception e)
+        {
+            System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
+            return null;
+        }
+        
 
-        return featureClass;
+        
     }
 
 

@@ -10,14 +10,23 @@ using ESRI.ArcGIS.Geometry;
 using System.Runtime.InteropServices;
 using ESRI.ArcGIS.Geoprocessor;
 using System.Windows.Forms;
+using ESRI.ArcGIS.DataSourcesGDB;
+using ESRI.ArcGIS.esriSystem;
+using ESRI.ArcGIS.DataSourcesFile;
 
 
 class Controlador
 {
     private static Controlador instancia;
+    private IWorkspace wsSSA;
     private Controlador() 
     {
-        this.ssa = new SSA();
+        IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
+        //esta ruta la indica el usuario
+        IWorkspace workspace = workspaceFactory.OpenFromFile("C:\\temp\\Sample", 0);
+        this.wsSSA = workspace;
+        this.ssa = new SSA(this.wsSSA);
+        
     }
     public static Controlador getInstancia
     {
