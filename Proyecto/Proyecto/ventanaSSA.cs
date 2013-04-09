@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Geometry;
 
 namespace Proyecto
 {
@@ -16,22 +17,43 @@ namespace Proyecto
         public ventanaSSA()
         {
             InitializeComponent();
+
             IMap targetMap = ArcMap.Document.FocusMap;
-            
+
             //cargo el combo de capas abiertas
             IEnumLayer enumLayers = targetMap.get_Layers();
             enumLayers.Reset();
             ILayer layer = enumLayers.Next();
+
+            IGeometryDef geometryDef = new GeometryDefClass();
+            IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
+            geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
             while (layer != null)
             {
-                this.cboCapaMuestreo.Items.Add(layer.Name.ToString()); 
+                IFeatureLayer featureLayer = layer as IFeatureLayer;
+                IFeatureClass fc = featureLayer.FeatureClass;
+                if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
+                {
+                    this.cboCapaMuestreo.Items.Add(layer.Name.ToString());
+                }
                 layer = enumLayers.Next();
             }
+            this.cboCapaMuestreo.SelectedItem = 0;
+            if (this.cboCapaMuestreo.Text == "")
+                this.ptoVerdeCapa.Visible = true;
+            else
+                this.ptoVerdeCapa.Visible = false;
+
             //cargo los metodos de interpolacion posibles
-            cboMetodoEstimacion.Items.Add("Kriging");
             cboMetodoEstimacion.Items.Add("IDW");
+            cboMetodoEstimacion.Items.Add("Kriging");
             cboMetodoEstimacion.SelectedIndex = 0;
 
+            //textbox Rango
+            this.ptoVerdeRango.Visible = true;
+
+            //textbox error
+            this.ptoVerdeError.Visible = true;
 
         }
 
@@ -75,5 +97,114 @@ namespace Proyecto
 
 
         }
+
+        private void cboCapaMuestreo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (this.cboCapaMuestreo.Text == "")
+            {
+                this.ptoVerdeCapa.Visible = true;
+            }
+            else
+            {
+                this.ptoVerdeCapa.Visible = false;
+            }
+        }
+
+        private void cboCapaMuestreo_GotFocus(object sender, EventArgs e)
+        {
+            this.panelAyuda.Controls.Clear();
+            this.panelAyuda.Controls.Add(this.lblTituloCapa);
+            this.panelAyuda.Controls.Add(this.lblDescripcionCapa);
+        }
+
+        private void txtRango_LostFocus(object sender, EventArgs e)
+        {
+            int i;
+            if (int.TryParse(this.txtRango.Text, out i))
+            {
+                this.ptoVerdeRango.Visible = false;
+            }
+            else
+            {
+                this.txtRango.Text = "";
+                this.ptoVerdeRango.Visible = true;
+            }
+        }
+
+        private void txtError_LostFocus(object sender, EventArgs e)
+        {
+            int i;
+            if (int.TryParse(this.txtError.Text, out i))
+            {
+                this.ptoVerdeError.Visible = false;
+            }
+            else
+            {
+                this.txtError.Text = "";
+                this.ptoVerdeError.Visible = true;
+            }
+        }
+
+        private void btnAyuda_Click(object sender, EventArgs e)
+        {
+            if (this.btnAyuda.Text == "Mostrar ayuda >>")
+            {
+                panelAyuda.Visible = true;
+                this.Size = new Size(1014, 364);
+                btnAyuda.Text = "Ocultar ayuda <<";
+            }
+            else
+            {
+                this.Size = new Size(484, 364);
+                panelAyuda.Visible = true;
+                btnAyuda.Text = "Mostrar ayuda >>";
+            }
+        }
+
+        private void cboMetodoEstimacion_GotFocus(object sender, EventArgs e)
+        {
+            this.panelAyuda.Controls.Clear();
+            this.panelAyuda.Controls.Add(this.lblTituloMetodo);
+            this.panelAyuda.Controls.Add(this.lblDescripcionMetodo);
+        }
+
+        private void txtRango_GotFocus(object sender, EventArgs e)
+        {
+            this.panelAyuda.Controls.Clear();
+            this.panelAyuda.Controls.Add(this.lblTituloRango);
+            this.panelAyuda.Controls.Add(this.lblDescripcionRango);
+        }
+
+        private void txtError_GotFocus(object sender, EventArgs e)
+        {
+            this.panelAyuda.Controls.Clear();
+            this.panelAyuda.Controls.Add(this.lblTituloError);
+            this.panelAyuda.Controls.Add(this.lblDescripcionError);
+        }
+
+        private void btnCarpeta_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog carpeta = new FolderBrowserDialog();
+            if (carpeta.ShowDialog() == DialogResult.OK)
+            {
+                txtCarpeta.Text = carpeta.SelectedPath;
+            }
+        }
+
+        private void txtCarpeta_LostFocus(object sender, EventArgs e)
+        {
+            if (txtCarpeta.Text != "" )
+                this.ptoVerdeCarpeta.Visible = false;
+            else
+                this.ptoVerdeCarpeta.Visible = true;
+        }
+
+        private void txtCarpeta_GotFocus(object sender, EventArgs e)
+        {
+            this.panelAyuda.Controls.Clear();
+            this.panelAyuda.Controls.Add(this.lblTituloCarpeta);
+            this.panelAyuda.Controls.Add(this.lblDescripcionCarpeta);
+        }
+
     }
 }

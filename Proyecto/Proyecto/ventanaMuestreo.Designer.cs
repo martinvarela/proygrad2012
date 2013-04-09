@@ -30,13 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ventanaMuestreo));
             this.txtArchivoZF = new System.Windows.Forms.TextBox();
-            this.botonAbrir = new System.Windows.Forms.Button();
             this.btnAceptar = new System.Windows.Forms.Button();
             this.lblOpenFileZF = new System.Windows.Forms.Label();
-            this.ptoVerdeZF = new System.Windows.Forms.PictureBox();
-            this.ptoVerdeDestino = new System.Windows.Forms.PictureBox();
             this.lblMuestreo = new System.Windows.Forms.Label();
-            this.botonAbrirMuestreo = new System.Windows.Forms.Button();
             this.txtMuestreo = new System.Windows.Forms.TextBox();
             this.btnAyuda = new System.Windows.Forms.Button();
             this.panelAyuda = new System.Windows.Forms.Panel();
@@ -58,7 +54,6 @@
             this.btnCancelar = new System.Windows.Forms.Button();
             this.chkLstVariables = new System.Windows.Forms.CheckedListBox();
             this.lblVariables = new System.Windows.Forms.Label();
-            this.ptoVerdeVariables = new System.Windows.Forms.PictureBox();
             this.pBar = new System.Windows.Forms.ProgressBar();
             this.txtHorizontal = new System.Windows.Forms.TextBox();
             this.txtVertical = new System.Windows.Forms.TextBox();
@@ -66,16 +61,21 @@
             this.lblTipoRed = new System.Windows.Forms.Label();
             this.lblHorizontal = new System.Windows.Forms.Label();
             this.lblVertical = new System.Windows.Forms.Label();
-            this.ptoVerdeVertical = new System.Windows.Forms.PictureBox();
-            this.ptoVerdeHorizontal = new System.Windows.Forms.PictureBox();
             this.lblProgressBar = new System.Windows.Forms.Label();
             this.chkSinRed = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).BeginInit();
+            this.ptoVerdeHorizontal = new System.Windows.Forms.PictureBox();
+            this.ptoVerdeVertical = new System.Windows.Forms.PictureBox();
+            this.ptoVerdeVariables = new System.Windows.Forms.PictureBox();
+            this.ptoVerdeDestino = new System.Windows.Forms.PictureBox();
+            this.botonAbrirMuestreo = new System.Windows.Forms.Button();
+            this.ptoVerdeZF = new System.Windows.Forms.PictureBox();
+            this.botonAbrir = new System.Windows.Forms.Button();
             this.panelAyuda.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeVariables)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeVertical)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeHorizontal)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeVertical)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeVariables)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).BeginInit();
             this.SuspendLayout();
             // 
             // txtArchivoZF
@@ -90,22 +90,10 @@
             this.txtArchivoZF.TextChanged += new System.EventHandler(this.txtArchivoZF_TextChanged);
             this.txtArchivoZF.GotFocus += new System.EventHandler(this.txtArchivoZF_GotFocus);
             // 
-            // botonAbrir
-            // 
-            this.botonAbrir.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botonAbrir.Image = ((System.Drawing.Image)(resources.GetObject("botonAbrir.Image")));
-            this.botonAbrir.Location = new System.Drawing.Point(420, 32);
-            this.botonAbrir.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.botonAbrir.Name = "botonAbrir";
-            this.botonAbrir.Size = new System.Drawing.Size(31, 28);
-            this.botonAbrir.TabIndex = 1;
-            this.botonAbrir.UseVisualStyleBackColor = true;
-            this.botonAbrir.Click += new System.EventHandler(this.botonAbrir_Click);
-            // 
             // btnAceptar
             // 
             this.btnAceptar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAceptar.Location = new System.Drawing.Point(31, 479);
+            this.btnAceptar.Location = new System.Drawing.Point(31, 426);
             this.btnAceptar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAceptar.Name = "btnAceptar";
             this.btnAceptar.Size = new System.Drawing.Size(110, 28);
@@ -125,26 +113,6 @@
             this.lblOpenFileZF.TabIndex = 3;
             this.lblOpenFileZF.Text = "Archivo de zonificación";
             // 
-            // ptoVerdeZF
-            // 
-            this.ptoVerdeZF.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeZF.Image")));
-            this.ptoVerdeZF.Location = new System.Drawing.Point(12, 34);
-            this.ptoVerdeZF.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.ptoVerdeZF.Name = "ptoVerdeZF";
-            this.ptoVerdeZF.Size = new System.Drawing.Size(19, 20);
-            this.ptoVerdeZF.TabIndex = 4;
-            this.ptoVerdeZF.TabStop = false;
-            // 
-            // ptoVerdeDestino
-            // 
-            this.ptoVerdeDestino.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeDestino.Image")));
-            this.ptoVerdeDestino.Location = new System.Drawing.Point(11, 319);
-            this.ptoVerdeDestino.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.ptoVerdeDestino.Name = "ptoVerdeDestino";
-            this.ptoVerdeDestino.Size = new System.Drawing.Size(19, 20);
-            this.ptoVerdeDestino.TabIndex = 8;
-            this.ptoVerdeDestino.TabStop = false;
-            // 
             // lblMuestreo
             // 
             this.lblMuestreo.AutoSize = true;
@@ -154,17 +122,6 @@
             this.lblMuestreo.Size = new System.Drawing.Size(110, 15);
             this.lblMuestreo.TabIndex = 7;
             this.lblMuestreo.Text = "Capa de muestreo";
-            // 
-            // botonAbrirMuestreo
-            // 
-            this.botonAbrirMuestreo.Image = ((System.Drawing.Image)(resources.GetObject("botonAbrirMuestreo.Image")));
-            this.botonAbrirMuestreo.Location = new System.Drawing.Point(420, 315);
-            this.botonAbrirMuestreo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.botonAbrirMuestreo.Name = "botonAbrirMuestreo";
-            this.botonAbrirMuestreo.Size = new System.Drawing.Size(31, 28);
-            this.botonAbrirMuestreo.TabIndex = 7;
-            this.botonAbrirMuestreo.UseVisualStyleBackColor = true;
-            this.botonAbrirMuestreo.Click += new System.EventHandler(this.botonAbrirMuestreo_Click);
             // 
             // txtMuestreo
             // 
@@ -180,7 +137,7 @@
             // btnAyuda
             // 
             this.btnAyuda.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAyuda.Location = new System.Drawing.Point(294, 479);
+            this.btnAyuda.Location = new System.Drawing.Point(294, 426);
             this.btnAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAyuda.Name = "btnAyuda";
             this.btnAyuda.Size = new System.Drawing.Size(157, 28);
@@ -198,7 +155,7 @@
             this.panelAyuda.Location = new System.Drawing.Point(475, 27);
             this.panelAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.panelAyuda.Name = "panelAyuda";
-            this.panelAyuda.Size = new System.Drawing.Size(442, 478);
+            this.panelAyuda.Size = new System.Drawing.Size(442, 427);
             this.panelAyuda.TabIndex = 10;
             // 
             // labelDescripcionZonificacion
@@ -351,7 +308,7 @@
             // btnCancelar
             // 
             this.btnCancelar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCancelar.Location = new System.Drawing.Point(162, 479);
+            this.btnCancelar.Location = new System.Drawing.Point(162, 426);
             this.btnCancelar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(110, 28);
@@ -382,19 +339,9 @@
             this.lblVariables.TabIndex = 13;
             this.lblVariables.Text = "Variables";
             // 
-            // ptoVerdeVariables
-            // 
-            this.ptoVerdeVariables.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeVariables.Image")));
-            this.ptoVerdeVariables.Location = new System.Drawing.Point(11, 85);
-            this.ptoVerdeVariables.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.ptoVerdeVariables.Name = "ptoVerdeVariables";
-            this.ptoVerdeVariables.Size = new System.Drawing.Size(19, 20);
-            this.ptoVerdeVariables.TabIndex = 14;
-            this.ptoVerdeVariables.TabStop = false;
-            // 
             // pBar
             // 
-            this.pBar.Location = new System.Drawing.Point(31, 431);
+            this.pBar.Location = new System.Drawing.Point(31, 378);
             this.pBar.Name = "pBar";
             this.pBar.Size = new System.Drawing.Size(420, 23);
             this.pBar.TabIndex = 15;
@@ -469,15 +416,25 @@
             this.lblVertical.TabIndex = 24;
             this.lblVertical.Text = "Filas";
             // 
-            // ptoVerdeVertical
+            // lblProgressBar
             // 
-            this.ptoVerdeVertical.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeVertical.Image")));
-            this.ptoVerdeVertical.Location = new System.Drawing.Point(11, 247);
-            this.ptoVerdeVertical.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.ptoVerdeVertical.Name = "ptoVerdeVertical";
-            this.ptoVerdeVertical.Size = new System.Drawing.Size(19, 20);
-            this.ptoVerdeVertical.TabIndex = 25;
-            this.ptoVerdeVertical.TabStop = false;
+            this.lblProgressBar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblProgressBar.Location = new System.Drawing.Point(31, 357);
+            this.lblProgressBar.Name = "lblProgressBar";
+            this.lblProgressBar.Size = new System.Drawing.Size(420, 20);
+            this.lblProgressBar.TabIndex = 27;
+            // 
+            // chkSinRed
+            // 
+            this.chkSinRed.AutoSize = true;
+            this.chkSinRed.Location = new System.Drawing.Point(234, 201);
+            this.chkSinRed.Name = "chkSinRed";
+            this.chkSinRed.Size = new System.Drawing.Size(133, 20);
+            this.chkSinRed.TabIndex = 4;
+            this.chkSinRed.Text = "Sin generalización";
+            this.chkSinRed.UseVisualStyleBackColor = true;
+            this.chkSinRed.CheckedChanged += new System.EventHandler(this.chkSinRed_CheckedChanged);
+            this.chkSinRed.GotFocus += new System.EventHandler(this.chkSinRed_GotFocus);
             // 
             // ptoVerdeHorizontal
             // 
@@ -489,33 +446,74 @@
             this.ptoVerdeHorizontal.TabIndex = 26;
             this.ptoVerdeHorizontal.TabStop = false;
             // 
-            // lblProgressBar
+            // ptoVerdeVertical
             // 
-            this.lblProgressBar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProgressBar.Location = new System.Drawing.Point(31, 410);
-            this.lblProgressBar.Name = "lblProgressBar";
-            this.lblProgressBar.Size = new System.Drawing.Size(420, 20);
-            this.lblProgressBar.TabIndex = 27;
+            this.ptoVerdeVertical.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeVertical.Image")));
+            this.ptoVerdeVertical.Location = new System.Drawing.Point(11, 247);
+            this.ptoVerdeVertical.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ptoVerdeVertical.Name = "ptoVerdeVertical";
+            this.ptoVerdeVertical.Size = new System.Drawing.Size(19, 20);
+            this.ptoVerdeVertical.TabIndex = 25;
+            this.ptoVerdeVertical.TabStop = false;
             // 
-            // chkSinRed
+            // ptoVerdeVariables
             // 
-            this.chkSinRed.AutoSize = true;
-            this.chkSinRed.Checked = true;
-            this.chkSinRed.CheckState = System.Windows.Forms.CheckState.Unchecked;
-            this.chkSinRed.Location = new System.Drawing.Point(234, 201);
-            this.chkSinRed.Name = "chkSinRed";
-            this.chkSinRed.Size = new System.Drawing.Size(133, 20);
-            this.chkSinRed.TabIndex = 4;
-            this.chkSinRed.Text = "Sin generalización";
-            this.chkSinRed.UseVisualStyleBackColor = true;
-            this.chkSinRed.CheckedChanged += new System.EventHandler(this.chkSinRed_CheckedChanged);
-            this.chkSinRed.GotFocus += new System.EventHandler(this.chkSinRed_GotFocus);
+            this.ptoVerdeVariables.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeVariables.Image")));
+            this.ptoVerdeVariables.Location = new System.Drawing.Point(11, 85);
+            this.ptoVerdeVariables.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ptoVerdeVariables.Name = "ptoVerdeVariables";
+            this.ptoVerdeVariables.Size = new System.Drawing.Size(19, 20);
+            this.ptoVerdeVariables.TabIndex = 14;
+            this.ptoVerdeVariables.TabStop = false;
+            // 
+            // ptoVerdeDestino
+            // 
+            this.ptoVerdeDestino.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeDestino.Image")));
+            this.ptoVerdeDestino.Location = new System.Drawing.Point(11, 319);
+            this.ptoVerdeDestino.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ptoVerdeDestino.Name = "ptoVerdeDestino";
+            this.ptoVerdeDestino.Size = new System.Drawing.Size(19, 20);
+            this.ptoVerdeDestino.TabIndex = 8;
+            this.ptoVerdeDestino.TabStop = false;
+            // 
+            // botonAbrirMuestreo
+            // 
+            this.botonAbrirMuestreo.Image = ((System.Drawing.Image)(resources.GetObject("botonAbrirMuestreo.Image")));
+            this.botonAbrirMuestreo.Location = new System.Drawing.Point(420, 315);
+            this.botonAbrirMuestreo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.botonAbrirMuestreo.Name = "botonAbrirMuestreo";
+            this.botonAbrirMuestreo.Size = new System.Drawing.Size(31, 28);
+            this.botonAbrirMuestreo.TabIndex = 7;
+            this.botonAbrirMuestreo.UseVisualStyleBackColor = true;
+            this.botonAbrirMuestreo.Click += new System.EventHandler(this.botonAbrirMuestreo_Click);
+            // 
+            // ptoVerdeZF
+            // 
+            this.ptoVerdeZF.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeZF.Image")));
+            this.ptoVerdeZF.Location = new System.Drawing.Point(12, 34);
+            this.ptoVerdeZF.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ptoVerdeZF.Name = "ptoVerdeZF";
+            this.ptoVerdeZF.Size = new System.Drawing.Size(19, 20);
+            this.ptoVerdeZF.TabIndex = 4;
+            this.ptoVerdeZF.TabStop = false;
+            // 
+            // botonAbrir
+            // 
+            this.botonAbrir.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botonAbrir.Image = ((System.Drawing.Image)(resources.GetObject("botonAbrir.Image")));
+            this.botonAbrir.Location = new System.Drawing.Point(420, 32);
+            this.botonAbrir.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.botonAbrir.Name = "botonAbrir";
+            this.botonAbrir.Size = new System.Drawing.Size(31, 28);
+            this.botonAbrir.TabIndex = 1;
+            this.botonAbrir.UseVisualStyleBackColor = true;
+            this.botonAbrir.Click += new System.EventHandler(this.botonAbrir_Click);
             // 
             // ventanaMuestreo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(468, 518);
+            this.ClientSize = new System.Drawing.Size(466, 468);
             this.Controls.Add(this.chkSinRed);
             this.Controls.Add(this.lblProgressBar);
             this.Controls.Add(this.ptoVerdeHorizontal);
@@ -546,17 +544,18 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "ventanaMuestreo";
-            this.Text = "Optimización de muestreo";
+            this.Text = "Puntos de muestreo";
             this.TopMost = true;
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).EndInit();
             this.panelAyuda.ResumeLayout(false);
             this.panelAyuda.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeVariables)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeVertical)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeHorizontal)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeVertical)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeVariables)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeDestino)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeZF)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
+
         }
 
         #endregion

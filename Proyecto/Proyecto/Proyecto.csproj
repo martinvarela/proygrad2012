@@ -170,6 +170,12 @@
     <Compile Include="ventanaBlackmore.Designer.cs">
       <DependentUpon>ventanaBlackmore.cs</DependentUpon>
     </Compile>
+    <Compile Include="VentanaErrores.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VentanaErrores.Designer.cs">
+      <DependentUpon>VentanaErrores.cs</DependentUpon>
+    </Compile>
     <Compile Include="ventanaMuestreo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -235,6 +241,12 @@
       <DependentUpon>ventanaBlackmore.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="VentanaErrores.af.resx">
+      <DependentUpon>VentanaErrores.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VentanaErrores.resx">
+      <DependentUpon>VentanaErrores.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ventanaMuestreo.resx">
       <DependentUpon>ventanaMuestreo.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -255,6 +267,7 @@
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Images\advertencia.png" />
     <Content Include="Images\blackmoore1.ico" />
     <Content Include="Images\blackmoore2.ico" />
     <AddInContent Include="Images\botonMuestreo_1.png" />

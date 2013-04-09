@@ -15,6 +15,8 @@ namespace Proyecto
         public ventanaMuestreo()
         {
             InitializeComponent();
+
+            this.cboTipoRed.SelectedIndex = 0;
         }
 
         private void botonAbrir_Click(object sender, EventArgs e)
@@ -32,9 +34,40 @@ namespace Proyecto
         
         private void Zonificacion_Click(object sender, EventArgs e)
         {
-            //txtArchivoZF.Text = "C:\\Users\\Gonzalo\\Desktop\\New folder\\20110608_153342\\Sur_todvar.ZF";
-            //txtMuestreo.Text = "C:\\Users\\Gonzalo\\Desktop\\asdas";
-            if (!ptoVerdeZF.Visible)
+            //control previo de datos para la ejecucion de la funcion
+            String[] stringErrores = new String[5];
+            for (int i = 0; i < stringErrores.Length; i++) 
+                stringErrores[i] = "";
+            int cantidadErrores = 0;
+            if (ptoVerdeZF.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblOpenFileZF.Text + ": Ruta inválida para el archivo de zonificación(*.ZF).";
+            }
+            if (ptoVerdeVariables.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVariables.Text + ": Se deben marcar alguna variable.";
+            }
+            if (ptoVerdeVertical.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVertical.Text + ": El valor debe ser entero y mayor que cero.";
+            }
+            if (ptoVerdeHorizontal.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblHorizontal.Text + ": El valor debe ser entero y mayor que cero.";
+            }
+            if (ptoVerdeDestino.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblMuestreo.Text + ": Ruta inválida donde se guardará la capa de posibles puntos de muestreo.";
+            }
+            
+
+            //si esta no hay errores, ejecuto la funcion de crear puntos de muestreo
+            if (cantidadErrores == 0)
             {
                 Controlador controlador = Controlador.getInstancia;
                 List<int> variables = new List<int>();
@@ -43,40 +76,30 @@ namespace Proyecto
                     if (chkLstVariables.GetItemChecked(i))
                         variables.Add(i);
                 }
+
+                //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
+                String rutaCapa = Path.GetDirectoryName(this.txtMuestreo.Text.ToString());
+                String nombreCapa = Path.GetFileNameWithoutExtension(this.txtMuestreo.Text.ToString());
+
                 if (chkSinRed.Checked)
                 {
-                    controlador.crearPuntosMuestreo(false, txtArchivoZF.Text, true, 0, 0, variables, pBar, this.lblProgressBar);
+                    controlador.crearPuntosMuestreo(false, txtArchivoZF.Text, true, 0, 0, variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar);
                 }
                 else if (this.cboTipoRed.SelectedIndex == 0)
                 {
-                    controlador.crearPuntosMuestreo(true, txtArchivoZF.Text, true, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, this.lblProgressBar);
+                    controlador.crearPuntosMuestreo(true, txtArchivoZF.Text, true, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar);
                 }
                 else if (this.cboTipoRed.SelectedIndex == 1)
                 {
-                    controlador.crearPuntosMuestreo(true, txtArchivoZF.Text, false, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, this.lblProgressBar);
+                    controlador.crearPuntosMuestreo(true, txtArchivoZF.Text, false, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar);
                 }
-                
-                //// Display the ProgressBar control.
-                //pBar.Visible = true;
-                //// Set Minimum to 1 to represent the first file being copied.
-                //pBar.Minimum = 1;
-                //// Set Maximum to the total number of files to copy.
-                //pBar.Maximum = 50;
-                //// Set the initial value of the ProgressBar.
-                //pBar.Value = 1;
-                //// Set the Step property to a value of 1 to represent each file being copied.
-                //pBar.Step = 1;
 
-                //// Loop through all files to copy.
-                //for (int x = 1; x <= 50; x++)
-                //{
-                //    System.Threading.Thread.Sleep(500);                    
-                //    // Perform the increment on the ProgressBar.
-                //    pBar.PerformStep();
-                //}
-
-                //pBar.Visible = false;
                 this.Close();
+            }
+            else
+            {
+                VentanaErrores ventanaErrores = new VentanaErrores(cantidadErrores, stringErrores);
+                ventanaErrores.Visible = true;
             }
         }
 
@@ -183,12 +206,12 @@ namespace Proyecto
             if (btnAyuda.Text.ToString() == "Mostrar ayuda >>")
             {
                 panelAyuda.Visible = true;
-                this.Size = new Size(954, 556);
+                this.Size = new Size(950, 506);
                 btnAyuda.Text = "Ocultar ayuda <<";
             }
             else
             {
-                this.Size = new Size(484, 556);
+                this.Size = new Size(482, 506);
                 panelAyuda.Visible = true;
                 btnAyuda.Text = "Mostrar ayuda >>";
             }

@@ -59,5 +59,12 @@ namespace Proyecto.Properties {
                 resourceCulture = value;
             }
         }
+        
+        internal static System.Drawing.Bitmap advertencia {
+            get {
+                object obj = ResourceManager.GetObject("advertencia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

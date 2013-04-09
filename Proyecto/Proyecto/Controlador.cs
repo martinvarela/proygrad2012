@@ -9,6 +9,7 @@ using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
 using System.Runtime.InteropServices;
 using ESRI.ArcGIS.Geoprocessor;
+using ESRI.ArcGIS.Geoprocessing;
 using System.Windows.Forms;
 using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.DataSourcesFile;
@@ -84,12 +85,12 @@ class Controlador
     //se crea la instancia Muestreo con su respectiva lista de posibles puntos de Muestreos.
     //se devuelve en el arcmap la capa "CR-hhMMss" que se cambiara por el nombre pasado como parametro que contiene los posibles puntos de muestreo(todos) 
     //para realizar de forma manual el semivariograma de forma de encontrar cual es el RANGO.
-    public Muestreo crearPuntosMuestreo(bool conRed, String rutaEntrada, bool filasColumnas, int vertical, int horizontal, List<int> variablesMarcadas, ProgressBar pBar, Label lblProgressBar)
+    public Muestreo crearPuntosMuestreo(bool conRed, String rutaEntrada, bool filasColumnas, int vertical, int horizontal, List<int> variablesMarcadas, ProgressBar pBar, String rutaCapa, String nombreCapa, Label lblProgressBar)
     {
         IMap map = ArcMap.Document.FocusMap;
         
         IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
-        IWorkspace workspaceZonif = workspaceFactory.OpenFromFile("C:\\Temp\\Sample", 0);
+        IWorkspace workspaceZonif = workspaceFactory.OpenFromFile(rutaCapa, 0);
         this.wsZonif = workspaceZonif;
         
         //paso 1
@@ -124,7 +125,7 @@ class Controlador
         {
             //se crea la capa de red con las filas y columnas pasadas como parametro
             //se carga en el controlar la capaPoligonos y capaPuntosMuestreo
-            this.crearRed(map, this.nombreCapaPoligonos, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filasColumnas, vertical, horizontal, true, this.nombreCapaPuntosZonificacion);
+            this.crearRed(map, this.nombreCapaPoligonos, nombreCapa, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filasColumnas, vertical, horizontal, true, this.nombreCapaPuntosZonificacion);
 
             //paso 5
             lblProgressBar.Text = "Creando layer con los puntos de red...";
@@ -148,6 +149,9 @@ class Controlador
             //esto en el caso de que se quiera trabajar con todos los puntos de zonificacion.
             this.capaPuntosMuestreo = this.capaPuntosZonificacion as FeatureLayer;
         }
+        //this.capaPuntosMuestreo.Name = nombreCapa;
+        //this.capaPuntosMuestreo.FeatureClass.
+
         return muestreo;
     }
 
@@ -239,16 +243,16 @@ class Controlador
         //Release the Cursor
         System.Runtime.InteropServices.Marshal.ReleaseComObject(FeatureCursor);
 
-        IFeatureLayer featureLayer = new FeatureLayerClass();
-        featureLayer.FeatureClass = nuevaFeatureClass;
+        //IFeatureLayer featureLayer = new FeatureLayerClass();
+        //featureLayer.FeatureClass = nuevaFeatureClass;
 
-        ILayer layer = (ILayer)featureLayer;
-        layer.Name = featureLayer.FeatureClass.AliasName;
-        // Add the Layer to the focus map
-        map.AddLayer(layer);
+        //ILayer layer = (ILayer)featureLayer;
+        //layer.Name = featureLayer.FeatureClass.AliasName;
+        //// Add the Layer to the focus map
+        //map.AddLayer(layer);
 
-        ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
-        activeView.Refresh();
+        //ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
+        //activeView.Refresh();
 
         pBar.Visible = false;
 
@@ -403,48 +407,18 @@ class Controlador
                                              int indiceAtributoEnTablaPuntos,
                                              ProgressBar pBar)
     {
-        IEnumLayer enumlayers = map.get_Layers();
-
-        //se busca la capa de puntos
-        enumlayers.Reset();
-        ILayer layerPuntos = enumlayers.Next();
-        while ((layerPuntos != null) && (layerPuntos.Name != nombreCapaPuntosZonificacion))
-        {
-
-            layerPuntos = enumlayers.Next();
-        }
-        IFeatureLayer ifeaturelayerPuntos = layerPuntos as FeatureLayer;
-        IFeatureClass featureclassPuntos = ifeaturelayerPuntos.FeatureClass;
-
-        //se busca la capa de poligonos
-        enumlayers.Reset();
-        ILayer layerPoligono = enumlayers.Next();
-        while ((layerPoligono != null) && (layerPoligono.Name != nombreCapaPoligonos))
-        {
-            layerPoligono = enumlayers.Next();
-        }
-        IFeatureLayer ifeaturelayerPoligono = layerPoligono as FeatureLayer;
-        IFeatureClass featureclassPoligono = ifeaturelayerPoligono.FeatureClass;
-
-        //se busca la capa de etiquetas de poligonos, seran los futuros puntos de muestreo
-        enumlayers.Reset();
-        ILayer layerPuntosMuestreo = enumlayers.Next();
-        while ((layerPuntosMuestreo != null) && (layerPuntosMuestreo.Name != nombreCapaPuntosMuestreos))
-        {
-            layerPuntosMuestreo = enumlayers.Next();
-        }
-        IFeatureLayer ifeaturelayerPuntosMuestreo = layerPuntosMuestreo as FeatureLayer;
-        IFeatureClass featureclassPuntosMuestreo = ifeaturelayerPuntosMuestreo.FeatureClass;
 
         //se crea el campo Promedio en la capa de Puntos de Muestreos
-        int indicePromedioFieldPuntosMuestreo = this.crearFieldAFeatureClass(featureclassPuntosMuestreo, "Valor", esriFieldType.esriFieldTypeDouble);
+        int indicePromedioFieldPuntosMuestreo = this.crearFieldAFeatureClass(this.capaPuntosMuestreo.FeatureClass, "Valor", esriFieldType.esriFieldTypeDouble);
+        //int indicePromedioFieldPuntosMuestreo = this.crearFieldAFeatureClass(featureclassPuntosMuestreo, "Valor", esriFieldType.esriFieldTypeDouble);
 
         //Creo el updateCursorPoligono para iterar en las filas de los poligonos (poligono por poligono).
-        IFeatureCursor updateCursorPoligono = ifeaturelayerPoligono.FeatureClass.Update(null, false);
-
+        IFeatureCursor updateCursorPoligono = this.capaPoligonos.FeatureClass.Update(null, false);
+        //IFeatureCursor updateCursorPoligono = ifeaturelayerPoligono.FeatureClass.Update(null, false);
 
         //Creo el updateCursorPuntosMuestreo para iterar en las filas de los puntos de muestreo (punto por punto).
-        IFeatureCursor updateCursorPuntosMuestreo = ifeaturelayerPuntosMuestreo.FeatureClass.Update(null, false);
+        IFeatureCursor updateCursorPuntosMuestreo = this.capaPuntosMuestreo.FeatureClass.Update(null, false);
+        //IFeatureCursor updateCursorPuntosMuestreo = ifeaturelayerPuntosMuestreo.FeatureClass.Update(null, false);
 
         IFeature poligonoIFeature = null;
         IFeature puntosMuestreoIFeature = null;
@@ -454,7 +428,7 @@ class Controlador
             //si la interseccion devuelve vacia, se elimina el poligono
             //en caso contrario se calcula y se setea el valor del promedio.
             while ((poligonoIFeature = updateCursorPoligono.NextFeature()) != null)
-            {
+                {
                 //se actura el cursos de puntos de muestreo
                 puntosMuestreoIFeature = updateCursorPuntosMuestreo.NextFeature();
 
@@ -467,7 +441,8 @@ class Controlador
                 // specify the geometry to query with
                 spatialFilter.Geometry = searchGeometry; //poligono
                 // specify what the geometry field is called on the Feature Class that we will be querying against
-                System.String nameOfShapeField = featureclassPuntos.ShapeFieldName;
+                System.String nameOfShapeField = this.capaPuntosZonificacion.ShapeFieldName;
+                //System.String nameOfShapeField = featureclassPuntos.ShapeFieldName;
                 spatialFilter.GeometryField = nameOfShapeField;
                 // specify the type of spatial operation to use
                 spatialFilter.SpatialRel = esriSpatialRelEnum.esriSpatialRelIntersects;
@@ -475,7 +450,8 @@ class Controlador
                 // perform the query and use a cursor to hold the results
                 IQueryFilter queryFilter = new QueryFilterClass();
                 queryFilter = (IQueryFilter)spatialFilter;
-                IFeatureCursor featureCursor = featureclassPuntos.Search(queryFilter, false);
+                IFeatureCursor featureCursor = this.capaPuntosZonificacion.Search(queryFilter, false);
+                //IFeatureCursor featureCursor = featureclassPuntos.Search(queryFilter, false);
 
                 IFeature selPuntosFeature = null;
                 float resultado = 0;
@@ -505,7 +481,6 @@ class Controlador
                     IGeometry geometry = puntosMuestreoIFeature.Shape;
                     IPoint ipoint = geometry as IPoint;
 
-
                     puntoMuestreo.setCoordenadaXY(ipoint.X,ipoint.Y);
 
                     //se agrega el punto de muestreo al muestreo
@@ -517,11 +492,11 @@ class Controlador
                     puntosMuestreoIFeature.Delete();
                 }
             }
-            //se borra la layer de poligonos
-            map.DeleteLayer(layerPoligono);
+            ////se borra la layer de poligonos
+            //map.DeleteLayer(layerPoligono);
 
-            //se borra la layer de Puntos
-            map.DeleteLayer(layerPuntos);
+            ////se borra la layer de Puntos
+            //map.DeleteLayer(layerPuntos);
         }
         catch (COMException comExc)
         {
@@ -542,15 +517,12 @@ class Controlador
         fieldEdit.Type_2 = tipoField;
 
         ISchemaLock schemaLock = (ISchemaLock)featureClass;
-
         try
         {
             // A try block is necessary, as an exclusive lock may not be available.
             schemaLock.ChangeSchemaLock(esriSchemaLock.esriExclusiveSchemaLock);
-
             // Add the field.
             featureClass.AddField(field);
-
         }
         catch (Exception exc)
         {
@@ -568,6 +540,7 @@ class Controlador
     //devuelve el IFeatureClass correspondiente a la capa de puntos de muestreo (sin optimizar).
     private void crearRed(IMap targetMap,
                           string nombreCapaPoligonos,
+                          string nombreCapa,
                           IPoint puntoOrigen,
                           IPoint puntoOpuesto,
                           bool filasColumnas,
@@ -600,13 +573,48 @@ class Controlador
         }
         fishNet.out_label = nombreCapaPoligonos;
         fishNet.geometry_type = "POLYGON";
-        fishNet.template = capaZonificacion;
-        gp.AddOutputsToMap = true;
+        fishNet.template = this.capaPuntosZonificacion;
+        gp.AddOutputsToMap = false;
         gp.OverwriteOutput = true;
 
+        IFeatureClass fc0;
+        IFeatureClass fc1;
+        IQueryFilter qf;
         try
         {
-            gp.Execute(fishNet, null);
+            IGPUtilities gpUtils = new GPUtilitiesClass();
+
+            IGeoProcessorResult result = (IGeoProcessorResult)gp.Execute(fishNet, null);
+            gpUtils.DecodeFeatureLayer(result.GetOutput(0), out fc0, out qf);
+            gpUtils.DecodeFeatureLayer(result.GetOutput(1), out fc1, out qf);
+
+            //cambio el nombre de la capa resultado
+            ESRI.ArcGIS.DataManagementTools.Rename rename = new ESRI.ArcGIS.DataManagementTools.Rename();
+            rename.in_data = this.wsZonif.PathName + "\\" + this.nombreCapaPuntosMuestreo + ".shp";
+            rename.out_data = this.wsZonif.PathName + "\\" + nombreCapa + ".shp";
+            Geoprocessor g = new Geoprocessor();
+            g.Execute(rename, null);
+
+            //se busca la capa de poligonos para setear en controlador
+            IFeatureLayer fLayer0 = new FeatureLayerClass();
+            fLayer0.FeatureClass = fc0;
+            this.capaPoligonos = fLayer0;
+
+            //se busca la capa de puntos de muestreo para retornar
+            IFeatureLayer fLayer1 = new FeatureLayerClass();
+            fLayer1.FeatureClass = fc1;
+            this.capaPuntosMuestreo = fLayer1;
+
+            //se agrega al map la capa de puntos de muestreo (la de puntos, no la de poligonos)
+            ILayer layer = (ILayer)fLayer1;
+            layer.Name = fLayer1.FeatureClass.AliasName;
+            targetMap.AddLayer(layer);
+
+            ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)targetMap;
+            activeView.Refresh();
+            
+            //se setea en el controlador el nombre de la capa de puntos de muestreo elegida por el usuario.
+            this.nombreCapaPuntosMuestreo = nombreCapa;
         }
         catch (NullReferenceException e)
         {
@@ -617,28 +625,5 @@ class Controlador
             for (int i = 0; i < gp.MessageCount; i++)
                 System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
         }
-
-        //se busca la capa de poligonos para setear en controlador
-        IEnumLayer enumlayers = targetMap.get_Layers();
-        enumlayers.Reset();
-        ILayer layerPoligonos = enumlayers.Next();
-        while ((layerPoligonos != null) && (layerPoligonos.Name != nombreCapaPoligonos))
-        {
-            layerPoligonos = enumlayers.Next();
-        }
-        IFeatureLayer ifeaturelayerPoligonos = layerPoligonos as FeatureLayer;
-        this.capaPoligonos = ifeaturelayerPoligonos;
-
-        //se busca la capa de puntos de muestreo para retornar
-        enumlayers.Reset();
-        ILayer layerPuntos = enumlayers.Next();
-        String nombreCapaPuntosMuestreo = nombreCapaPoligonos + "_label";
-        while ((layerPuntos != null) && (layerPuntos.Name != nombreCapaPuntosMuestreo))
-        {
-            layerPuntos = enumlayers.Next();
-        }
-        IFeatureLayer ifeaturelayerPuntos = layerPuntos as FeatureLayer;
-        this.capaPuntosMuestreo = ifeaturelayerPuntos;
     }
-
 }
