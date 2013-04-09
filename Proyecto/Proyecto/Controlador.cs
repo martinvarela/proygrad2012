@@ -112,15 +112,22 @@ class Controlador
         //se crea una layer temporal con los puntos de zonificacion sacados del .ZF
         //IMap map = ArcMap.Document.FocusMap;
         String ahora = System.DateTime.Now.ToString("HHmmss");
+        if (conRed)
+        {
+            this.nombreCapaPuntosZonificacion = "PZ_" + ahora;
+            this.nombreCapaPoligonos = "CR_" + ahora;
+            this.nombreCapaPuntosMuestreo = "CR_" + ahora + "_label";
+        }
+        else
+        {
+            this.nombreCapaPuntosZonificacion = nombreCapa;
+        }
 
-        this.nombreCapaPuntosZonificacion = "PZ_" + ahora;
         lblProgressBar.Text = "Creando layer con los puntos de zonificación...";
         this.capaPuntosZonificacion = this.crearCapaPuntosZonificacion(map, nombreCapaPuntosZonificacion, zonificacion.PuntosZonificacion, pBar);
         lblProgressBar.Text = "";
 
-        this.nombreCapaPoligonos = "CR_" + ahora;
-        this.nombreCapaPuntosMuestreo = "CR_" + ahora + "_label";
-
+        
         if (conRed)
         {
             //se crea la capa de red con las filas y columnas pasadas como parametro
@@ -142,12 +149,33 @@ class Controlador
 
             pBar.Visible = false;
             lblProgressBar.Text = "";
+
+            //borro la capa auxiliar de puntosZonificacion creada
+            if (((IDataset)this.capaPuntosZonificacion).CanDelete())
+            {
+                ((IDataset)this.capaPuntosZonificacion).Delete();
+            }
+
+            //borro la capa auxiliar de poligonos creada
+            if (((IDataset)this.capaPoligonos.FeatureClass).CanDelete())
+            {
+                ((IDataset)this.capaPoligonos.FeatureClass).Delete();
+            }
      
         }
         else
         {
             //esto en el caso de que se quiera trabajar con todos los puntos de zonificacion.
-            this.capaPuntosMuestreo = this.capaPuntosZonificacion as FeatureLayer;
+            this.capaPuntosMuestreo = new FeatureLayer();
+            this.capaPuntosMuestreo.FeatureClass = this.capaPuntosZonificacion;
+            //se agrega al map la capa de puntos de muestreo (la de puntos, no la de poligonos)
+            ILayer layer = (ILayer)this.capaPuntosMuestreo;
+            layer.Name = this.capaPuntosMuestreo.FeatureClass.AliasName;
+            map.AddLayer(layer);
+
+            ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
+            activeView.Refresh();
+            
         }
         //this.capaPuntosMuestreo.Name = nombreCapa;
         //this.capaPuntosMuestreo.FeatureClass.
