@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using System.IO;
 
 namespace Proyecto
 {
@@ -92,8 +93,10 @@ namespace Proyecto
             IFeatureLayer featureLayer = layer as IFeatureLayer;
             IFeatureClass featureClass = featureLayer.FeatureClass;
 
+            //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
+            String rutaCapa =  System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
             Controlador controlador = Controlador.getInstancia;
-            controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), int.Parse(txtError.Text.ToString()), double.Parse(txtRango.Text.ToString()));
+            controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), int.Parse(txtError.Text.ToString()), double.Parse(txtRango.Text.ToString()), rutaCapa);
 
 
         }

@@ -187,14 +187,23 @@ class Controlador
     //metodoInterpolacion puede ser IDW o Kriging
     //rango ??? o cantmuestras
     //error maximo aceptado en % ej: 5
-    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error)
+    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error, string rutaCapa)
     {
         IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
+        
         //esta ruta la indica el usuario
-        IWorkspace workspace = workspaceFactory.OpenFromFile("C:\\Temp\\Sample", 0);
+        string fechaActual = System.DateTime.Now.ToString("ddMMyyyy_hhmm");
+        string nombreDirectorio = fechaActual + "_Capas";
+        string nombreArchivo = fechaActual + "_Resumen.txt";
+        string pathCombinado = System.IO.Path.Combine(rutaCapa, nombreDirectorio);
+        string pathArchivo = System.IO.Path.Combine(rutaCapa, nombreArchivo);
+        
+        System.IO.Directory.CreateDirectory(pathCombinado);
+        IWorkspace workspace = workspaceFactory.OpenFromFile(pathCombinado, 0);
         this.wsSSA = workspace;
         this.ssa.setWorkspace(this.wsSSA);
-        IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, rango, error);    
+        
+        IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, rango, error, pathArchivo);    
     } 
 
     public void crearBlackmore(bool filaColumna, int vertical, int horizontal)
