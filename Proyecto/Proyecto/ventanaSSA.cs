@@ -80,24 +80,60 @@ namespace Proyecto
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-            IMap targetMap = ArcMap.Document.FocusMap;
-
-            IEnumLayer enumLayers = targetMap.get_Layers();
-            enumLayers.Reset();
-            ILayer layer = enumLayers.Next();
-            while (layer != null && layer.Name != cboCapaMuestreo.SelectedItem.ToString())
+            //control previo de datos para la ejecucion de la funcion
+            String[] stringErrores = new String[4];
+            for (int i = 0; i < stringErrores.Length; i++)
+                stringErrores[i] = "";
+            int cantidadErrores = 0;
+            if (ptoVerdeCapa.Visible)
             {
-                layer = enumLayers.Next();
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblCapaMuestreo.Text + ": Debe seleccionar una capa de muestreo.";
             }
+            if (ptoVerdeCarpeta.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblRutaDestino.Text + ": Ruta inválida donde se guardarán las capas de optimización de muestreo.";
+            }
+            if (ptoVerdeRango.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblRango.Text + ": Debe indicar un valor entero para el rango.";
+            }
+            if (ptoVerdeError.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblError.Text + ": Debe indicar un valor entero para el error.";
+            }
+            
+            //si esta no hay errores, ejecuto la funcion de crear puntos de muestreo
+            if (cantidadErrores == 0)
+            {
+                IMap targetMap = ArcMap.Document.FocusMap;
 
-            IFeatureLayer featureLayer = layer as IFeatureLayer;
-            IFeatureClass featureClass = featureLayer.FeatureClass;
+                IEnumLayer enumLayers = targetMap.get_Layers();
+                enumLayers.Reset();
+                ILayer layer = enumLayers.Next();
+                while (layer != null && layer.Name != cboCapaMuestreo.SelectedItem.ToString())
+                {
+                    layer = enumLayers.Next();
+                }
 
-            //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
-            String rutaCapa =  System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
-            Controlador controlador = Controlador.getInstancia;
-            controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), int.Parse(txtError.Text.ToString()), double.Parse(txtRango.Text.ToString()), rutaCapa);
+                IFeatureLayer featureLayer = layer as IFeatureLayer;
+                IFeatureClass featureClass = featureLayer.FeatureClass;
 
+                //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
+                String rutaCapa = System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
+                Controlador controlador = Controlador.getInstancia;
+                controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), int.Parse(txtError.Text.ToString()), double.Parse(txtRango.Text.ToString()), rutaCapa);
+
+                this.Close();
+            }
+            else
+            {
+                VentanaErrores ventanaErrores = new VentanaErrores(cantidadErrores, stringErrores);
+                ventanaErrores.Visible = true;
+            }
 
         }
 
@@ -200,6 +236,19 @@ namespace Proyecto
                 this.ptoVerdeCarpeta.Visible = false;
             else
                 this.ptoVerdeCarpeta.Visible = true;
+        }
+
+        private void txtCarpeta_TextChanged(object sender, EventArgs e)
+        {
+            if (txtCarpeta.Text != "")
+            {
+                this.ptoVerdeCarpeta.Visible = false;
+            }
+            else
+            {
+                this.ptoVerdeCarpeta.Visible = true;
+            }
+
         }
 
         private void txtCarpeta_GotFocus(object sender, EventArgs e)
