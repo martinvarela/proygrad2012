@@ -663,4 +663,79 @@ class Controlador
                 System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
         }
     }
+
+    //cargar las variables del archivo .zf
+    public List<string> cargarVariables(string rutaZF)
+    {
+        List<string> listaVariables = new List<string>();
+        //Obtengo el archivo
+        StreamReader objReader = new StreamReader(rutaZF);
+        //Incicializo la variable donde voy a guardar cada linea que leo y la variable donde voy a guardar en memoria el contenido del archivo
+        string sLine = "";
+        int cant_variables = 0;
+        string string_cant_variables = "VarQty:";
+
+        string comienzo_datos = "[Cells]";
+
+        //Leo la linea actual del archivo
+        sLine = objReader.ReadLine();
+
+        //leo hasta la etiqueta [Cells] y saco los valores de rows, cols y cant_variables 
+        while (sLine != null)
+        {
+            if (((sLine != "") && (sLine.Length >= string_cant_variables.Length) && sLine.Substring(0, string_cant_variables.Length) == string_cant_variables))
+            {
+                cant_variables = Int32.Parse(sLine.Substring(string_cant_variables.Length, sLine.Length - string_cant_variables.Length));
+                int i = 1;
+                sLine = objReader.ReadLine();
+                String nombreVariable = "";
+                while (i <= cant_variables && sLine != "")
+                {
+                    String aux = "Var" + i + ": ";
+                    if ((sLine.Substring(0, aux.Length) == aux))
+                    {
+                        nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
+                        listaVariables.Add(nombreVariable);
+                    }
+                    i++;
+                    sLine = objReader.ReadLine();
+                }
+            }
+
+            //Llegue a la etiqueta [Cells] entonces se que a continuacion empiezan los valores de los puntos muestreados
+            if (((sLine != "") && (sLine.Substring(0, comienzo_datos.Length) == comienzo_datos)))
+                break;
+
+            sLine = objReader.ReadLine();
+        }  //fin while de datos generales
+
+        return listaVariables;
+    }
+
+    public List<string> cargarCapasMuestreo() 
+    {
+        List<string> listaCapas = new List<string>();
+
+        IMap targetMap = ArcMap.Document.FocusMap;
+
+        //cargo el combo de capas abiertas
+        IEnumLayer enumLayers = targetMap.get_Layers();
+        enumLayers.Reset();
+        ILayer layer = enumLayers.Next();
+
+        IGeometryDef geometryDef = new GeometryDefClass();
+        IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
+        geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
+        while (layer != null)
+        {
+            IFeatureLayer featureLayer = layer as IFeatureLayer;
+            IFeatureClass fc = featureLayer.FeatureClass;
+            if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
+            {
+                listaCapas.Add(layer.Name.ToString());                
+            }
+            layer = enumLayers.Next();
+        }
+        return listaCapas;
+    }
 }

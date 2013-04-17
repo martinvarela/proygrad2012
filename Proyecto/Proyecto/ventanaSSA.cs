@@ -19,26 +19,34 @@ namespace Proyecto
         {
             InitializeComponent();
 
-            IMap targetMap = ArcMap.Document.FocusMap;
-
-            //cargo el combo de capas abiertas
-            IEnumLayer enumLayers = targetMap.get_Layers();
-            enumLayers.Reset();
-            ILayer layer = enumLayers.Next();
-
-            IGeometryDef geometryDef = new GeometryDefClass();
-            IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
-            geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
-            while (layer != null)
+            Controlador controlador = Controlador.getInstancia;
+            List<string> listaCapas = controlador.cargarCapasMuestreo();
+            foreach (string nombreCapa in listaCapas) 
             {
-                IFeatureLayer featureLayer = layer as IFeatureLayer;
-                IFeatureClass fc = featureLayer.FeatureClass;
-                if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
-                {
-                    this.cboCapaMuestreo.Items.Add(layer.Name.ToString());
-                }
-                layer = enumLayers.Next();
+                this.cboCapaMuestreo.Items.Add(nombreCapa);
             }
+            ////esto ahora esta a nivel de controlador
+            //IMap targetMap = ArcMap.Document.FocusMap;
+
+            ////cargo el combo de capas abiertas
+            //IEnumLayer enumLayers = targetMap.get_Layers();
+            //enumLayers.Reset();
+            //ILayer layer = enumLayers.Next();
+
+            //IGeometryDef geometryDef = new GeometryDefClass();
+            //IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
+            //geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
+            //while (layer != null)
+            //{
+            //    IFeatureLayer featureLayer = layer as IFeatureLayer;
+            //    IFeatureClass fc = featureLayer.FeatureClass;
+            //    if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
+            //    {
+            //        this.cboCapaMuestreo.Items.Add(layer.Name.ToString());
+            //    }
+            //    layer = enumLayers.Next();
+            //}
+
             this.cboCapaMuestreo.SelectedItem = 0;
             if (this.cboCapaMuestreo.Text == "")
                 this.ptoVerdeCapa.Visible = true;
@@ -109,6 +117,7 @@ namespace Proyecto
             //si esta no hay errores, ejecuto la funcion de crear puntos de muestreo
             if (cantidadErrores == 0)
             {
+                this.btnAceptar.Enabled = false;
                 IMap targetMap = ArcMap.Document.FocusMap;
 
                 IEnumLayer enumLayers = targetMap.get_Layers();
