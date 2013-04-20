@@ -25,11 +25,11 @@ class SSA
 
     public SSA()
     {
-        this.temperaturaInicial = 100;
-        this.factorReduccion = 0.01;
+        this.temperaturaInicial = 1;
+        this.factorReduccion = 0.99;
         this.epsilon = 0.000001;
         this.iteraciones = 1000;
-        this.cantMuestras = 15;
+        this.cantMuestras = 30;
     }
 
     public double getTemperaturaInicial() { return this.temperaturaInicial; }
@@ -51,7 +51,7 @@ class SSA
 
     public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error, string pathArchivo)
     {
-        this.cantMuestras = 15;
+        this.cantMuestras = 30;
         //creo la lista de PuntosMuestreo a partir de la IFeatureClass
         List<PuntoMuestreo> listaPuntosMuestreo = new List<PuntoMuestreo>();
         IFeatureCursor cursorPuntosMuestreo = capaPuntosMuestreo.Search(null, false);
@@ -73,7 +73,7 @@ class SSA
         }
 
 
-        while (this.cantMuestras > 10)
+        while (this.cantMuestras > 28)
         {
             //a partir de los puntos, selecciona las muestras iniciales
             Inicializar(listaPuntosMuestreo);
@@ -84,12 +84,12 @@ class SSA
             double fitness;
 
             Random rnd = new Random();
-            int iteration = -1;
+            int iteration = 0;
             ////the probability
             double proba;
-            double alpha = 0.999;
-            double temperature = 400.0;
-            double epsilon = 0.0000001;
+            //double alpha = 0.99;
+            //double temperature = 10.0;
+            double epsilon = 0.00001;
             double delta;
 
             //calculo fitness del muestreo inicial
@@ -106,7 +106,7 @@ class SSA
             System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
 
             //LOOP principal
-            while (iteration < 10 && temperature > epsilon)
+            while (iteration < this.iteraciones && this.temperaturaInicial > epsilon)
             {
                 iteration++;
 
@@ -122,7 +122,7 @@ class SSA
                     auxFitness = CalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
                 }
                 System.Diagnostics.Debug.WriteLine(" auxFitnens: " + auxFitness);
-                delta = auxFitness - fitness;
+                delta = (auxFitness - fitness)/fitness;
                 //if the new distance is better accept it and assign it
                 if (delta < 0)
                 {
@@ -130,33 +130,28 @@ class SSA
                     todos = auxTodos;
                     fitness = auxFitness;
                 }
-                //else
-                //{
-                //    proba = rnd.NextDouble();
-                //    //if the new distance is worse accept 
-                //    //it but with a probability level
-                //    //if the probability is less than 
-                //    //E to the power -delta/temperature.
-                //    //otherwise the old value is kept
-
-                //    //el delta es muy bajo para que funcione bien, el exp siempre da muuy cerca de 1, calibrar!!!!
-                //    if (proba < Math.Exp(-delta / temperature))
-                //    {
-                //        Console.WriteLine("acepto una peor");
-                //        muestreados = auxMuestreados;
-                //        todos = auxTodos;
-                //        fitness = auxFitness;
-                //    }
-                //}
+                else
+                {
+                    proba = rnd.NextDouble();
+                    
+                    //el delta es muy bajo para que funcione bien, el exp siempre da muuy cerca de 1, calibrar!!!!
+                    if (proba < Math.Exp(-delta / this.temperaturaInicial))
+                    {
+                        System.Diagnostics.Debug.WriteLine("acepto una peor, proba: " + proba.ToString() + " , division: " + Math.Exp(-delta / this.temperaturaInicial).ToString());
+                        muestreados = auxMuestreados;
+                        todos = auxTodos;
+                        fitness = auxFitness;
+                    }
+                }
                 //cooling process on every iteration
-                temperature *= alpha;
+                this.temperaturaInicial *= this.factorReduccion;
                 //print every 100 iterations
                 if (iteration % 100 == 0)
                 {
                     System.Diagnostics.Debug.WriteLine(fitness);
                     Imprimir2(todos);
                     Imprimir2(muestreados);
-                    System.Diagnostics.Debug.WriteLine("temp: " + temperature + " delta: " + delta + " fitnnes: " + fitness + " aux_fitnnes: " + auxFitness);
+                    System.Diagnostics.Debug.WriteLine("temp: " + this.temperaturaInicial + " delta: " + delta + " fitnnes: " + fitness + " aux_fitnnes: " + auxFitness);
                     System.Diagnostics.Debug.WriteLine("iter: " + iteration);
                 }
             }
@@ -236,7 +231,17 @@ class SSA
         gp.TemporaryMapLayers = true;
         gp.OverwriteOutput = true;
         gp.AddOutputsToMap = false;
-        gp.Execute(capaIDW, null);
+
+        try
+        {
+            gp.Execute(capaIDW, null);
+        }
+        catch (Exception e)
+        { 
+            for (int i = 0; i < gp.MessageCount; i++)
+                System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
+            System.Diagnostics.Debug.WriteLine("Caught exception #2.");
+        }
 
         String nombreCapaEstimacion = "Estimacion";// +System.DateTime.Now.ToString("ddHHmmss");
 
@@ -253,51 +258,37 @@ class SSA
         IGPUtilities gpUtils = new GPUtilitiesClass();
         IFeatureClass fc;
         IQueryFilter qf;
-        
-        //try
-        //{
+        double errorTotal = 0;
+        try
+        {
             System.Diagnostics.Debug.WriteLine("Executing the try statement.");
             IGeoProcessorResult result = (IGeoProcessorResult)gp2.Execute(capaEstimacion, null);
             gpUtils.DecodeFeatureLayer(result.GetOutput(0), out fc, out qf);
+            //recorrer la capa capaEstimacion, hacer el cuadrado de cada error y sumarlos
+            IEnumLayer enumlayers = map.get_Layers();
+            IFeatureCursor cursorEstimacion = fc.Search(null, false);
+            int indiceError = fc.FindField("Error");
+            IFeature featureEstimacion = cursorEstimacion.NextFeature();
+            //gets the column ID where we can find the report ID
+            while (featureEstimacion != null)
+            {
+                double errorPunto = (double)featureEstimacion.get_Value(indiceError);
+                errorTotal += Math.Pow(errorPunto, 2);
+
+                featureEstimacion = cursorEstimacion.NextFeature();
+            }
             
-        //}
-        //catch (NullReferenceException e)
-        //{
-        //    System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
-        //}
-        //catch
-        //{
-        //    for (int i = 0; i < gp2.MessageCount; i++)
-        //        System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
-        //    System.Diagnostics.Debug.WriteLine("Caught exception #2.");
-        //}
+        }
+        catch
+        {
+            for (int i = 0; i < gp2.MessageCount; i++)
+                System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
+            System.Diagnostics.Debug.WriteLine("Caught exception #2.");
+            errorTotal = 9999999999999999;
+        }
 
        
-        //recorrer la capa capaEstimacion, hacer el cuadrado de cada error y sumarlos
-        IEnumLayer enumlayers = map.get_Layers();
-        //ILayer layerPuntosEstimados = enumlayers.Next();
-        //while ((layerPuntosEstimados != null) && (layerPuntosEstimados.Name != nombreCapaEstimacion))
-        //{
-        //    layerPuntosEstimados = enumlayers.Next();
-        //}
-        //IFeatureLayer ifeaturelayerPuntosEstimados = layerPuntosEstimados as FeatureLayer;
-
-
-        //IFeatureCursor cursorEstimacion = ifeaturelayerPuntosEstimados.FeatureClass.Search(null, false);
-        //int indiceError = ifeaturelayerPuntosEstimados.FeatureClass.FindField("Error");
-
-        IFeatureCursor cursorEstimacion = fc.Search(null, false);
-        int indiceError = fc.FindField("Error");
-        IFeature featureEstimacion = cursorEstimacion.NextFeature();
-        //gets the column ID where we can find the report ID
-        double errorTotal = 0;
-        while (featureEstimacion != null)
-        {
-            double errorPunto = (double) featureEstimacion.get_Value(indiceError);
-            errorTotal += Math.Pow(errorPunto, 2);
-
-            featureEstimacion = cursorEstimacion.NextFeature();
-        }
+        
 
         //borro la capa auxiliar creada
         if (((IDataset)capaPuntosMuestreoOptimo).CanDelete())
