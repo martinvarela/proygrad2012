@@ -513,6 +513,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(466, 468);
             this.Controls.Add(this.chkSinRed);
             this.Controls.Add(this.lblProgressBar);
@@ -544,8 +545,8 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "ventanaMuestreo";
+            this.RightToLeftLayout = true;
             this.Text = "Puntos de muestreo";
-            this.TopMost = true;
             this.panelAyuda.ResumeLayout(false);
             this.panelAyuda.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeHorizontal)).EndInit();

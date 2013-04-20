@@ -47,7 +47,7 @@ namespace Proyecto
             if (ptoVerdeVariables.Visible)
             {
                 cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVariables.Text + ": Se deben marcar alguna variable.";
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVariables.Text + ": Se debe marcar alguna variable.";
             }
             if (ptoVerdeVertical.Visible)
             {
@@ -99,7 +99,7 @@ namespace Proyecto
             else
             {
                 VentanaErrores ventanaErrores = new VentanaErrores(cantidadErrores, stringErrores);
-                ventanaErrores.Visible = true;
+                ventanaErrores.ShowDialog();
             }
         }
 
@@ -108,57 +108,17 @@ namespace Proyecto
             if (txtArchivoZF.Text.EndsWith(".ZF"))
             {
                 ptoVerdeZF.Visible = false;
-                this.cargarVariables(txtArchivoZF.Text);
+                Controlador c = Controlador.getInstancia;
+                List<string> variables = c.cargarVariables(txtArchivoZF.Text);
+                foreach (string s in variables)
+                {
+                    this.chkLstVariables.Items.Add(s);
+                }
             }
             else
             {
                 ptoVerdeZF.Visible = true;
             }
-        }
-
-        //cargar las variables del archivo .zf
-        private void cargarVariables(string rutaZF)
-        {
-            //Obtengo el archivo
-            StreamReader objReader = new StreamReader(rutaZF);
-            //Incicializo la variable donde voy a guardar cada linea que leo y la variable donde voy a guardar en memoria el contenido del archivo
-            string sLine = "";
-            int cant_variables = 0;
-            string string_cant_variables = "VarQty:";
-
-            string comienzo_datos = "[Cells]";
-
-            //Leo la linea actual del archivo
-            sLine = objReader.ReadLine();
-
-            //leo hasta la etiqueta [Cells] y saco los valores de rows, cols y cant_variables 
-            while (sLine != null)
-            {
-                if (((sLine != "") && (sLine.Length >= string_cant_variables.Length) && sLine.Substring(0, string_cant_variables.Length) == string_cant_variables))
-                {
-                    cant_variables = Int32.Parse(sLine.Substring(string_cant_variables.Length, sLine.Length - string_cant_variables.Length));
-                    int i = 1;
-                    sLine = objReader.ReadLine();
-                    String nombreVariable = "";
-                    while (i <= cant_variables && sLine != "")
-                    {
-                        String aux = "Var" + i + ": ";
-                        if ((sLine.Substring(0, aux.Length) == aux))
-                        {
-                            nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
-                            this.chkLstVariables.Items.Add(nombreVariable);
-                        }
-                        i++;
-                        sLine = objReader.ReadLine();
-                    }
-                }
-
-                //Llegue a la etiqueta [Cells] entonces se que a continuacion empiezan los valores de los puntos muestreados
-                if (((sLine != "") && (sLine.Substring(0, comienzo_datos.Length) == comienzo_datos)))
-                    break;
-
-                sLine = objReader.ReadLine();
-            }  //fin while de datos generales
         }
 
         private void botonAbrirMuestreo_Click(object sender, EventArgs e)

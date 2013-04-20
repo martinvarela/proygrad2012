@@ -34,7 +34,6 @@ namespace Proyecto
 
             Size s = new Size(anchoVentana, altoVentana);
             this.Size = s;
-
         }
 
         private void btnAceptar_Click(object sender, EventArgs e)

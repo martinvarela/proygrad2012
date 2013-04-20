@@ -47,12 +47,10 @@ class Controlador
     private IFeatureLayer capaPoligonos;
     private SSA ssa;
 
-
-
     //atributos
     private Zonificacion zonificacion { get; set; }
-    private List<Capa> capas;
     //private List<PuntoMuestreo> puntosMuestreo;
+    private List<Capa> capas;
     private Muestreo muestreo { get; set; }
     private Blackmore blackmore;
 
@@ -81,6 +79,60 @@ class Controlador
         }
     }
     //private void crearPuntosMuestreo() { }
+
+
+    //devuelve una lista con las variables del archivo .zf para cargar en la ventana de muestreo.
+    public List<string> cargarVariables(string rutaZF)
+    {
+        //Obtengo el archivo
+        StreamReader objReader = new StreamReader(rutaZF);
+        //Incicializo la variable donde voy a guardar cada linea que leo y la variable donde voy a guardar en memoria el contenido del archivo
+        string sLine = "";
+        int cant_variables = 0;
+        string string_cant_variables = "VarQty:";
+
+        string comienzo_datos = "[Cells]";
+
+        //Leo la linea actual del archivo
+        sLine = objReader.ReadLine();
+
+        List<string> variables = new List<string>();
+
+        //leo hasta la etiqueta [Cells] y saco los valores de rows, cols y cant_variables 
+        while (sLine != null)
+        {
+            if (((sLine != "") && (sLine.Length >= string_cant_variables.Length) && sLine.Substring(0, string_cant_variables.Length) == string_cant_variables))
+            {
+                cant_variables = Int32.Parse(sLine.Substring(string_cant_variables.Length, sLine.Length - string_cant_variables.Length));
+                int i = 1;
+                sLine = objReader.ReadLine();
+                String nombreVariable = "";
+                while (i <= cant_variables && sLine != "")
+                {
+                    String aux = "Var" + i + ": ";
+                    if ((sLine.Substring(0, aux.Length) == aux))
+                    {
+                        nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
+                        variables.Add(nombreVariable);
+                    }
+                    i++;
+                    sLine = objReader.ReadLine();
+                }
+            }
+
+            //Llegue a la etiqueta [Cells] entonces se que a continuacion empiezan los valores de los puntos muestreados
+            if (((sLine != "") && (sLine.Substring(0, comienzo_datos.Length) == comienzo_datos)))
+                break;
+
+            sLine = objReader.ReadLine();
+        }  //fin while de datos generales
+
+        return variables;
+    }
+
+
+
+
 
     //se crea la instancia Muestreo con su respectiva lista de posibles puntos de Muestreos.
     //se devuelve en el arcmap la capa "CR-hhMMss" que se cambiara por el nombre pasado como parametro que contiene los posibles puntos de muestreo(todos) 
@@ -559,17 +611,19 @@ class Controlador
         double medio = (puntoOpuesto.Y + puntoOrigen.Y)/2;
         fishNet.y_axis_coord = puntoOrigen.X.ToString() + " " + medio.ToString();
         fishNet.corner_coord = puntoOpuesto.X.ToString() + " " + puntoOpuesto.Y.ToString();
-        fishNet.cell_width = 0;
-        fishNet.cell_height = 0;
         if (filasColumnas)
         {
             fishNet.number_rows = vertical;
             fishNet.number_columns = horizontal;
+            fishNet.cell_height = 0;
+            fishNet.cell_width = 0;
         }
         else
         {
             fishNet.cell_height = vertical;
             fishNet.cell_width = horizontal;
+            fishNet.number_rows = 0;
+            fishNet.number_columns = 0;
         }
         fishNet.out_label = nombreCapaPoligonos;
         fishNet.geometry_type = "POLYGON";
