@@ -81,6 +81,9 @@ namespace Proyecto
                 String rutaCapa = Path.GetDirectoryName(this.txtMuestreo.Text.ToString());
                 String nombreCapa = Path.GetFileNameWithoutExtension(this.txtMuestreo.Text.ToString());
 
+                //desabilito el boton Aceptar
+                this.btnAceptar.Enabled = false;
+
                 if (chkSinRed.Checked)
                 {
                     controlador.crearPuntosMuestreo(false, txtArchivoZF.Text, true, 0, 0, variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar);
@@ -93,7 +96,7 @@ namespace Proyecto
                 {
                     controlador.crearPuntosMuestreo(true, txtArchivoZF.Text, false, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar);
                 }
-
+                
                 this.Close();
             }
             else

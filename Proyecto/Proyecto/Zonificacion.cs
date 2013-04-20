@@ -199,7 +199,7 @@ class Zonificacion
 
                 for (int i = 0; i < variables_seleccion.Count; i++)
                 {
-                    if (datos[variables_seleccion[i]] == NAN)
+                    if (datos[variables_seleccion[i]] == NAN || datos[variables_seleccion[i]] == "0" || datos[variables_seleccion[i]] == "-1")
                     {
                         puntoUtil = false;
                         break;

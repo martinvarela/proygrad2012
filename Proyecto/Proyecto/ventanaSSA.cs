@@ -117,7 +117,9 @@ namespace Proyecto
             //si esta no hay errores, ejecuto la funcion de crear puntos de muestreo
             if (cantidadErrores == 0)
             {
+                //se deshabilita el boton Aceptar
                 this.btnAceptar.Enabled = false;
+
                 IMap targetMap = ArcMap.Document.FocusMap;
 
                 IEnumLayer enumLayers = targetMap.get_Layers();
