@@ -280,7 +280,6 @@
     <Content Include="Images\optimizacion.ico" />
     <Content Include="Images\puntoVerde.png" />
     <Content Include="Images\ssa.ico" />
-    <Content Include="Images\ssa1.ico" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>
