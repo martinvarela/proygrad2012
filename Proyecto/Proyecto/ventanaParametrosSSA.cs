@@ -24,6 +24,8 @@ namespace Proyecto
             txtFactor.Text = controlador.getSSA().getFactorReduccion().ToString();
             //cargo el valor de epsilon
             txtEpsilon.Text = controlador.getSSA().getEpsilon().ToString();
+            //cargo el valor de iteraciones
+            txtIteraciones.Text = controlador.getSSA().getIteraciones().ToString();
         }
 
         private void btnCerrar_Click(object sender, EventArgs e)
@@ -33,6 +35,7 @@ namespace Proyecto
             ssa.setTemperaturaInicial(Double.Parse(txtTemperatura.Text.ToString()));
             ssa.setFactorReduccion(Double.Parse(txtFactor.Text.ToString()));
             ssa.setEpsilon(Double.Parse(txtEpsilon.Text.ToString()));
+            ssa.setIteraciones(int.Parse(txtIteraciones.Text.ToString()));
 
             controlador.setSSA(ssa);
 
@@ -98,6 +101,25 @@ namespace Proyecto
                 }
             }
         }
-    
+
+        private void txtIteraciones_GotFocus(object sender, EventArgs e)
+        {
+            this.valorAux = txtIteraciones.Text.ToString();
+        }
+        private void txtIteraciones_LostFocus(object sender, EventArgs e)
+        {
+            if (txtIteraciones.Text.ToString() != valorAux)
+            {
+                int i = 0;
+                if (int.TryParse(this.txtIteraciones.Text.ToString(), out i) && i > 0)
+                {
+                    valorAux = this.txtIteraciones.Text.ToString();
+                }
+                else
+                {
+                    this.txtIteraciones.Text = valorAux;
+                }
+            }
+        }
     }
 }

@@ -77,7 +77,7 @@ namespace Proyecto
             //no se puede cambiar el tamano
             ventanaParametrosSSA.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 
-            ventanaParametrosSSA.Visible = true;
+            ventanaParametrosSSA.ShowDialog();
 
         }
 
