@@ -47,6 +47,8 @@ namespace Proyecto
             this.ptoVerdeRango = new System.Windows.Forms.PictureBox();
             this.ptoVerdeError = new System.Windows.Forms.PictureBox();
             this.panelAyuda = new System.Windows.Forms.Panel();
+            this.lblDescripcionCarpeta = new System.Windows.Forms.Label();
+            this.lblTituloCarpeta = new System.Windows.Forms.Label();
             this.lblDescripcionError = new System.Windows.Forms.Label();
             this.lblTituloError = new System.Windows.Forms.Label();
             this.lblDescripcionRango = new System.Windows.Forms.Label();
@@ -59,8 +61,6 @@ namespace Proyecto
             this.lblRutaDestino = new System.Windows.Forms.Label();
             this.btnCarpeta = new System.Windows.Forms.Button();
             this.ptoVerdeCarpeta = new System.Windows.Forms.PictureBox();
-            this.lblDescripcionCarpeta = new System.Windows.Forms.Label();
-            this.lblTituloCarpeta = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeCapa)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeRango)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeError)).BeginInit();
@@ -260,6 +260,25 @@ namespace Proyecto
             this.panelAyuda.Size = new System.Drawing.Size(509, 303);
             this.panelAyuda.TabIndex = 40;
             // 
+            // lblDescripcionCarpeta
+            // 
+            this.lblDescripcionCarpeta.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblDescripcionCarpeta.Location = new System.Drawing.Point(23, 57);
+            this.lblDescripcionCarpeta.Name = "lblDescripcionCarpeta";
+            this.lblDescripcionCarpeta.Size = new System.Drawing.Size(482, 33);
+            this.lblDescripcionCarpeta.TabIndex = 11;
+            this.lblDescripcionCarpeta.Text = "Ingrese la ruta destino donde se guadará la salida.";
+            // 
+            // lblTituloCarpeta
+            // 
+            this.lblTituloCarpeta.AutoSize = true;
+            this.lblTituloCarpeta.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTituloCarpeta.Location = new System.Drawing.Point(22, 8);
+            this.lblTituloCarpeta.Name = "lblTituloCarpeta";
+            this.lblTituloCarpeta.Size = new System.Drawing.Size(153, 19);
+            this.lblTituloCarpeta.TabIndex = 10;
+            this.lblTituloCarpeta.Text = "Carpeta de destino";
+            // 
             // lblDescripcionError
             // 
             this.lblDescripcionError.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -346,8 +365,9 @@ namespace Proyecto
             this.txtCarpeta.Name = "txtCarpeta";
             this.txtCarpeta.Size = new System.Drawing.Size(368, 21);
             this.txtCarpeta.TabIndex = 41;
-            this.txtCarpeta.LostFocus += new System.EventHandler(this.txtCarpeta_LostFocus);
+            this.txtCarpeta.TextChanged += new System.EventHandler(this.txtCarpeta_TextChanged);
             this.txtCarpeta.GotFocus += new System.EventHandler(this.txtCarpeta_GotFocus);
+            this.txtCarpeta.LostFocus += new System.EventHandler(this.txtCarpeta_LostFocus);
             // 
             // lblRutaDestino
             // 
@@ -379,25 +399,6 @@ namespace Proyecto
             this.ptoVerdeCarpeta.Size = new System.Drawing.Size(19, 20);
             this.ptoVerdeCarpeta.TabIndex = 44;
             this.ptoVerdeCarpeta.TabStop = false;
-            // 
-            // lblDescripcionCarpeta
-            // 
-            this.lblDescripcionCarpeta.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescripcionCarpeta.Location = new System.Drawing.Point(23, 57);
-            this.lblDescripcionCarpeta.Name = "lblDescripcionCarpeta";
-            this.lblDescripcionCarpeta.Size = new System.Drawing.Size(482, 33);
-            this.lblDescripcionCarpeta.TabIndex = 11;
-            this.lblDescripcionCarpeta.Text = "Ingrese la ruta destino donde se guadará la salida.";
-            // 
-            // lblTituloCarpeta
-            // 
-            this.lblTituloCarpeta.AutoSize = true;
-            this.lblTituloCarpeta.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTituloCarpeta.Location = new System.Drawing.Point(22, 8);
-            this.lblTituloCarpeta.Name = "lblTituloCarpeta";
-            this.lblTituloCarpeta.Size = new System.Drawing.Size(153, 19);
-            this.lblTituloCarpeta.TabIndex = 10;
-            this.lblTituloCarpeta.Text = "Carpeta de destino";
             // 
             // ventanaSSA
             // 

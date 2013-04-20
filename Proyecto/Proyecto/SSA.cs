@@ -44,7 +44,7 @@ class SSA
         this.ws = workspace;
     }
 
-    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error)
+    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error, string pathArchivo)
     {
         this.cantMuestras = 15;
         //creo la lista de PuntosMuestreo a partir de la IFeatureClass
@@ -173,7 +173,8 @@ class SSA
             {
                 //string path = @"C:\PruebaArchivo.txt";
                 //string path = capaPuntosMuestreo.FeatureDataset.Workspace.PathName;
-                string path = this.ws.PathName + @"\PruebaArchivo.txt";
+                //string path = this.ws.PathName + @"\PruebaArchivo.txt";
+                string path = pathArchivo;
                 if (!File.Exists(path))
                 {
                     StreamWriter sw = File.CreateText(path);

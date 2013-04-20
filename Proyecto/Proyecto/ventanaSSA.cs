@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using System.IO;
 
 namespace Proyecto
 {
@@ -18,26 +19,34 @@ namespace Proyecto
         {
             InitializeComponent();
 
-            IMap targetMap = ArcMap.Document.FocusMap;
-
-            //cargo el combo de capas abiertas
-            IEnumLayer enumLayers = targetMap.get_Layers();
-            enumLayers.Reset();
-            ILayer layer = enumLayers.Next();
-
-            IGeometryDef geometryDef = new GeometryDefClass();
-            IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
-            geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
-            while (layer != null)
+            Controlador controlador = Controlador.getInstancia;
+            List<string> listaCapas = controlador.cargarCapasMuestreo();
+            foreach (string nombreCapa in listaCapas) 
             {
-                IFeatureLayer featureLayer = layer as IFeatureLayer;
-                IFeatureClass fc = featureLayer.FeatureClass;
-                if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
-                {
-                    this.cboCapaMuestreo.Items.Add(layer.Name.ToString());
-                }
-                layer = enumLayers.Next();
+                this.cboCapaMuestreo.Items.Add(nombreCapa);
             }
+            ////esto ahora esta a nivel de controlador
+            //IMap targetMap = ArcMap.Document.FocusMap;
+
+            ////cargo el combo de capas abiertas
+            //IEnumLayer enumLayers = targetMap.get_Layers();
+            //enumLayers.Reset();
+            //ILayer layer = enumLayers.Next();
+
+            //IGeometryDef geometryDef = new GeometryDefClass();
+            //IGeometryDefEdit geometryDefEdit = (IGeometryDefEdit)geometryDef;
+            //geometryDefEdit.GeometryType_2 = esriGeometryType.esriGeometryPoint;
+            //while (layer != null)
+            //{
+            //    IFeatureLayer featureLayer = layer as IFeatureLayer;
+            //    IFeatureClass fc = featureLayer.FeatureClass;
+            //    if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
+            //    {
+            //        this.cboCapaMuestreo.Items.Add(layer.Name.ToString());
+            //    }
+            //    layer = enumLayers.Next();
+            //}
+
             this.cboCapaMuestreo.SelectedItem = 0;
             if (this.cboCapaMuestreo.Text == "")
                 this.ptoVerdeCapa.Visible = true;
@@ -79,22 +88,61 @@ namespace Proyecto
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-            IMap targetMap = ArcMap.Document.FocusMap;
-
-            IEnumLayer enumLayers = targetMap.get_Layers();
-            enumLayers.Reset();
-            ILayer layer = enumLayers.Next();
-            while (layer != null && layer.Name != cboCapaMuestreo.SelectedItem.ToString())
+            //control previo de datos para la ejecucion de la funcion
+            String[] stringErrores = new String[4];
+            for (int i = 0; i < stringErrores.Length; i++)
+                stringErrores[i] = "";
+            int cantidadErrores = 0;
+            if (ptoVerdeCapa.Visible)
             {
-                layer = enumLayers.Next();
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblCapaMuestreo.Text + ": Debe seleccionar una capa de muestreo.";
             }
+            if (ptoVerdeCarpeta.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblRutaDestino.Text + ": Ruta inválida donde se guardarán las capas de optimización de muestreo.";
+            }
+            if (ptoVerdeRango.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblRango.Text + ": Debe indicar un valor entero para el rango.";
+            }
+            if (ptoVerdeError.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblError.Text + ": Debe indicar un valor entero para el error.";
+            }
+            
+            //si esta no hay errores, ejecuto la funcion de crear puntos de muestreo
+            if (cantidadErrores == 0)
+            {
+                this.btnAceptar.Enabled = false;
+                IMap targetMap = ArcMap.Document.FocusMap;
 
-            IFeatureLayer featureLayer = layer as IFeatureLayer;
-            IFeatureClass featureClass = featureLayer.FeatureClass;
+                IEnumLayer enumLayers = targetMap.get_Layers();
+                enumLayers.Reset();
+                ILayer layer = enumLayers.Next();
+                while (layer != null && layer.Name != cboCapaMuestreo.SelectedItem.ToString())
+                {
+                    layer = enumLayers.Next();
+                }
 
-            Controlador controlador = Controlador.getInstancia;
-            controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), int.Parse(txtError.Text.ToString()), double.Parse(txtRango.Text.ToString()));
+                IFeatureLayer featureLayer = layer as IFeatureLayer;
+                IFeatureClass featureClass = featureLayer.FeatureClass;
 
+                //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
+                String rutaCapa = System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
+                Controlador controlador = Controlador.getInstancia;
+                controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), int.Parse(txtError.Text.ToString()), double.Parse(txtRango.Text.ToString()), rutaCapa);
+
+                this.Close();
+            }
+            else
+            {
+                VentanaErrores ventanaErrores = new VentanaErrores(cantidadErrores, stringErrores);
+                ventanaErrores.Visible = true;
+            }
 
         }
 
@@ -197,6 +245,19 @@ namespace Proyecto
                 this.ptoVerdeCarpeta.Visible = false;
             else
                 this.ptoVerdeCarpeta.Visible = true;
+        }
+
+        private void txtCarpeta_TextChanged(object sender, EventArgs e)
+        {
+            if (txtCarpeta.Text != "")
+            {
+                this.ptoVerdeCarpeta.Visible = false;
+            }
+            else
+            {
+                this.ptoVerdeCarpeta.Visible = true;
+            }
+
         }
 
         private void txtCarpeta_GotFocus(object sender, EventArgs e)

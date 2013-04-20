@@ -243,9 +243,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="VentanaErrores.af.resx">
       <DependentUpon>VentanaErrores.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="VentanaErrores.resx">
       <DependentUpon>VentanaErrores.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="ventanaMuestreo.resx">
       <DependentUpon>ventanaMuestreo.cs</DependentUpon>
