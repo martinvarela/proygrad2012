@@ -426,6 +426,7 @@ namespace Proyecto
             this.Controls.Add(this.cboMetodoEstimacion);
             this.Controls.Add(this.lblCapaMuestreo);
             this.Controls.Add(this.cboCapaMuestreo);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ventanaSSA";
             this.Text = "Optimización de muestreo";
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeCapa)).EndInit();
