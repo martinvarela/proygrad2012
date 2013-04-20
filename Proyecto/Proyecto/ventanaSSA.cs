@@ -141,7 +141,7 @@ namespace Proyecto
             else
             {
                 VentanaErrores ventanaErrores = new VentanaErrores(cantidadErrores, stringErrores);
-                ventanaErrores.Visible = true;
+                ventanaErrores.ShowDialog();
             }
 
         }
