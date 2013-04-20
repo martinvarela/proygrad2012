@@ -17,6 +17,7 @@ class SSA
     private double temperaturaInicial;
     private double factorReduccion;
     private double epsilon;
+    private int iteraciones;
     public int cantMuestras;
     public List<int> muestreados;
     public List<int> todos;
@@ -27,6 +28,7 @@ class SSA
         this.temperaturaInicial = 100;
         this.factorReduccion = 0.01;
         this.epsilon = 0.000001;
+        this.iteraciones = 1000;
         this.cantMuestras = 15;
     }
 
@@ -38,6 +40,9 @@ class SSA
 
     public double getEpsilon() { return this.epsilon; }
     public void setEpsilon(double e) { this.epsilon = e; }
+
+    public int getIteraciones() { return this.iteraciones; }
+    public void setIteraciones(int i) { this.iteraciones = i; }
 
     public void setWorkspace(IWorkspace workspace)
     {
