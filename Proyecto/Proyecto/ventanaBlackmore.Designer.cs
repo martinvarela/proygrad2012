@@ -74,10 +74,9 @@
             this.botonRed.Name = "botonRed";
             this.botonRed.Size = new System.Drawing.Size(75, 23);
             this.botonRed.TabIndex = 1;
-            this.botonRed.Text = "Crear Red";
+            this.botonRed.Text = "Aceptar";
             this.botonRed.UseVisualStyleBackColor = true;
             this.botonRed.Click += new System.EventHandler(this.botonRed_Click);
-            this.Visible = true;
             // 
             // ventanaBlackmore
             // 
