@@ -141,7 +141,6 @@
     <Compile Include="botonOptimizar.cs" />
     <Compile Include="Capa.cs" />
     <Compile Include="Celda.cs" />
-    <Compile Include="classBlackmore.cs" />
     <Compile Include="Config.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Config.esriaddinx</DependentUpon>
@@ -163,7 +162,6 @@
     <Compile Include="PuntoMuestreo.cs" />
     <Compile Include="PuntoZonificacion.cs" />
     <Compile Include="SSA.cs" />
-    <Compile Include="Struct1.cs" />
     <Compile Include="Variable.cs" />
     <Compile Include="ventanaBlackmore.cs">
       <SubType>Form</SubType>
@@ -262,9 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\advertencia.png" />

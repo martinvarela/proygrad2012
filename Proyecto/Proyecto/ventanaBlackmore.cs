@@ -21,20 +21,6 @@ namespace Proyecto
             InitializeComponent();
         }
 
-        private void botonRed_Click(object sender, EventArgs e)
-        {
-            IMap map = ArcMap.Document.FocusMap;
-            classBlackmore cb = new classBlackmore();
-            String ruta = "C:\\Usuarios\\Gonzalo\\Escritorio\\";
-            String nombreLayer = "capaRed";
-            cb.crearRed(map,ruta,nombreLayer,true);
-
-            this.Close();
-            
-            //ESRI.ArcGIS.DataManagementTools.CreateFishnet(redLayer,);
-
-        }
-
     }
 
 

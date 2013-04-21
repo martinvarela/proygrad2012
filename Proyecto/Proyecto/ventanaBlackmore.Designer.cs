@@ -77,7 +77,6 @@
             this.botonRed.TabIndex = 1;
             this.botonRed.Text = "Aceptar";
             this.botonRed.UseVisualStyleBackColor = true;
-            this.botonRed.Click += new System.EventHandler(this.botonRed_Click);
             // 
             // ventanaBlackmore
             // 
