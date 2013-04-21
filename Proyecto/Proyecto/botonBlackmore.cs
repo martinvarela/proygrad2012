@@ -13,7 +13,6 @@ using System.Windows.Forms;
 using ESRI.ArcGIS.Geodatabase;
 
 
-
 namespace Proyecto
 {
     public class botonBlackmore : ESRI.ArcGIS.Desktop.AddIns.Button
@@ -26,7 +25,7 @@ namespace Proyecto
         {
             //se crea la ventana principal de Blackmore
             ventanaBlackmore ventana = new ventanaBlackmore();
-            
+
             //se obtienen las capas abiertas
             IMap map = ArcMap.Document.FocusMap;
             IEnumLayer enumlayers = map.get_Layers();
@@ -38,13 +37,13 @@ namespace Proyecto
             while (layer != null)
             {
                 String s = layer.Name.ToString();
-                
+
                 //checkbox
                 DataGridViewCheckBoxCell ckeck = new DataGridViewCheckBoxCell();
                 if (layer.Visible)
                 {
                     ckeck.Value = true;
-                } 
+                }
                 else
                 {
                     ckeck.Value = false;
@@ -57,7 +56,7 @@ namespace Proyecto
                 //combobox
                 IFeatureLayer featureLayer = layer as IFeatureLayer;
                 int cantidadCampos = featureLayer.FeatureClass.Fields.FieldCount;
-                
+
                 DataGridViewComboBoxCell combo = new DataGridViewComboBoxCell();
 
                 for (int i = 0; i < cantidadCampos; i++)

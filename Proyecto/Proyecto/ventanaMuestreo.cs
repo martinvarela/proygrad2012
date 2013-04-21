@@ -130,6 +130,7 @@ namespace Proyecto
         {
             SaveFileDialog destino = new SaveFileDialog();
             //destino.CheckPathExists = true;
+            destino.OverwritePrompt = false;
             if (destino.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 txtMuestreo.Text = destino.FileName.ToString();

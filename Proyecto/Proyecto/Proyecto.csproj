@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blackmore.cs" />
+    <Compile Include="botonBlackmore.cs" />
     <Compile Include="botonMuestreo.cs" />
     <Compile Include="botonOptimizar.cs" />
     <Compile Include="Capa.cs" />
@@ -200,14 +201,11 @@
     <AddInContent Include="Config.esriaddinx">
       <Generator>ArcGISAddInHostGenerator</Generator>
       <LastGenOutput>Config.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </AddInContent>
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Images\Proyecto.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="botonBlackmore.cs" />
-    <AddInContent Include="Images\botonBlackmore.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ESRI.ArcGIS.ArcMapUI">
@@ -270,16 +268,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\advertencia.png" />
-    <Content Include="Images\blackmoore1.ico" />
-    <Content Include="Images\blackmoore2.ico" />
     <AddInContent Include="Images\botonMuestreo_1.png" />
-    <AddInContent Include="Images\botonOptimizar.png" />
     <AddInContent Include="Images\botonOptimizar_1.png" />
-    <Content Include="Images\botonSSA.png" />
+    <Content Include="Images\blackmore.ico" />
+    <AddInContent Include="Images\botonBlackmore_1.png" />
     <Content Include="Images\folderOpen.ico" />
-    <Content Include="Images\optimizacion.ico" />
+    <Content Include="Images\muestreo.ico" />
+    <Content Include="Images\optimizar.ico" />
     <Content Include="Images\puntoVerde.png" />
-    <Content Include="Images\ssa.ico" />
   </ItemGroup>
   <PropertyGroup>
     <ZipFileExtension>esriAddIn</ZipFileExtension>

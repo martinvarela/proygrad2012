@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ventanaBlackmore));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.dataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.dataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -85,6 +86,7 @@
             this.ClientSize = new System.Drawing.Size(773, 352);
             this.Controls.Add(this.botonRed);
             this.Controls.Add(this.dataGridView1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ventanaBlackmore";
             this.Text = "ventanaBlackmore";
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

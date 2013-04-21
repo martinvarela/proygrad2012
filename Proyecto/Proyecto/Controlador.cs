@@ -418,12 +418,10 @@ class Controlador
 
         // Create the feature class. Note that the CLSID parameter is null—this indicates to use the
         // default CLSID, esriGeodatabase.Feature (acceptable in most cases for feature classes).
-       IFeatureClass featureClass = null;
+        IFeatureClass featureClass = null;
         try
         {
-            featureClass = featureWorkspace.CreateFeatureClass(featureClassName,
-                                                                                validatedFields, null, ocDescription.ClassExtensionCLSID,
-                                                                                esriFeatureType.esriFTSimple, "Shape", "");
+            featureClass = featureWorkspace.CreateFeatureClass(featureClassName, validatedFields, null, ocDescription.ClassExtensionCLSID, esriFeatureType.esriFTSimple, "Shape", "");
         }
         catch (System.Runtime.InteropServices.COMException e)
         {
