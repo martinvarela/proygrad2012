@@ -16,7 +16,6 @@ class SSA
 {
     private double temperaturaInicial;
     private double factorReduccion;
-    private double epsilon;
     private int iteraciones;
     public int cantMuestras;
     public List<int> muestreados;
@@ -25,9 +24,8 @@ class SSA
 
     public SSA()
     {
-        this.temperaturaInicial = 1;
-        this.factorReduccion = 0.99;
-        this.epsilon = 0.000001;
+        this.temperaturaInicial = 14.427;
+        this.factorReduccion = 0.994;
         this.iteraciones = 1000;
         this.cantMuestras = 30;
     }
@@ -37,9 +35,6 @@ class SSA
 
     public double getFactorReduccion() { return this.factorReduccion; }
     public void setFactorReduccion(double f) { this.factorReduccion = f; }
-
-    public double getEpsilon() { return this.epsilon; }
-    public void setEpsilon(double e) { this.epsilon = e; }
 
     public int getIteraciones() { return this.iteraciones; }
     public void setIteraciones(int i) { this.iteraciones = i; }
@@ -51,7 +46,9 @@ class SSA
 
     public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error, string pathArchivo)
     {
-        this.cantMuestras = 30;
+        double factorReduccionAux = this.factorReduccion;
+        int iteracionesAux = this.iteraciones;
+        int cantMuestrasAux = this.cantMuestras;
         //creo la lista de PuntosMuestreo a partir de la IFeatureClass
         List<PuntoMuestreo> listaPuntosMuestreo = new List<PuntoMuestreo>();
         IFeatureCursor cursorPuntosMuestreo = capaPuntosMuestreo.Search(null, false);
@@ -73,10 +70,11 @@ class SSA
         }
 
 
-        while (this.cantMuestras > 28)
+        while (cantMuestrasAux > 28)
         {
+            double temperaturaInicialAux = this.temperaturaInicial;
             //a partir de los puntos, selecciona las muestras iniciales
-            Inicializar(listaPuntosMuestreo);
+            Inicializar(listaPuntosMuestreo, cantMuestrasAux);
 
             List<int> auxMuestreados;
             List<int> auxTodos;
@@ -87,9 +85,6 @@ class SSA
             int iteration = 0;
             ////the probability
             double proba;
-            //double alpha = 0.99;
-            //double temperature = 10.0;
-            double epsilon = 0.00001;
             double delta;
 
             //calculo fitness del muestreo inicial
@@ -106,7 +101,7 @@ class SSA
             System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
 
             //LOOP principal
-            while (iteration < this.iteraciones && this.temperaturaInicial > epsilon)
+            while (iteration < iteracionesAux /*&& aca va el error*/ )
             {
                 iteration++;
 
@@ -122,7 +117,7 @@ class SSA
                     auxFitness = CalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
                 }
                 System.Diagnostics.Debug.WriteLine(" auxFitnens: " + auxFitness);
-                delta = (auxFitness - fitness)/fitness;
+                delta = ((auxFitness - fitness)/fitness)*100;
                 //if the new distance is better accept it and assign it
                 if (delta < 0)
                 {
@@ -133,25 +128,25 @@ class SSA
                 else
                 {
                     proba = rnd.NextDouble();
-                    
+                    System.Diagnostics.Debug.WriteLine("delta: " + delta +", peor, division: " + Math.Exp(-delta / temperaturaInicialAux).ToString());
                     //el delta es muy bajo para que funcione bien, el exp siempre da muuy cerca de 1, calibrar!!!!
-                    if (proba < Math.Exp(-delta / this.temperaturaInicial))
+                    if (proba < Math.Exp(-delta / temperaturaInicialAux))
                     {
-                        System.Diagnostics.Debug.WriteLine("acepto una peor, proba: " + proba.ToString() + " , division: " + Math.Exp(-delta / this.temperaturaInicial).ToString());
+                        System.Diagnostics.Debug.WriteLine("acepto una peor, proba: " + proba.ToString() );
                         muestreados = auxMuestreados;
                         todos = auxTodos;
                         fitness = auxFitness;
                     }
                 }
                 //cooling process on every iteration
-                this.temperaturaInicial *= this.factorReduccion;
+                temperaturaInicialAux *= factorReduccionAux;
                 //print every 100 iterations
                 if (iteration % 100 == 0)
                 {
                     System.Diagnostics.Debug.WriteLine(fitness);
                     Imprimir2(todos);
                     Imprimir2(muestreados);
-                    System.Diagnostics.Debug.WriteLine("temp: " + this.temperaturaInicial + " delta: " + delta + " fitnnes: " + fitness + " aux_fitnnes: " + auxFitness);
+                    System.Diagnostics.Debug.WriteLine("temp: " + temperaturaInicialAux + " delta: " + delta + " fitnnes: " + fitness + " aux_fitnnes: " + auxFitness);
                     System.Diagnostics.Debug.WriteLine("iter: " + iteration);
                 }
             }
@@ -182,7 +177,7 @@ class SSA
                     sw.WriteLine("Estadisticas del Muestreo");
                     sw.WriteLine("");
                     sw.WriteLine("Nombre Capa: " + nombreCapaPuntosMuestreoOptimo);
-                    sw.WriteLine("  Cantidad de Muestras: " + cantMuestras.ToString());
+                    sw.WriteLine("  Cantidad de Muestras: " + cantMuestrasAux.ToString());
                     sw.WriteLine("  Error: " + fitness.ToString());
                     sw.WriteLine("  Iteraciones: " + iteration.ToString());
                     sw.Close();
@@ -192,7 +187,7 @@ class SSA
                     TextWriter tw = new StreamWriter(path, true);
                     tw.WriteLine("");
                     tw.WriteLine("Nombre Capa: " + nombreCapaPuntosMuestreoOptimo);
-                    tw.WriteLine("  Cantidad de Muestras: " + cantMuestras.ToString());
+                    tw.WriteLine("  Cantidad de Muestras: " + cantMuestrasAux.ToString());
                     tw.WriteLine("  Error: " + fitness.ToString());
                     tw.WriteLine("  Iteraciones: " + iteration.ToString());
                     tw.Close();
@@ -203,7 +198,7 @@ class SSA
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
 
-            this.cantMuestras--;
+            cantMuestrasAux--;
         }
         return null;
         
@@ -268,15 +263,20 @@ class SSA
             IEnumLayer enumlayers = map.get_Layers();
             IFeatureCursor cursorEstimacion = fc.Search(null, false);
             int indiceError = fc.FindField("Error");
+            int indiceValor = fc.FindField("Valor");
             IFeature featureEstimacion = cursorEstimacion.NextFeature();
             //gets the column ID where we can find the report ID
             while (featureEstimacion != null)
             {
-                double errorPunto = (double)featureEstimacion.get_Value(indiceError);
-                errorTotal += Math.Pow(errorPunto, 2);
+                double errorPunto = Math.Abs((double)featureEstimacion.get_Value(indiceError));
+                double valorReal = (double)featureEstimacion.get_Value(indiceValor);
+
+                errorTotal += errorPunto/valorReal;
 
                 featureEstimacion = cursorEstimacion.NextFeature();
             }
+
+            errorTotal = errorTotal / listaPuntosMuestreo.Count;
             
         }
         catch
@@ -447,33 +447,33 @@ class SSA
     
     //funcion para inicializar los puntos a muestrear, esto depende de la cantidad de muestras a seleccionar
     //armar un estilo de grilla con puntos equiespaciados ó seleccionar los puntos al azar
-    private List<PuntoZonificacion> Inicializar2(List<PuntoZonificacion> listaZonificacion)
-    {
-        List<PuntoZonificacion> res = new List<PuntoZonificacion>(); 
-        PuntoZonificacion aux;
-        Coordenada coordAux;
-        this.todos = new List<int>();
-        this.muestreados = new List<int>();
-        for (int ind=0 ; ind < listaZonificacion.Count; ind++){
-            if (((ind + 1) % (listaZonificacion.Count /cantMuestras)) == 0)
-            {
-                this.todos.Add(1);
-                this.muestreados.Add(ind);
-                aux = new PuntoZonificacion();
-                coordAux = new Coordenada();
-                coordAux.X = listaZonificacion[ind].Coordenada.X;
-                coordAux.Y = listaZonificacion[ind].Coordenada.Y;
-                aux.Coordenada = coordAux;
-                aux.Variabilidad = listaZonificacion[ind].Variabilidad;
-                res.Add(aux);
-            }
-            else
-            {
-                this.todos.Add(0);
-            }
-        }
-        return res;
-    }
+    //private List<PuntoZonificacion> Inicializar2(List<PuntoZonificacion> listaZonificacion)
+    //{
+    //    List<PuntoZonificacion> res = new List<PuntoZonificacion>(); 
+    //    PuntoZonificacion aux;
+    //    Coordenada coordAux;
+    //    this.todos = new List<int>();
+    //    this.muestreados = new List<int>();
+    //    for (int ind=0 ; ind < listaZonificacion.Count; ind++){
+    //        if (((ind + 1) % (listaZonificacion.Count /cantMuestras)) == 0)
+    //        {
+    //            this.todos.Add(1);
+    //            this.muestreados.Add(ind);
+    //            aux = new PuntoZonificacion();
+    //            coordAux = new Coordenada();
+    //            coordAux.X = listaZonificacion[ind].Coordenada.X;
+    //            coordAux.Y = listaZonificacion[ind].Coordenada.Y;
+    //            aux.Coordenada = coordAux;
+    //            aux.Variabilidad = listaZonificacion[ind].Variabilidad;
+    //            res.Add(aux);
+    //        }
+    //        else
+    //        {
+    //            this.todos.Add(0);
+    //        }
+    //    }
+    //    return res;
+    //}
 
     //funcion para inicializar los puntos a muestrear, esto depende de la cantidad de muestras a seleccionar
     //armar un estilo de grilla con puntos equiespaciados ó seleccionar los puntos al azar
@@ -494,7 +494,7 @@ class SSA
     //        }
     //    }
     //}
-    private void Inicializar(List<PuntoMuestreo> listaMuestreo)
+    private void Inicializar(List<PuntoMuestreo> listaMuestreo, int cantMuestrasAux)
     {
         this.todos = new List<int>();
         this.muestreados = new List<int>();
@@ -504,7 +504,7 @@ class SSA
         }
 
         Random rnd = new Random();
-        for (int ind = 0; ind < this.cantMuestras; ind++)
+        for (int ind = 0; ind < cantMuestrasAux; ind++)
         {
             bool encontre = false;
             while (!encontre)

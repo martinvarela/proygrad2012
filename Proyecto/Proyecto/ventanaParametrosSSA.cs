@@ -22,8 +22,6 @@ namespace Proyecto
             txtTemperatura.Text = controlador.getSSA().getTemperaturaInicial().ToString();
             //cargo el valor del factor de reduccion
             txtFactor.Text = controlador.getSSA().getFactorReduccion().ToString();
-            //cargo el valor de epsilon
-            txtEpsilon.Text = controlador.getSSA().getEpsilon().ToString();
             //cargo el valor de iteraciones
             txtIteraciones.Text = controlador.getSSA().getIteraciones().ToString();
         }
@@ -34,7 +32,6 @@ namespace Proyecto
             SSA ssa = controlador.getSSA();
             ssa.setTemperaturaInicial(Double.Parse(txtTemperatura.Text.ToString()));
             ssa.setFactorReduccion(Double.Parse(txtFactor.Text.ToString()));
-            ssa.setEpsilon(Double.Parse(txtEpsilon.Text.ToString()));
             ssa.setIteraciones(int.Parse(txtIteraciones.Text.ToString()));
 
             controlador.setSSA(ssa);
