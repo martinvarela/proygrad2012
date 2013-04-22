@@ -52,7 +52,7 @@ class PuntoZonificacion
             temp += (float)Math.Pow((double)((medicion - datosVariable.Media) / datosVariable.Media),2);
             cant++;
         }
-        this.variabilidad = temp / cant;
+        this.variabilidad = (float)Math.Sqrt(temp / cant);
     }
     
     public float getMedicion(String nombre)  
