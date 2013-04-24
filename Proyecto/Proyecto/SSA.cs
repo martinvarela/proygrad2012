@@ -27,7 +27,7 @@ class SSA
         this.temperaturaInicial = 14.427;
         this.factorReduccion = 0.994;
         this.iteraciones = 1000;
-        this.cantMuestras = 30;
+        //this.cantMuestras = 30;
     }
 
     public double getTemperaturaInicial() { return this.temperaturaInicial; }
@@ -44,7 +44,7 @@ class SSA
         this.ws = workspace;
     }
 
-    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error, string pathArchivo)
+    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double rango, double error, string pathArchivo)
     {
         double factorReduccionAux = this.factorReduccion;
         int iteracionesAux = this.iteraciones;
@@ -69,8 +69,9 @@ class SSA
             featurePunto = cursorPuntosMuestreo.NextFeature();
         }
 
+        bool llegueAErrorEsperado = true;
 
-        while (cantMuestrasAux > 28)
+        while (cantMuestrasAux > 1 && llegueAErrorEsperado)
         {
             double temperaturaInicialAux = this.temperaturaInicial;
             //a partir de los puntos, selecciona las muestras iniciales
@@ -101,7 +102,7 @@ class SSA
             System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
 
             //LOOP principal
-            while (iteration < iteracionesAux /*&& aca va el error*/ )
+            while (iteration < iteracionesAux && (fitness*100 > error) )
             {
                 iteration++;
 
@@ -198,6 +199,8 @@ class SSA
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
 
+            if (fitness * 100 > error)
+                llegueAErrorEsperado = false;
             cantMuestrasAux--;
         }
         return null;
@@ -231,7 +234,7 @@ class SSA
         {
             gp.Execute(capaIDW, null);
         }
-        catch (Exception e)
+        catch
         { 
             for (int i = 0; i < gp.MessageCount; i++)
                 System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
