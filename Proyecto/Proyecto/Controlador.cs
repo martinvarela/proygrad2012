@@ -729,10 +729,13 @@ class Controlador
         while (layer != null)
         {
             IFeatureLayer featureLayer = layer as IFeatureLayer;
-            IFeatureClass fc = featureLayer.FeatureClass;
-            if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
+            if (featureLayer != null)
             {
-                listaCapas.Add(layer.Name.ToString());                
+                IFeatureClass fc = featureLayer.FeatureClass;
+                if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
+                {
+                    listaCapas.Add(layer.Name.ToString());
+                }
             }
             layer = enumLayers.Next();
         }
