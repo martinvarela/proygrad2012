@@ -61,11 +61,19 @@ namespace Proyecto
             this.lblRutaDestino = new System.Windows.Forms.Label();
             this.btnCarpeta = new System.Windows.Forms.Button();
             this.ptoVerdeCarpeta = new System.Windows.Forms.PictureBox();
+            this.txtExpIDW = new System.Windows.Forms.TextBox();
+            this.lblExpIDW = new System.Windows.Forms.Label();
+            this.ptoVerdeExp = new System.Windows.Forms.PictureBox();
+            this.ptoVerdeMuestras = new System.Windows.Forms.PictureBox();
+            this.lblMuestras = new System.Windows.Forms.Label();
+            this.txtCantMuestras = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeCapa)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeRango)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeError)).BeginInit();
             this.panelAyuda.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeCarpeta)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeExp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeMuestras)).BeginInit();
             this.SuspendLayout();
             // 
             // lblCapaMuestreo
@@ -98,7 +106,7 @@ namespace Proyecto
             this.lblMetodoEstimacion.Name = "lblMetodoEstimacion";
             this.lblMetodoEstimacion.Size = new System.Drawing.Size(128, 15);
             this.lblMetodoEstimacion.TabIndex = 26;
-            this.lblMetodoEstimacion.Text = "Metodo de estimación";
+            this.lblMetodoEstimacion.Text = "Método de estimación";
             // 
             // cboMetodoEstimacion
             // 
@@ -107,7 +115,7 @@ namespace Proyecto
             this.cboMetodoEstimacion.FormattingEnabled = true;
             this.cboMetodoEstimacion.Location = new System.Drawing.Point(32, 88);
             this.cboMetodoEstimacion.Name = "cboMetodoEstimacion";
-            this.cboMetodoEstimacion.Size = new System.Drawing.Size(370, 23);
+            this.cboMetodoEstimacion.Size = new System.Drawing.Size(160, 23);
             this.cboMetodoEstimacion.TabIndex = 25;
             this.cboMetodoEstimacion.GotFocus += new System.EventHandler(this.cboMetodoEstimacion_GotFocus);
             // 
@@ -115,7 +123,7 @@ namespace Proyecto
             // 
             this.lblRango.AutoSize = true;
             this.lblRango.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRango.Location = new System.Drawing.Point(29, 193);
+            this.lblRango.Location = new System.Drawing.Point(29, 190);
             this.lblRango.Name = "lblRango";
             this.lblRango.Size = new System.Drawing.Size(66, 15);
             this.lblRango.TabIndex = 28;
@@ -124,10 +132,10 @@ namespace Proyecto
             // txtRango
             // 
             this.txtRango.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRango.Location = new System.Drawing.Point(32, 212);
+            this.txtRango.Location = new System.Drawing.Point(32, 209);
             this.txtRango.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtRango.Name = "txtRango";
-            this.txtRango.Size = new System.Drawing.Size(160, 21);
+            this.txtRango.Size = new System.Drawing.Size(94, 21);
             this.txtRango.TabIndex = 27;
             this.txtRango.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtRango.GotFocus += new System.EventHandler(this.txtRango_GotFocus);
@@ -137,19 +145,19 @@ namespace Proyecto
             // 
             this.lblError.AutoSize = true;
             this.lblError.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblError.Location = new System.Drawing.Point(244, 193);
+            this.lblError.Location = new System.Drawing.Point(291, 190);
             this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(137, 15);
+            this.lblError.Size = new System.Drawing.Size(139, 15);
             this.lblError.TabIndex = 30;
-            this.lblError.Text = "Error en estimación (%)";
+            this.lblError.Text = "Root Mean Square Error";
             // 
             // txtError
             // 
             this.txtError.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtError.Location = new System.Drawing.Point(247, 212);
+            this.txtError.Location = new System.Drawing.Point(294, 209);
             this.txtError.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtError.Name = "txtError";
-            this.txtError.Size = new System.Drawing.Size(158, 21);
+            this.txtError.Size = new System.Drawing.Size(82, 21);
             this.txtError.TabIndex = 29;
             this.txtError.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtError.GotFocus += new System.EventHandler(this.txtError_GotFocus);
@@ -234,7 +242,7 @@ namespace Proyecto
             // ptoVerdeError
             // 
             this.ptoVerdeError.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeError.Image")));
-            this.ptoVerdeError.Location = new System.Drawing.Point(222, 212);
+            this.ptoVerdeError.Location = new System.Drawing.Point(269, 212);
             this.ptoVerdeError.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ptoVerdeError.Name = "ptoVerdeError";
             this.ptoVerdeError.Size = new System.Drawing.Size(19, 20);
@@ -360,7 +368,7 @@ namespace Proyecto
             // txtCarpeta
             // 
             this.txtCarpeta.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCarpeta.Location = new System.Drawing.Point(34, 156);
+            this.txtCarpeta.Location = new System.Drawing.Point(34, 153);
             this.txtCarpeta.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtCarpeta.Name = "txtCarpeta";
             this.txtCarpeta.Size = new System.Drawing.Size(368, 21);
@@ -373,7 +381,7 @@ namespace Proyecto
             // 
             this.lblRutaDestino.AutoSize = true;
             this.lblRutaDestino.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRutaDestino.Location = new System.Drawing.Point(31, 137);
+            this.lblRutaDestino.Location = new System.Drawing.Point(31, 134);
             this.lblRutaDestino.Name = "lblRutaDestino";
             this.lblRutaDestino.Size = new System.Drawing.Size(95, 15);
             this.lblRutaDestino.TabIndex = 42;
@@ -382,7 +390,7 @@ namespace Proyecto
             // btnCarpeta
             // 
             this.btnCarpeta.Image = ((System.Drawing.Image)(resources.GetObject("btnCarpeta.Image")));
-            this.btnCarpeta.Location = new System.Drawing.Point(408, 156);
+            this.btnCarpeta.Location = new System.Drawing.Point(408, 153);
             this.btnCarpeta.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCarpeta.Name = "btnCarpeta";
             this.btnCarpeta.Size = new System.Drawing.Size(31, 28);
@@ -393,18 +401,85 @@ namespace Proyecto
             // ptoVerdeCarpeta
             // 
             this.ptoVerdeCarpeta.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeCarpeta.Image")));
-            this.ptoVerdeCarpeta.Location = new System.Drawing.Point(7, 156);
+            this.ptoVerdeCarpeta.Location = new System.Drawing.Point(7, 153);
             this.ptoVerdeCarpeta.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.ptoVerdeCarpeta.Name = "ptoVerdeCarpeta";
             this.ptoVerdeCarpeta.Size = new System.Drawing.Size(19, 20);
             this.ptoVerdeCarpeta.TabIndex = 44;
             this.ptoVerdeCarpeta.TabStop = false;
             // 
+            // txtExpIDW
+            // 
+            this.txtExpIDW.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtExpIDW.Location = new System.Drawing.Point(247, 90);
+            this.txtExpIDW.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtExpIDW.Name = "txtExpIDW";
+            this.txtExpIDW.Size = new System.Drawing.Size(82, 21);
+            this.txtExpIDW.TabIndex = 45;
+            this.txtExpIDW.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtExpIDW.LostFocus += new System.EventHandler(this.txtExpIDW_LostFocus);
+            // 
+            // lblExpIDW
+            // 
+            this.lblExpIDW.AutoSize = true;
+            this.lblExpIDW.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblExpIDW.Location = new System.Drawing.Point(244, 71);
+            this.lblExpIDW.Name = "lblExpIDW";
+            this.lblExpIDW.Size = new System.Drawing.Size(91, 15);
+            this.lblExpIDW.TabIndex = 46;
+            this.lblExpIDW.Text = "Exponente IDW";
+            // 
+            // ptoVerdeExp
+            // 
+            this.ptoVerdeExp.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeExp.Image")));
+            this.ptoVerdeExp.Location = new System.Drawing.Point(222, 91);
+            this.ptoVerdeExp.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ptoVerdeExp.Name = "ptoVerdeExp";
+            this.ptoVerdeExp.Size = new System.Drawing.Size(19, 20);
+            this.ptoVerdeExp.TabIndex = 47;
+            this.ptoVerdeExp.TabStop = false;
+            // 
+            // ptoVerdeMuestras
+            // 
+            this.ptoVerdeMuestras.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeMuestras.Image")));
+            this.ptoVerdeMuestras.Location = new System.Drawing.Point(137, 212);
+            this.ptoVerdeMuestras.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.ptoVerdeMuestras.Name = "ptoVerdeMuestras";
+            this.ptoVerdeMuestras.Size = new System.Drawing.Size(19, 20);
+            this.ptoVerdeMuestras.TabIndex = 50;
+            this.ptoVerdeMuestras.TabStop = false;
+            // 
+            // lblMuestras
+            // 
+            this.lblMuestras.AutoSize = true;
+            this.lblMuestras.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMuestras.Location = new System.Drawing.Point(159, 190);
+            this.lblMuestras.Name = "lblMuestras";
+            this.lblMuestras.Size = new System.Drawing.Size(100, 15);
+            this.lblMuestras.TabIndex = 49;
+            this.lblMuestras.Text = "Nro de muestras";
+            // 
+            // txtCantMuestras
+            // 
+            this.txtCantMuestras.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCantMuestras.Location = new System.Drawing.Point(162, 209);
+            this.txtCantMuestras.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.txtCantMuestras.Name = "txtCantMuestras";
+            this.txtCantMuestras.Size = new System.Drawing.Size(94, 21);
+            this.txtCantMuestras.TabIndex = 48;
+            this.txtCantMuestras.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
             // ventanaSSA
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(468, 326);
+            this.Controls.Add(this.ptoVerdeMuestras);
+            this.Controls.Add(this.lblMuestras);
+            this.Controls.Add(this.txtCantMuestras);
+            this.Controls.Add(this.ptoVerdeExp);
+            this.Controls.Add(this.lblExpIDW);
+            this.Controls.Add(this.txtExpIDW);
             this.Controls.Add(this.ptoVerdeCarpeta);
             this.Controls.Add(this.btnCarpeta);
             this.Controls.Add(this.lblRutaDestino);
@@ -435,6 +510,8 @@ namespace Proyecto
             this.panelAyuda.ResumeLayout(false);
             this.panelAyuda.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeCarpeta)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeExp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeMuestras)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -473,5 +550,11 @@ namespace Proyecto
         private PictureBox ptoVerdeCarpeta;
         private Label lblDescripcionCarpeta;
         private Label lblTituloCarpeta;
+        private TextBox txtExpIDW;
+        private Label lblExpIDW;
+        private PictureBox ptoVerdeExp;
+        private PictureBox ptoVerdeMuestras;
+        private Label lblMuestras;
+        private TextBox txtCantMuestras;
     }
 }

@@ -28,13 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ventanaParametrosSSA));
             this.btnCerrar = new System.Windows.Forms.Button();
             this.lblTemperatura = new System.Windows.Forms.Label();
             this.txtTemperatura = new System.Windows.Forms.TextBox();
             this.lblFactor = new System.Windows.Forms.Label();
             this.txtFactor = new System.Windows.Forms.TextBox();
-            this.lblEpsilon = new System.Windows.Forms.Label();
-            this.txtEpsilon = new System.Windows.Forms.TextBox();
             this.lblIteraciones = new System.Windows.Forms.Label();
             this.txtIteraciones = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
@@ -42,7 +41,7 @@
             // btnCerrar
             // 
             this.btnCerrar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCerrar.Location = new System.Drawing.Point(52, 269);
+            this.btnCerrar.Location = new System.Drawing.Point(47, 195);
             this.btnCerrar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCerrar.Name = "btnCerrar";
             this.btnCerrar.Size = new System.Drawing.Size(110, 28);
@@ -96,33 +95,11 @@
             this.txtFactor.GotFocus += new System.EventHandler(this.txtFactor_GotFocus);
             this.txtFactor.LostFocus += new System.EventHandler(this.txtFactor_LostFocus);
             // 
-            // lblEpsilon
-            // 
-            this.lblEpsilon.AutoSize = true;
-            this.lblEpsilon.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEpsilon.Location = new System.Drawing.Point(12, 125);
-            this.lblEpsilon.Name = "lblEpsilon";
-            this.lblEpsilon.Size = new System.Drawing.Size(49, 15);
-            this.lblEpsilon.TabIndex = 30;
-            this.lblEpsilon.Text = "Epsilon";
-            // 
-            // txtEpsilon
-            // 
-            this.txtEpsilon.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtEpsilon.Location = new System.Drawing.Point(15, 144);
-            this.txtEpsilon.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.txtEpsilon.Name = "txtEpsilon";
-            this.txtEpsilon.Size = new System.Drawing.Size(174, 21);
-            this.txtEpsilon.TabIndex = 29;
-            this.txtEpsilon.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtEpsilon.GotFocus += new System.EventHandler(this.txtEpsilon_GotFocus);
-            this.txtEpsilon.LostFocus += new System.EventHandler(this.txtEpsilon_LostFocus);
-            // 
             // lblIteraciones
             // 
             this.lblIteraciones.AutoSize = true;
             this.lblIteraciones.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblIteraciones.Location = new System.Drawing.Point(12, 185);
+            this.lblIteraciones.Location = new System.Drawing.Point(12, 129);
             this.lblIteraciones.Name = "lblIteraciones";
             this.lblIteraciones.Size = new System.Drawing.Size(68, 15);
             this.lblIteraciones.TabIndex = 32;
@@ -131,7 +108,7 @@
             // txtIteraciones
             // 
             this.txtIteraciones.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIteraciones.Location = new System.Drawing.Point(15, 204);
+            this.txtIteraciones.Location = new System.Drawing.Point(15, 148);
             this.txtIteraciones.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtIteraciones.Name = "txtIteraciones";
             this.txtIteraciones.Size = new System.Drawing.Size(174, 21);
@@ -142,16 +119,15 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(211, 310);
+            this.ClientSize = new System.Drawing.Size(211, 247);
             this.Controls.Add(this.lblIteraciones);
             this.Controls.Add(this.txtIteraciones);
-            this.Controls.Add(this.lblEpsilon);
-            this.Controls.Add(this.txtEpsilon);
             this.Controls.Add(this.lblFactor);
             this.Controls.Add(this.txtFactor);
             this.Controls.Add(this.lblTemperatura);
             this.Controls.Add(this.txtTemperatura);
             this.Controls.Add(this.btnCerrar);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ventanaParametrosSSA";
             this.Text = "Parametros SSA";
             this.ResumeLayout(false);
@@ -166,8 +142,6 @@
         private System.Windows.Forms.TextBox txtTemperatura;
         private System.Windows.Forms.Label lblFactor;
         private System.Windows.Forms.TextBox txtFactor;
-        private System.Windows.Forms.Label lblEpsilon;
-        private System.Windows.Forms.TextBox txtEpsilon;
         private System.Windows.Forms.Label lblIteraciones;
         private System.Windows.Forms.TextBox txtIteraciones;
     }

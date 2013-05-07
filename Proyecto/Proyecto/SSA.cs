@@ -44,7 +44,7 @@ class SSA
         this.ws = workspace;
     }
 
-    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double rango, double error, string pathArchivo)
+    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double rango, double error, string pathArchivo)
     {
         double factorReduccionAux = this.factorReduccion;
         int iteracionesAux = this.iteraciones;
@@ -89,7 +89,7 @@ class SSA
             double delta;
 
             //calculo fitness del muestreo inicial
-            fitness = CalcularFitnessIDW(listaPuntosMuestreo, muestreados, capaPuntosMuestreo);
+            fitness = CalcularFitnessIDW(listaPuntosMuestreo, muestreados, capaPuntosMuestreo, expIDW);
        
             System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
 
@@ -101,7 +101,7 @@ class SSA
                 auxMuestreados = ClonarLista(muestreados);
                 auxTodos = ClonarLista(todos);
                 MoverMuestra(auxMuestreados, auxTodos);
-                auxFitness = CalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
+                auxFitness = CalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo, expIDW);
                 System.Diagnostics.Debug.WriteLine(" auxFitnens: " + auxFitness);
                 delta = ((auxFitness - fitness)/fitness)*100;
                 //if the new distance is better accept it and assign it
@@ -193,7 +193,7 @@ class SSA
     
     //el fitness es el error cuadratico medio entre los valores en los puntos reales 
     //y los valores en los puntos interpolados con las muestras
-    private double CalcularFitnessIDW(List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestras, IFeatureClass capaPuntosMuestreo)
+    private double CalcularFitnessIDW(List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestras, IFeatureClass capaPuntosMuestreo, double expIDW)
     {
         IMap map = ArcMap.Document.FocusMap; 
         
@@ -209,6 +209,7 @@ class SSA
         capaIDW.in_features = capaPuntosMuestreoOptimo;
         capaIDW.out_ga_layer = nombreCapaIDW;
         capaIDW.z_field = capaPuntosMuestreoOptimo.FindField("Valor");
+        capaIDW.power = expIDW; 
         gp.TemporaryMapLayers = true;
         gp.OverwriteOutput = true;
         gp.AddOutputsToMap = false;

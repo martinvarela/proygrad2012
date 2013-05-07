@@ -187,7 +187,7 @@ class Controlador
     //metodoInterpolacion puede ser IDW o Kriging
     //rango ??? o cantmuestras
     //error maximo aceptado en % ej: 5
-    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double rango, double error, string rutaCapa)
+    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double rango, double error, string rutaCapa)
     {
         IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
         
@@ -203,7 +203,7 @@ class Controlador
         this.wsSSA = workspace;
         this.ssa.setWorkspace(this.wsSSA);
         
-        IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, rango, error, pathArchivo);    
+        IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, rango, error, pathArchivo);    
     } 
 
     public void crearBlackmore(bool filaColumna, int vertical, int horizontal)

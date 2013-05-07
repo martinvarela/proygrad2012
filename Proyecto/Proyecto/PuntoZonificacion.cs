@@ -45,14 +45,34 @@ class PuntoZonificacion
             temp += (float)Math.Pow((double)((medicion - datosVariable.Media) / datosVariable.Media),2);
             cant++;
         }*/
-        for (int i = 0; i < this.Variables.Count; i++)
+        //for (int i = 0; i < this.Variables.Count; i++)
+        //{
+        //    datosVariable = this.Variables[i].getDatos();
+        //    medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
+        //    temp += (float)Math.Pow((double)((medicion - datosVariable.Media) / datosVariable.Media),2);
+        //    cant++;
+        //}
+        //this.variabilidad = (float)Math.Sqrt(temp / cant);
+        
+        //mas de 1 variable, se normalizan los valores
+        if (this.Variables.Count > 1)
         {
-            datosVariable = this.Variables[i].getDatos();
-            medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
-            temp += (float)Math.Pow((double)((medicion - datosVariable.Media) / datosVariable.Media),2);
-            cant++;
+            for (int i = 0; i < this.Variables.Count; i++)
+            {
+                datosVariable = this.Variables[i].getDatos();
+                medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
+                temp += (float)(medicion / datosVariable.Media);
+                cant++;
+            }
+            this.variabilidad = (float)(temp / cant);
         }
-        this.variabilidad = (float)Math.Sqrt(temp / cant);
+        else
+        {   //una sola variable, no se normaliza
+            datosVariable = this.Variables[0].getDatos();
+            medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
+            this.variabilidad = medicion; 
+        }
+
     }
     
     public float getMedicion(String nombre)  

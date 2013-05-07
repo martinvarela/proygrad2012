@@ -177,6 +177,28 @@
         JkIGgOQZgZgViDmBmBuIOYCYBSpOjH46qgEA0sGrh9NOz+sAAAAASUVORK5CYII=
 </value>
   </data>
+  <data name="ptoVerdeExp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
+        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsMAAALDAE/QCLIAAABDUlE
+        QVQ4T2NgGAVYQ2DVqlXM69evTz56b+X/Cx/X/QfRID5InGCQgRRtOLj0wqmv6/5f+Lodjs9+2/IfJE7Q
+        kI0bN/ovfTrh/6aX8zHwhhdz/4Pk8bpi0tbe8xPvtPzHhUHyeA3o2Nj+yGSX5n+/wy7/I48F/k85Ffs/
+        +njw/4DD7v9d9lv979zQ+hCvAWvXri1R2SDzX2WLLCYGigMDsxivAfb29iJFqwv+q6wHGrIZagiIBvJB
+        4v7+/gKEYoJLR0dHb/7KeX9Mlxv8V1wu9R9Eg/jGxsYaQM1shAwAxTUvEMsAsXpGRkYUkFYDYkkg5gJi
+        JkIGgOQZgZgViDmBmBuIOYCYBSpOjH46qgEA0sGrh9NOz+sAAAAASUVORK5CYII=
+</value>
+  </data>
+  <data name="ptoVerdeMuestras.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
+        JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAACXBIWXMAAAsMAAALDAE/QCLIAAABDUlE
+        QVQ4T2NgGAVYQ2DVqlXM69evTz56b+X/Cx/X/QfRID5InGCQgRRtOLj0wqmv6/5f+Lodjs9+2/IfJE7Q
+        kI0bN/ovfTrh/6aX8zHwhhdz/4Pk8bpi0tbe8xPvtPzHhUHyeA3o2Nj+yGSX5n+/wy7/I48F/k85Ffs/
+        +njw/4DD7v9d9lv979zQ+hCvAWvXri1R2SDzX2WLLCYGigMDsxivAfb29iJFqwv+q6wHGrIZagiIBvJB
+        4v7+/gKEYoJLR0dHb/7KeX9Mlxv8V1wu9R9Eg/jGxsYaQM1shAwAxTUvEMsAsXpGRkYUkFYDYkkg5gJi
+        JkIGgOQZgZgViDmBmBuIOYCYBSpOjH46qgEA0sGrh9NOz+sAAAAASUVORK5CYII=
+</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAgIAAAAEAIAAoCAEAFgAAACgAAACAAAAAAAEAAAEAIAAAAAAAAAABAMIOAADCDgAAAAAAAAAA

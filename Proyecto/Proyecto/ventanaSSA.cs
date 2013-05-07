@@ -55,7 +55,7 @@ namespace Proyecto
 
             //cargo los metodos de interpolacion posibles
             cboMetodoEstimacion.Items.Add("IDW");
-            cboMetodoEstimacion.Items.Add("Kriging");
+            //cboMetodoEstimacion.Items.Add("Kriging");
             cboMetodoEstimacion.SelectedIndex = 0;
 
             //textbox Rango
@@ -64,6 +64,13 @@ namespace Proyecto
             //textbox error
             this.ptoVerdeError.Visible = true;
 
+            //textExpIDW
+            double d = 2.0;
+            this.txtExpIDW.Text = d.ToString();
+            this.ptoVerdeExp.Visible = false;
+
+            //textCantMuestras
+            this.ptoVerdeMuestras.Visible = true;
         }
 
         private void btnParametros_Click(object sender, EventArgs e)
@@ -89,7 +96,7 @@ namespace Proyecto
         private void btnAceptar_Click(object sender, EventArgs e)
         {
             //control previo de datos para la ejecucion de la funcion
-            String[] stringErrores = new String[4];
+            String[] stringErrores = new String[5];
             for (int i = 0; i < stringErrores.Length; i++)
                 stringErrores[i] = "";
             int cantidadErrores = 0;
@@ -103,15 +110,20 @@ namespace Proyecto
                 cantidadErrores++;
                 stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblRutaDestino.Text + ": Ruta inválida donde se guardarán las capas de optimización de muestreo.";
             }
-            if (ptoVerdeRango.Visible)
+            if (ptoVerdeMuestras.Visible)
             {
                 cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblRango.Text + ": Debe indicar un valor entero para el rango.";
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblMuestras.Text + ": Debe indicar un valor entero para el numero de muestras.";
             }
             if (ptoVerdeError.Visible)
             {
                 cantidadErrores++;
                 stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblError.Text + ": Debe indicar un valor entero para el error.";
+            }
+            if (ptoVerdeExp.Visible)
+            {
+                cantidadErrores++;
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblExpIDW.Text + ": Debe indicar un valor real positivo para el exponente del metodo IDW.";
             }
             
             //si esta no hay errores, ejecuto la funcion de crear puntos de muestreo
@@ -136,7 +148,7 @@ namespace Proyecto
                 //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
                 String rutaCapa = System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
                 Controlador controlador = Controlador.getInstancia;
-                controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), double.Parse(txtRango.Text.ToString()), double.Parse(txtError.Text.ToString()), rutaCapa);
+                controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), double.Parse(txtExpIDW.Text.ToString()), double.Parse(txtRango.Text.ToString()), double.Parse(txtError.Text.ToString()), rutaCapa);
 
                 this.Close();
             }
@@ -187,10 +199,11 @@ namespace Proyecto
 
         private void txtError_LostFocus(object sender, EventArgs e)
         {
-            int i;
-            if (int.TryParse(this.txtError.Text, out i))
+            double i;
+            if (double.TryParse(this.txtError.Text, out i))
             {
                 this.ptoVerdeError.Visible = false;
+                this.txtError.Text = i.ToString();
             }
             else
             {
@@ -271,6 +284,21 @@ namespace Proyecto
             this.panelAyuda.Controls.Clear();
             this.panelAyuda.Controls.Add(this.lblTituloCarpeta);
             this.panelAyuda.Controls.Add(this.lblDescripcionCarpeta);
+        }
+
+        private void txtExpIDW_LostFocus(object sender, EventArgs e)
+        {
+            double i;
+            if (double.TryParse(this.txtExpIDW.Text, out i))
+            {
+                this.ptoVerdeExp.Visible = false;
+                this.txtExpIDW.Text = i.ToString();
+            }
+            else
+            {
+                this.txtExpIDW.Text = "";
+                this.ptoVerdeExp.Visible = true;
+            }
         }
 
     }
