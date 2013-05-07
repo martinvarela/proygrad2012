@@ -27,7 +27,7 @@ class SSA
         this.temperaturaInicial = 14.427;
         this.factorReduccion = 0.994;
         this.iteraciones = 1000;
-        this.cantMuestras = 30;
+        //this.cantMuestras = 30;
     }
 
     public double getTemperaturaInicial() { return this.temperaturaInicial; }
@@ -44,7 +44,7 @@ class SSA
         this.ws = workspace;
     }
 
-    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error, string pathArchivo)
+    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double rango, double error, string pathArchivo)
     {
         double factorReduccionAux = this.factorReduccion;
         int iteracionesAux = this.iteraciones;
@@ -69,8 +69,9 @@ class SSA
             featurePunto = cursorPuntosMuestreo.NextFeature();
         }
 
+        bool llegueAErrorEsperado = true;
 
-        while (cantMuestrasAux > 28)
+        while (cantMuestrasAux > 1 && llegueAErrorEsperado)
         {
             double temperaturaInicialAux = this.temperaturaInicial;
             //a partir de los puntos, selecciona las muestras iniciales
@@ -88,34 +89,19 @@ class SSA
             double delta;
 
             //calculo fitness del muestreo inicial
-            if (metodoInterpolacion == "Kriging")
-            {
-                fitness = CalcularFitnessKriging(listaPuntosMuestreo, muestreados, capaPuntosMuestreo);
-            }
-            else
-            {
-                fitness = CalcularFitnessIDW(listaPuntosMuestreo, muestreados, capaPuntosMuestreo);
-            }
-
-
+            fitness = CalcularFitnessIDW(listaPuntosMuestreo, muestreados, capaPuntosMuestreo, expIDW);
+       
             System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
 
             //LOOP principal
-            while (iteration < iteracionesAux /*&& aca va el error*/ )
+            while (iteration < iteracionesAux && (fitness*100 > error) )
             {
                 iteration++;
 
                 auxMuestreados = ClonarLista(muestreados);
                 auxTodos = ClonarLista(todos);
-                MoverMuestra2(auxMuestreados, auxTodos);
-                if (metodoInterpolacion == "Kriging")
-                {
-                    auxFitness = CalcularFitnessKriging(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
-                }
-                else
-                {
-                    auxFitness = CalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo);
-                }
+                MoverMuestra(auxMuestreados, auxTodos);
+                auxFitness = CalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo, expIDW);
                 System.Diagnostics.Debug.WriteLine(" auxFitnens: " + auxFitness);
                 delta = ((auxFitness - fitness)/fitness)*100;
                 //if the new distance is better accept it and assign it
@@ -144,8 +130,6 @@ class SSA
                 if (iteration % 100 == 0)
                 {
                     System.Diagnostics.Debug.WriteLine(fitness);
-                    Imprimir2(todos);
-                    Imprimir2(muestreados);
                     System.Diagnostics.Debug.WriteLine("temp: " + temperaturaInicialAux + " delta: " + delta + " fitnnes: " + fitness + " aux_fitnnes: " + auxFitness);
                     System.Diagnostics.Debug.WriteLine("iter: " + iteration);
                 }
@@ -198,6 +182,8 @@ class SSA
                 System.Diagnostics.Debug.WriteLine(e.Message);
             }
 
+            if (fitness * 100 > error)
+                llegueAErrorEsperado = false;
             cantMuestrasAux--;
         }
         return null;
@@ -207,7 +193,7 @@ class SSA
     
     //el fitness es el error cuadratico medio entre los valores en los puntos reales 
     //y los valores en los puntos interpolados con las muestras
-    private double CalcularFitnessIDW(List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestras, IFeatureClass capaPuntosMuestreo)
+    private double CalcularFitnessIDW(List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestras, IFeatureClass capaPuntosMuestreo, double expIDW)
     {
         IMap map = ArcMap.Document.FocusMap; 
         
@@ -223,6 +209,7 @@ class SSA
         capaIDW.in_features = capaPuntosMuestreoOptimo;
         capaIDW.out_ga_layer = nombreCapaIDW;
         capaIDW.z_field = capaPuntosMuestreoOptimo.FindField("Valor");
+        capaIDW.power = expIDW; 
         gp.TemporaryMapLayers = true;
         gp.OverwriteOutput = true;
         gp.AddOutputsToMap = false;
@@ -256,7 +243,7 @@ class SSA
         double errorTotal = 0;
         try
         {
-            System.Diagnostics.Debug.WriteLine("Executing the try statement.");
+            //System.Diagnostics.Debug.WriteLine("Executing the try statement.");
             IGeoProcessorResult result = (IGeoProcessorResult)gp2.Execute(capaEstimacion, null);
             gpUtils.DecodeFeatureLayer(result.GetOutput(0), out fc, out qf);
             //recorrer la capa capaEstimacion, hacer el cuadrado de cada error y sumarlos
@@ -271,13 +258,14 @@ class SSA
                 double errorPunto = Math.Abs((double)featureEstimacion.get_Value(indiceError));
                 double valorReal = (double)featureEstimacion.get_Value(indiceValor);
 
-                errorTotal += errorPunto/valorReal;
+                //errorTotal += errorPunto/valorReal;
+                errorTotal += Math.Pow(errorPunto, 2);
 
                 featureEstimacion = cursorEstimacion.NextFeature();
             }
 
-            errorTotal = errorTotal / listaPuntosMuestreo.Count;
-            
+            //errorTotal = errorTotal / listaPuntosMuestreo.Count;
+            errorTotal = Math.Sqrt(errorTotal / listaPuntosMuestreo.Count);
         }
         catch
         {
@@ -301,117 +289,9 @@ class SSA
 
     }
 
-    //el fitness es el error cuadratico medio entre los valores en los puntos reales 
-    //y los valores en los puntos interpolados con las muestras
-    private double CalcularFitnessKriging(List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestras, IFeatureClass capaPuntosMuestreo)
-    {
-        IMap map = ArcMap.Document.FocusMap;
-
-
-        String nombreCapaPuntosMuestreoOptimo = "MO" + System.DateTime.Now.ToString("ddHHmmss");
-
-        //agregar como parametro 
-        IFeatureClass capaPuntosMuestreoOptimo = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, listaIndicesMuestras);
-        String nombreCapaKR = "KR" + System.DateTime.Now.ToString("ddHHmmss");
-
-        Geoprocessor gp = new Geoprocessor();
-        ESRI.ArcGIS.SpatialAnalystTools.Kriging capaKR = new ESRI.ArcGIS.SpatialAnalystTools.Kriging();
-        capaKR.in_point_features = capaPuntosMuestreoOptimo;
-        capaKR.z_field = "Valor";
-        capaKR.out_surface_raster = nombreCapaKR;
-        capaKR.semiVariogram_props = "Spherical";
-        
-        
-        gp.AddOutputsToMap = true;
-        
-        try
-        {
-            System.Diagnostics.Debug.WriteLine("Executing the try statement.");
-            gp.Execute(capaKR, null);
-        }
-        catch (NullReferenceException e)
-        {
-            System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
-        }
-        catch
-        {
-            for (int i = 0; i < gp.MessageCount; i++)
-                System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
-            System.Diagnostics.Debug.WriteLine("Caught exception #1.");
-        }
-        finally
-        {
-            for (int i = 0; i < gp.MessageCount; i++)
-                System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
-            System.Diagnostics.Debug.WriteLine("Caught exception #1.");
-        }
-
-
-        String nombreCapaEstimacion = "Estimacion" + System.DateTime.Now.ToString("ddHHmmss");
-
-        Geoprocessor gp2 = new Geoprocessor();
-        ESRI.ArcGIS.SpatialAnalystTools.ExtractValuesToPoints capaEstimacion = new ESRI.ArcGIS.SpatialAnalystTools.ExtractValuesToPoints();
-        //esta tiene que ser la capa con todos los puntos!!!!!!!!!!!!!!!!!
-        capaEstimacion.in_point_features = capaPuntosMuestreo;
-        capaEstimacion.out_point_features = nombreCapaEstimacion;
-        capaEstimacion.in_raster = nombreCapaKR;
-
-        try
-        {
-            System.Diagnostics.Debug.WriteLine("Executing the try statement.");
-            gp2.Execute(capaEstimacion, null);
-        }
-        catch (NullReferenceException e)
-        {
-            System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
-        }
-        catch
-        {
-            for (int i = 0; i < gp2.MessageCount; i++)
-                System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
-            System.Diagnostics.Debug.WriteLine("Caught exception #2.");
-        }
-        finally
-        {
-            for (int i = 0; i < gp2.MessageCount; i++)
-                System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
-            System.Diagnostics.Debug.WriteLine("Caught exception #2.");
-        }
-
-
-        //recorrer la capa capaEstimacion, hacer el cuadrado de cada error y sumarlos
-        IEnumLayer enumlayers = map.get_Layers();
-        ILayer layerPuntosEstimados = enumlayers.Next();
-        while ((layerPuntosEstimados != null) && (layerPuntosEstimados.Name != nombreCapaEstimacion))
-        {
-            layerPuntosEstimados = enumlayers.Next();
-        }
-        IFeatureLayer ifeaturelayerPuntosEstimados = layerPuntosEstimados as FeatureLayer;
-
-
-        IFeatureCursor cursorEstimacion = ifeaturelayerPuntosEstimados.FeatureClass.Search(null, false);
-        int indiceReal = ifeaturelayerPuntosEstimados.FeatureClass.FindField("Valor");
-        int indiceEstimado = ifeaturelayerPuntosEstimados.FeatureClass.FindField("RASTERVALU");
-
-        IFeature featureEstimacion = cursorEstimacion.NextFeature();
-        //gets the column ID where we can find the report ID
-        double errorTotal = 0;
-        while (featureEstimacion != null)
-        {
-            double errorPunto = (double)featureEstimacion.get_Value(indiceReal) - (double)featureEstimacion.get_Value(indiceEstimado);
-            errorTotal += Math.Pow(errorPunto, 2);
-
-            featureEstimacion = cursorEstimacion.NextFeature();
-        }
-        //return suma errores
-        return errorTotal;
-
-    }
-
-    
     
     //aca voy a tener una lista con los indices de los puntos de muestreo y voy a modificar uno al azar
-    public void MoverMuestra2(List<int> auxMuestreados, List<int> auxTodos)
+    public void MoverMuestra(List<int> auxMuestreados, List<int> auxTodos)
     {
         Random rnd = new Random();
         int mover = rnd.Next(auxMuestreados.Count); // creates a number between 0 and auxMuestreados.Count
@@ -432,68 +312,6 @@ class SSA
         }
     }
 
-    
-
-    public void Imprimir2(List<int> aux_todos)
-    {
-        foreach ( int aux in aux_todos ) 
-        {
-                System.Diagnostics.Debug.WriteLine(aux + ' ');
-
-        } System.Diagnostics.Debug.WriteLine("");
-    }
-
-  
-    
-    //funcion para inicializar los puntos a muestrear, esto depende de la cantidad de muestras a seleccionar
-    //armar un estilo de grilla con puntos equiespaciados ó seleccionar los puntos al azar
-    //private List<PuntoZonificacion> Inicializar2(List<PuntoZonificacion> listaZonificacion)
-    //{
-    //    List<PuntoZonificacion> res = new List<PuntoZonificacion>(); 
-    //    PuntoZonificacion aux;
-    //    Coordenada coordAux;
-    //    this.todos = new List<int>();
-    //    this.muestreados = new List<int>();
-    //    for (int ind=0 ; ind < listaZonificacion.Count; ind++){
-    //        if (((ind + 1) % (listaZonificacion.Count /cantMuestras)) == 0)
-    //        {
-    //            this.todos.Add(1);
-    //            this.muestreados.Add(ind);
-    //            aux = new PuntoZonificacion();
-    //            coordAux = new Coordenada();
-    //            coordAux.X = listaZonificacion[ind].Coordenada.X;
-    //            coordAux.Y = listaZonificacion[ind].Coordenada.Y;
-    //            aux.Coordenada = coordAux;
-    //            aux.Variabilidad = listaZonificacion[ind].Variabilidad;
-    //            res.Add(aux);
-    //        }
-    //        else
-    //        {
-    //            this.todos.Add(0);
-    //        }
-    //    }
-    //    return res;
-    //}
-
-    //funcion para inicializar los puntos a muestrear, esto depende de la cantidad de muestras a seleccionar
-    //armar un estilo de grilla con puntos equiespaciados ó seleccionar los puntos al azar
-    //private void Inicializar(List<PuntoMuestreo> listaMuestreo)
-    //{
-    //    this.todos = new List<int>();
-    //    this.muestreados = new List<int>();
-    //    for (int ind = 0; ind < listaMuestreo.Count; ind++)
-    //    {
-    //        if (((ind + 1) % (listaMuestreo.Count / this.cantMuestras)) == 0)
-    //        {
-    //            this.todos.Add(1);
-    //            this.muestreados.Add(ind);
-    //        }
-    //        else
-    //        {
-    //            this.todos.Add(0);
-    //        }
-    //    }
-    //}
     private void Inicializar(List<PuntoMuestreo> listaMuestreo, int cantMuestrasAux)
     {
         this.todos = new List<int>();
@@ -519,8 +337,6 @@ class SSA
                 }
             }
         }
-
-        
     }
 
     public List<PuntoZonificacion> ClonarZonif(List<PuntoZonificacion> zonif) {
@@ -546,19 +362,6 @@ class SSA
         }
         return res;
         
-    }
-
-    //calculo el Root Mean Square Error para los puntos estimados a partir de las muestras
-    //esta va a ser la funcion de fitness, cuando menor sea el error, mejor es la solucion
-    public double RMSE(List<PuntoZonificacion> reales, List<PuntoZonificacion> estimados) {
-        double error= 0;
-        for (int i = 0; i < reales.Count; i++)
-        {
-            error += Math.Pow(reales[i].Variabilidad - estimados[i].Variabilidad, 2);
-        }
-        error = Math.Sqrt( error / reales.Count);
-        return error;
-    
     }
 
     public IFeatureClass crearCapaPuntosMuestreo(IMap map, string nombreFeatureClass, List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestreo)
@@ -688,7 +491,7 @@ class SSA
         // default CLSID, esriGeodatabase.Feature (acceptable in most cases for feature classes).
         try
         {
-            System.Diagnostics.Debug.WriteLine("Executing the try statement.");
+            //System.Diagnostics.Debug.WriteLine("Executing the try statement.");
             IFeatureClass featureClass = featureWorkspace.CreateFeatureClass(featureClassName,
                                                                             validatedFields, null, ocDescription.ClassExtensionCLSID,
                                                                             esriFeatureType.esriFTSimple, "Shape", "");
@@ -699,8 +502,6 @@ class SSA
             System.Diagnostics.Debug.WriteLine("{0} Caught exception #1." + e);
             return null;
         }
-        
-
         
     }
 

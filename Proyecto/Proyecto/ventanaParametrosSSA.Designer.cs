@@ -41,7 +41,7 @@
             // btnCerrar
             // 
             this.btnCerrar.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnCerrar.Location = new System.Drawing.Point(45, 200);
+            this.btnCerrar.Location = new System.Drawing.Point(47, 195);
             this.btnCerrar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCerrar.Name = "btnCerrar";
             this.btnCerrar.Size = new System.Drawing.Size(110, 28);
@@ -98,7 +98,7 @@
             // 
             this.lblIteraciones.AutoSize = true;
             this.lblIteraciones.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblIteraciones.Location = new System.Drawing.Point(9, 135);
+            this.lblIteraciones.Location = new System.Drawing.Point(12, 129);
             this.lblIteraciones.Name = "lblIteraciones";
             this.lblIteraciones.Size = new System.Drawing.Size(68, 15);
             this.lblIteraciones.TabIndex = 32;
@@ -107,7 +107,7 @@
             // txtIteraciones
             // 
             this.txtIteraciones.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIteraciones.Location = new System.Drawing.Point(12, 154);
+            this.txtIteraciones.Location = new System.Drawing.Point(15, 148);
             this.txtIteraciones.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtIteraciones.Name = "txtIteraciones";
             this.txtIteraciones.Size = new System.Drawing.Size(174, 21);

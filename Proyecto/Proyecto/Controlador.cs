@@ -20,6 +20,8 @@ class Controlador
     private static Controlador instancia;
     private IWorkspace wsSSA;
     private IWorkspace wsZonif;
+    private double rango = -1;
+    private double area = -1;
 
     private Controlador() 
     {
@@ -185,7 +187,7 @@ class Controlador
     //metodoInterpolacion puede ser IDW o Kriging
     //rango ??? o cantmuestras
     //error maximo aceptado en % ej: 5
-    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, int rango, double error, string rutaCapa)
+    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double rango, double error, string rutaCapa)
     {
         IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
         
@@ -201,7 +203,7 @@ class Controlador
         this.wsSSA = workspace;
         this.ssa.setWorkspace(this.wsSSA);
         
-        IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, rango, error, pathArchivo);    
+        IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, rango, error, pathArchivo);    
     } 
 
     public void crearBlackmore(bool filaColumna, int vertical, int horizontal)
@@ -531,7 +533,7 @@ class Controlador
             ////se borra la layer de Puntos
             //map.DeleteLayer(layerPuntos);
         }
-        catch
+        catch //(COMException comExc)
         {
             // Handle any errors that might occur on NextFeature().
         }
@@ -729,14 +731,83 @@ class Controlador
         while (layer != null)
         {
             IFeatureLayer featureLayer = layer as IFeatureLayer;
-            IFeatureClass fc = featureLayer.FeatureClass;
-            if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
+            if (featureLayer != null)
             {
-                listaCapas.Add(layer.Name.ToString());                
+                IFeatureClass fc = featureLayer.FeatureClass;
+                if (fc.FindField("Valor") != -1 && fc.ShapeType == esriGeometryType.esriGeometryPoint)
+                {
+                    listaCapas.Add(layer.Name.ToString());
+                }
             }
             layer = enumLayers.Next();
         }
         return listaCapas;
+    }
+
+    public int calcularArea(string nombreCapa) 
+    {
+        
+        Geoprocessor gp = new Geoprocessor();
+        ESRI.ArcGIS.DataManagementTools.MinimumBoundingGeometry poligono = new ESRI.ArcGIS.DataManagementTools.MinimumBoundingGeometry();
+        poligono.geometry_type = "CONVEX_HULL";
+        poligono.group_option = "ALL";
+        poligono.in_features = nombreCapa;
+        gp.TemporaryMapLayers = true;
+        gp.AddOutputsToMap = false;
+        //poligono.out_feature_class;
+        IFeatureClass fc;
+        IQueryFilter qf;
+        try
+        {
+            IGPUtilities gpUtils = new GPUtilitiesClass();
+            IGeoProcessorResult result = (IGeoProcessorResult)gp.Execute(poligono, null);
+            gpUtils.DecodeFeatureLayer(result.GetOutput(0), out fc, out qf);
+            IFeatureCursor cursorPoligono = fc.Search(null, false);
+            int indice = fc.FindField("Shape_Area");
+            IFeature datosPoligono = cursorPoligono.NextFeature();
+            while (datosPoligono != null)
+            {
+                this.area = (double)datosPoligono.get_Value(indice);
+                datosPoligono = cursorPoligono.NextFeature();
+            }
+
+            /*se elimina la feature class del poligono creado*/
+            if (((IDataset)fc).CanDelete())
+            {
+                ((IDataset)fc).Delete();
+            }
+
+            if (this.rango == -1)
+            {
+                return -1;
+            }
+            else
+            {
+                return calcularNroMuestras();
+            }
+            
+        }
+        catch 
+        {
+            for (int i = 0; i < gp.MessageCount; i++)
+                System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
+            return -1;
+        }
+
+    }
+
+    public int setearRango(int r) {
+        this.rango = r;
+        if (this.area == -1)
+            return -1;
+        else
+            return calcularNroMuestras();
+    }
+
+    public int calcularNroMuestras()
+    {
+        this.ssa.cantMuestras = (int)(Math.Round(this.area * 4 / Math.Pow(this.rango, 2)));
+        return this.ssa.cantMuestras;
     }
 
 
