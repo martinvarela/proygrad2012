@@ -45,8 +45,7 @@
             this.btnCerrar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCerrar.Name = "btnCerrar";
             this.btnCerrar.Size = new System.Drawing.Size(110, 28);
-            this.btnCerrar.TabIndex = 10;
-            this.btnCerrar.TabStop = false;
+            this.btnCerrar.TabIndex = 4;
             this.btnCerrar.Text = "Cerrar";
             this.btnCerrar.UseVisualStyleBackColor = true;
             this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
@@ -68,7 +67,7 @@
             this.txtTemperatura.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtTemperatura.Name = "txtTemperatura";
             this.txtTemperatura.Size = new System.Drawing.Size(174, 21);
-            this.txtTemperatura.TabIndex = 25;
+            this.txtTemperatura.TabIndex = 1;
             this.txtTemperatura.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtTemperatura.GotFocus += new System.EventHandler(this.txtTemperatura_GotFocus);
             this.txtTemperatura.LostFocus += new System.EventHandler(this.txtTemperatura_LostFocus);
@@ -90,7 +89,7 @@
             this.txtFactor.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtFactor.Name = "txtFactor";
             this.txtFactor.Size = new System.Drawing.Size(174, 21);
-            this.txtFactor.TabIndex = 27;
+            this.txtFactor.TabIndex = 2;
             this.txtFactor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtFactor.GotFocus += new System.EventHandler(this.txtFactor_GotFocus);
             this.txtFactor.LostFocus += new System.EventHandler(this.txtFactor_LostFocus);
@@ -112,7 +111,7 @@
             this.txtIteraciones.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtIteraciones.Name = "txtIteraciones";
             this.txtIteraciones.Size = new System.Drawing.Size(174, 21);
-            this.txtIteraciones.TabIndex = 31;
+            this.txtIteraciones.TabIndex = 3;
             this.txtIteraciones.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // ventanaParametrosSSA
@@ -129,7 +128,7 @@
             this.Controls.Add(this.btnCerrar);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ventanaParametrosSSA";
-            this.Text = "Parametros SSA";
+            this.Text = "Parámetros";
             this.ResumeLayout(false);
             this.PerformLayout();
 

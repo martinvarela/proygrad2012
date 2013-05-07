@@ -92,7 +92,7 @@ namespace Proyecto
             this.cboCapaMuestreo.Location = new System.Drawing.Point(32, 31);
             this.cboCapaMuestreo.Name = "cboCapaMuestreo";
             this.cboCapaMuestreo.Size = new System.Drawing.Size(371, 23);
-            this.cboCapaMuestreo.TabIndex = 23;
+            this.cboCapaMuestreo.TabIndex = 1;
             this.cboCapaMuestreo.SelectedIndexChanged += new System.EventHandler(this.cboCapaMuestreo_SelectedIndexChanged);
             this.cboCapaMuestreo.GotFocus += new System.EventHandler(this.cboCapaMuestreo_GotFocus);
             // 
@@ -114,7 +114,7 @@ namespace Proyecto
             this.cboMetodoEstimacion.Location = new System.Drawing.Point(32, 88);
             this.cboMetodoEstimacion.Name = "cboMetodoEstimacion";
             this.cboMetodoEstimacion.Size = new System.Drawing.Size(160, 23);
-            this.cboMetodoEstimacion.TabIndex = 25;
+            this.cboMetodoEstimacion.TabIndex = 2;
             this.cboMetodoEstimacion.GotFocus += new System.EventHandler(this.cboMetodoEstimacion_GotFocus);
             // 
             // lblRango
@@ -134,7 +134,7 @@ namespace Proyecto
             this.txtRango.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtRango.Name = "txtRango";
             this.txtRango.Size = new System.Drawing.Size(94, 21);
-            this.txtRango.TabIndex = 27;
+            this.txtRango.TabIndex = 5;
             this.txtRango.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtRango.GotFocus += new System.EventHandler(this.txtRango_GotFocus);
             this.txtRango.LostFocus += new System.EventHandler(this.txtRango_LostFocus);
@@ -156,7 +156,7 @@ namespace Proyecto
             this.txtError.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtError.Name = "txtError";
             this.txtError.Size = new System.Drawing.Size(82, 21);
-            this.txtError.TabIndex = 29;
+            this.txtError.TabIndex = 6;
             this.txtError.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtError.GotFocus += new System.EventHandler(this.txtError_GotFocus);
             this.txtError.LostFocus += new System.EventHandler(this.txtError_LostFocus);
@@ -176,7 +176,7 @@ namespace Proyecto
             this.btnCancelar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(98, 28);
-            this.btnCancelar.TabIndex = 32;
+            this.btnCancelar.TabIndex = 8;
             this.btnCancelar.Text = "Cancelar";
             this.btnCancelar.UseVisualStyleBackColor = true;
             this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
@@ -188,7 +188,7 @@ namespace Proyecto
             this.btnAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAyuda.Name = "btnAyuda";
             this.btnAyuda.Size = new System.Drawing.Size(112, 28);
-            this.btnAyuda.TabIndex = 33;
+            this.btnAyuda.TabIndex = 10;
             this.btnAyuda.Text = "Mostrar ayuda >>";
             this.btnAyuda.UseVisualStyleBackColor = true;
             this.btnAyuda.Click += new System.EventHandler(this.btnAyuda_Click);
@@ -200,7 +200,7 @@ namespace Proyecto
             this.btnAceptar.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnAceptar.Name = "btnAceptar";
             this.btnAceptar.Size = new System.Drawing.Size(98, 28);
-            this.btnAceptar.TabIndex = 31;
+            this.btnAceptar.TabIndex = 7;
             this.btnAceptar.Text = "Aceptar";
             this.btnAceptar.UseVisualStyleBackColor = true;
             this.btnAceptar.Click += new System.EventHandler(this.btnAceptar_Click);
@@ -212,7 +212,7 @@ namespace Proyecto
             this.btnParametros.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnParametros.Name = "btnParametros";
             this.btnParametros.Size = new System.Drawing.Size(98, 28);
-            this.btnParametros.TabIndex = 35;
+            this.btnParametros.TabIndex = 9;
             this.btnParametros.Text = "Parámetros";
             this.btnParametros.UseVisualStyleBackColor = true;
             this.btnParametros.Click += new System.EventHandler(this.btnParametros_Click);
@@ -360,7 +360,7 @@ namespace Proyecto
             this.txtCarpeta.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.txtCarpeta.Name = "txtCarpeta";
             this.txtCarpeta.Size = new System.Drawing.Size(368, 21);
-            this.txtCarpeta.TabIndex = 41;
+            this.txtCarpeta.TabIndex = 3;
             this.txtCarpeta.TextChanged += new System.EventHandler(this.txtCarpeta_TextChanged);
             this.txtCarpeta.GotFocus += new System.EventHandler(this.txtCarpeta_GotFocus);
             this.txtCarpeta.LostFocus += new System.EventHandler(this.txtCarpeta_LostFocus);
@@ -382,7 +382,7 @@ namespace Proyecto
             this.btnCarpeta.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.btnCarpeta.Name = "btnCarpeta";
             this.btnCarpeta.Size = new System.Drawing.Size(31, 28);
-            this.btnCarpeta.TabIndex = 43;
+            this.btnCarpeta.TabIndex = 4;
             this.btnCarpeta.UseVisualStyleBackColor = true;
             this.btnCarpeta.Click += new System.EventHandler(this.btnCarpeta_Click);
             // 

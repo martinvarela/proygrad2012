@@ -138,7 +138,7 @@ class SSA
             IMap map = ArcMap.Document.FocusMap;
 
             //creo y agrego al mapa la capa de muestreo optimo
-            String nombreCapaPuntosMuestreoOptimo = "MO" +muestreados.Count.ToString() + "_"  + System.DateTime.Now.ToString("ddMMyyyy_hhmmss");
+            String nombreCapaPuntosMuestreoOptimo = "MO" +muestreados.Count.ToString() + "_"  + System.DateTime.Now.ToString("ddMMyyyy_HHmmss");
             IFeatureClass result = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, muestreados);
             IFeatureLayer featureLayerResult = new FeatureLayerClass();
             featureLayerResult.FeatureClass = result;
@@ -157,7 +157,7 @@ class SSA
                 if (!File.Exists(path))
                 {
                     StreamWriter sw = File.CreateText(path);
-                    sw.WriteLine("Fecha de creacion del archivo " + System.DateTime.Now.ToString("dd/MM/yyyy hh:mm"));
+                    sw.WriteLine("Fecha de creacion del archivo " + System.DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
                     sw.WriteLine("Estadisticas del Muestreo");
                     sw.WriteLine("");
                     sw.WriteLine("Nombre Capa: " + nombreCapaPuntosMuestreoOptimo);
