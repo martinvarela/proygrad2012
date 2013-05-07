@@ -44,7 +44,6 @@ namespace Proyecto
             this.btnAceptar = new System.Windows.Forms.Button();
             this.btnParametros = new System.Windows.Forms.Button();
             this.ptoVerdeCapa = new System.Windows.Forms.PictureBox();
-            this.ptoVerdeRango = new System.Windows.Forms.PictureBox();
             this.ptoVerdeError = new System.Windows.Forms.PictureBox();
             this.panelAyuda = new System.Windows.Forms.Panel();
             this.lblDescripcionCarpeta = new System.Windows.Forms.Label();
@@ -68,7 +67,6 @@ namespace Proyecto
             this.lblMuestras = new System.Windows.Forms.Label();
             this.txtCantMuestras = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeCapa)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeRango)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeError)).BeginInit();
             this.panelAyuda.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeCarpeta)).BeginInit();
@@ -228,16 +226,6 @@ namespace Proyecto
             this.ptoVerdeCapa.Size = new System.Drawing.Size(19, 20);
             this.ptoVerdeCapa.TabIndex = 36;
             this.ptoVerdeCapa.TabStop = false;
-            // 
-            // ptoVerdeRango
-            // 
-            this.ptoVerdeRango.Image = ((System.Drawing.Image)(resources.GetObject("ptoVerdeRango.Image")));
-            this.ptoVerdeRango.Location = new System.Drawing.Point(7, 212);
-            this.ptoVerdeRango.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.ptoVerdeRango.Name = "ptoVerdeRango";
-            this.ptoVerdeRango.Size = new System.Drawing.Size(19, 20);
-            this.ptoVerdeRango.TabIndex = 38;
-            this.ptoVerdeRango.TabStop = false;
             // 
             // ptoVerdeError
             // 
@@ -486,7 +474,6 @@ namespace Proyecto
             this.Controls.Add(this.txtCarpeta);
             this.Controls.Add(this.panelAyuda);
             this.Controls.Add(this.ptoVerdeError);
-            this.Controls.Add(this.ptoVerdeRango);
             this.Controls.Add(this.ptoVerdeCapa);
             this.Controls.Add(this.btnParametros);
             this.Controls.Add(this.pBar);
@@ -505,7 +492,6 @@ namespace Proyecto
             this.Name = "ventanaSSA";
             this.Text = "Optimización de muestreo";
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeCapa)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeRango)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeError)).EndInit();
             this.panelAyuda.ResumeLayout(false);
             this.panelAyuda.PerformLayout();
@@ -533,7 +519,6 @@ namespace Proyecto
         private System.Windows.Forms.Button btnAceptar;
         private System.Windows.Forms.Button btnParametros;
         private System.Windows.Forms.PictureBox ptoVerdeCapa;
-        private System.Windows.Forms.PictureBox ptoVerdeRango;
         private System.Windows.Forms.PictureBox ptoVerdeError;
         private System.Windows.Forms.Panel panelAyuda;
         private System.Windows.Forms.Label lblDescripcionCapa;

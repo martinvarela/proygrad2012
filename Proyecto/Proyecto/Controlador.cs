@@ -187,7 +187,7 @@ class Controlador
     //metodoInterpolacion puede ser IDW o Kriging
     //rango ??? o cantmuestras
     //error maximo aceptado en % ej: 5
-    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double rango, double error, string rutaCapa)
+    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double rango, int nroMuestras, double error, string rutaCapa)
     {
         IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
         
@@ -202,7 +202,7 @@ class Controlador
         IWorkspace workspace = workspaceFactory.OpenFromFile(pathCombinado, 0);
         this.wsSSA = workspace;
         this.ssa.setWorkspace(this.wsSSA);
-        
+        this.ssa.cantMuestras = nroMuestras;
         IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, rango, error, pathArchivo);    
     } 
 
@@ -804,8 +804,9 @@ class Controlador
 
     public int calcularNroMuestras()
     {
-        this.ssa.cantMuestras = (int)(Math.Round(this.area * 4 / Math.Pow(this.rango, 2)));
-        return this.ssa.cantMuestras;
+        int muestras = (int)(Math.Round(this.area * 4 / Math.Pow(this.rango, 2)));
+        //this.ssa.cantMuestras = muestras;
+        return muestras;
     }
 
 

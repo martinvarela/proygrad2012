@@ -94,7 +94,7 @@ class SSA
             System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
 
             //LOOP principal
-            while (iteration < iteracionesAux && (fitness*100 > error) )
+            while (iteration < iteracionesAux && (fitness > error) )
             {
                 iteration++;
 
