@@ -21,7 +21,7 @@ using System.Globalization;
 
 class Zonificacion
 {
-    public SSA ssa;
+    //public SSA ssa;
  
     private int columnas;
     public int Columnas

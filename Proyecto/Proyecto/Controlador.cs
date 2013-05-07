@@ -190,7 +190,7 @@ class Controlador
         IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
         
         //esta ruta la indica el usuario
-        string fechaActual = System.DateTime.Now.ToString("ddMMyyyy_hhmm");
+        string fechaActual = System.DateTime.Now.ToString("ddMMyyyy_HHmm");
         string nombreDirectorio = fechaActual + "_Capas";
         string nombreArchivo = fechaActual + "_Resumen.txt";
         string pathCombinado = System.IO.Path.Combine(rutaCapa, nombreDirectorio);
@@ -444,7 +444,7 @@ class Controlador
         //se crea el campo Promedio en la capa de Puntos de Muestreos
         int indicePromedioFieldPuntosMuestreo = this.crearFieldAFeatureClass(this.capaPuntosMuestreo.FeatureClass, "Valor", esriFieldType.esriFieldTypeDouble);
         //int indicePromedioFieldPuntosMuestreo = this.crearFieldAFeatureClass(featureclassPuntosMuestreo, "Valor", esriFieldType.esriFieldTypeDouble);
-
+        
         //Creo el updateCursorPoligono para iterar en las filas de los poligonos (poligono por poligono).
         IFeatureCursor updateCursorPoligono = this.capaPoligonos.FeatureClass.Update(null, false);
         //IFeatureCursor updateCursorPoligono = ifeaturelayerPoligono.FeatureClass.Update(null, false);
@@ -531,7 +531,7 @@ class Controlador
             ////se borra la layer de Puntos
             //map.DeleteLayer(layerPuntos);
         }
-        catch (COMException comExc)
+        catch
         {
             // Handle any errors that might occur on NextFeature().
         }
@@ -539,6 +539,7 @@ class Controlador
         // If the cursor is no longer needed, release it.
         Marshal.ReleaseComObject(updateCursorPuntosMuestreo);
     }
+
 
     //crea un nuevo field con el nombre nombreField en el featureClass pasado como parametro
     //devuelve el indice del field creado
@@ -596,6 +597,7 @@ class Controlador
         {
             fishNet.number_rows = vertical;
             fishNet.number_columns = horizontal;
+        
             fishNet.cell_height = 0;
             fishNet.cell_width = 0;
         }
@@ -736,4 +738,6 @@ class Controlador
         }
         return listaCapas;
     }
+
+
 }

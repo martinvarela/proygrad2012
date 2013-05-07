@@ -79,25 +79,6 @@ namespace Proyecto
             }
         }
         
-        private void txtEpsilon_GotFocus(object sender, EventArgs e)
-        {
-            this.valorAux = txtEpsilon.Text.ToString();
-        }
-        private void txtEpsilon_LostFocus(object sender, EventArgs e)
-        {
-            if (txtEpsilon.Text.ToString() != valorAux)
-            {
-                double i = 0;
-                if (double.TryParse(this.txtEpsilon.Text.ToString(), out i) && i > 0)
-                {
-                    valorAux = this.txtEpsilon.Text.ToString();
-                }
-                else
-                {
-                    this.txtEpsilon.Text = valorAux;
-                }
-            }
-        }
 
         private void txtIteraciones_GotFocus(object sender, EventArgs e)
         {
