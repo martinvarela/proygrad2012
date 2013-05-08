@@ -456,6 +456,7 @@ namespace Proyecto
             this.txtCantMuestras.Size = new System.Drawing.Size(94, 21);
             this.txtCantMuestras.TabIndex = 48;
             this.txtCantMuestras.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtCantMuestras.LostFocus += new System.EventHandler(this.txtCantMuestras_LostFocus);
             // 
             // ventanaSSA
             // 

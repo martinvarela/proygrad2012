@@ -145,7 +145,7 @@ namespace Proyecto
                 //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
                 String rutaCapa = System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
                 Controlador controlador = Controlador.getInstancia;
-                controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), double.Parse(txtExpIDW.Text.ToString()), double.Parse(txtRango.Text.ToString()), int.Parse(txtCantMuestras.Text.ToString()),double.Parse(txtError.Text.ToString()), rutaCapa);
+                controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), double.Parse(txtExpIDW.Text.ToString()), int.Parse(txtCantMuestras.Text.ToString()),double.Parse(txtError.Text.ToString()), rutaCapa);
 
                 this.Close();
             }

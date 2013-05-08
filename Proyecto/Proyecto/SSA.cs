@@ -44,7 +44,7 @@ class SSA
         this.ws = workspace;
     }
 
-    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double rango, double error, string pathArchivo)
+    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double error, string pathArchivo)
     {
         double factorReduccionAux = this.factorReduccion;
         int iteracionesAux = this.iteraciones;
