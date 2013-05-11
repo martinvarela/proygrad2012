@@ -40,10 +40,10 @@ class Zonificacion
     public Coordenada coordenadaInicial;
 
     private int tamanoCelda;
-    public int TamanoCelda
+
+    public int getTamanoCelda()
     {
-        get { return tamanoCelda; }
-        set { tamanoCelda = value; }
+        return tamanoCelda;
     }
 
     private List<Variable> variables;
@@ -131,7 +131,7 @@ class Zonificacion
             else if (((sLine != "") && (sLine.Length >= string_CellSize.Length) && sLine.Substring(0, string_CellSize.Length) == string_CellSize))
             {
                 cellSize = Int32.Parse(sLine.Substring(string_CellSize.Length, sLine.Length - string_CellSize.Length));
-                this.TamanoCelda = cellSize;
+                this.tamanoCelda = cellSize;
             }
             else if (((sLine != "") && (sLine.Length >= string_cant_variables.Length) && sLine.Substring(0, string_cant_variables.Length) == string_cant_variables))
             {
@@ -191,7 +191,7 @@ class Zonificacion
                 sLine = objReader.ReadLine();
 
                 PuntoZonificacion ptoZonificacion = new PuntoZonificacion();
-                ptoZonificacion.Coordenada = calcularCoordenada(this.coordenadaInicial, this.TamanoCelda, ix - 1, iy - 1);
+                ptoZonificacion.Coordenada = calcularCoordenada(this.coordenadaInicial, this.tamanoCelda, ix - 1, iy - 1);
                 ptoZonificacion.Variables = this.Variables;
 
                 char[] coma = { ';' };
