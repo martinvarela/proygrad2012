@@ -187,9 +187,7 @@ class Controlador
             activeView.Refresh();
             
         }
-        //this.capaPuntosMuestreo.Name = nombreCapa;
-        //this.capaPuntosMuestreo.FeatureClass.
-
+        
         return muestreo;
     }
 
@@ -848,6 +846,13 @@ class Controlador
             parameters.Add("OUTSIDE");
             // Execute the tool.
             gp.Execute("ErasePoint", parameters, null);
+
+            //borro la capa de extension, ya que no se usa mas
+            if (((IDataset)extensionCampo).CanDelete())
+            {
+                ((IDataset)extensionCampo).Delete();
+            }
+
         }
         catch
         {
@@ -857,11 +862,6 @@ class Controlador
             }
         }
 
-        //borro la capa de extension, ya que no se usa mas
-        if (((IDataset)extensionCampo).CanDelete())
-        {
-            ((IDataset)extensionCampo).Delete();
-        }
     }
 
     public int setearRango(int r) {
