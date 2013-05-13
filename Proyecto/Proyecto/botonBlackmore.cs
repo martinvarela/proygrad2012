@@ -26,57 +26,56 @@ namespace Proyecto
             //se crea la ventana principal de Blackmore
             ventanaBlackmore ventana = new ventanaBlackmore();
 
-            //se obtienen las capas abiertas
-            IMap map = ArcMap.Document.FocusMap;
-            IEnumLayer enumlayers = map.get_Layers();
+            ////se obtienen las capas abiertas
+            //IMap map = ArcMap.Document.FocusMap;
+            //IEnumLayer enumlayers = map.get_Layers();
 
-            enumlayers.Reset();
-            ILayer layer = enumlayers.Next();
-            int cantFilas = 0;
+            //enumlayers.Reset();
+            //ILayer layer = enumlayers.Next();
+            //int cantFilas = 0;
 
-            while (layer != null)
-            {
-                String s = layer.Name.ToString();
+            //while (layer != null)
+            //{
+            //    String s = layer.Name.ToString();
 
-                //checkbox
-                DataGridViewCheckBoxCell ckeck = new DataGridViewCheckBoxCell();
-                if (layer.Visible)
-                {
-                    ckeck.Value = true;
-                }
-                else
-                {
-                    ckeck.Value = false;
-                }
+            //    //checkbox
+            //    DataGridViewCheckBoxCell ckeck = new DataGridViewCheckBoxCell();
+            //    if (layer.Visible)
+            //    {
+            //        ckeck.Value = true;
+            //    }
+            //    else
+            //    {
+            //        ckeck.Value = false;
+            //    }
 
-                //textbox
-                DataGridViewTextBoxCell text = new DataGridViewTextBoxCell();
-                text.Value = s.ToString();
+            //    //textbox
+            //    DataGridViewTextBoxCell text = new DataGridViewTextBoxCell();
+            //    text.Value = s.ToString();
 
-                //combobox
-                IFeatureLayer featureLayer = layer as IFeatureLayer;
-                int cantidadCampos = featureLayer.FeatureClass.Fields.FieldCount;
+            //    //combobox
+            //    IFeatureLayer featureLayer = layer as IFeatureLayer;
+            //    int cantidadCampos = featureLayer.FeatureClass.Fields.FieldCount;
 
-                DataGridViewComboBoxCell combo = new DataGridViewComboBoxCell();
+            //    DataGridViewComboBoxCell combo = new DataGridViewComboBoxCell();
 
-                for (int i = 0; i < cantidadCampos; i++)
-                {
-                    combo.Items.Add(featureLayer.FeatureClass.Fields.get_Field(i).Name.ToString());
-                }
+            //    for (int i = 0; i < cantidadCampos; i++)
+            //    {
+            //        combo.Items.Add(featureLayer.FeatureClass.Fields.get_Field(i).Name.ToString());
+            //    }
 
-                DataGridViewRow row = new DataGridViewRow();
-                row.Cells.Add(ckeck);
-                row.Cells.Add(text);
-                row.Cells.Add(combo);
+            //    DataGridViewRow row = new DataGridViewRow();
+            //    row.Cells.Add(ckeck);
+            //    row.Cells.Add(text);
+            //    row.Cells.Add(combo);
 
-                ventana.dataGridView1.Rows.Add(row);
-                cantFilas++;
+            //    ventana.dgvVentana.Rows.Add(row);
+            //    cantFilas++;
 
-                layer = enumlayers.Next();
-            }
+            //    layer = enumlayers.Next();
+            //}
 
             //se hace visible la ventana
-            ventana.botonRed.Visible = true;
             ventana.Visible = true;
         }
 

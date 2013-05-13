@@ -148,7 +148,6 @@ namespace Proyecto
             {
                 ptoVerdeDestino.Visible = true;
             }
-
         }
 
         private void txtArchivoZF_GotFocus(object sender, EventArgs e)
@@ -299,6 +298,11 @@ namespace Proyecto
         private void chkSinRed_GotFocus(object sender, EventArgs e)
         {
             cboTipoRed_GotFucus(sender, e);
+        }
+
+        private void ventanaMuestreo_Load(object sender, EventArgs e)
+        {
+
         }
 
     }

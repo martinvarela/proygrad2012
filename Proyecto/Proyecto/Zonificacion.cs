@@ -101,7 +101,8 @@ class Zonificacion
         sLine = objReader.ReadLine();
 
         //se setea el separador decimal ',' para una correcta lectura del archivo ZF
-        CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator = ",";
+        if (!CultureInfo.CurrentCulture.IsReadOnly) 
+            CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator = ",";
 
         //leo hasta la etiqueta [Cells] y saco los valores de rows, cols y cant_variables 
         while (sLine != null)

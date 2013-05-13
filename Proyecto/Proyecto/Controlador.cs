@@ -15,11 +15,13 @@ using ESRI.ArcGIS.esriSystem;
 using ESRI.ArcGIS.DataSourcesFile;
 
 
+
 class Controlador
 {
     private static Controlador instancia;
     private IWorkspace wsSSA;
     private IWorkspace wsZonif;
+    private IWorkspace wsBlackmore;
     private double rango = -1;
     private double area = -1;
 
@@ -61,25 +63,25 @@ class Controlador
     public void setSSA(SSA s) { this.ssa = s; }
 
 
-    private double mediaCapas { get; set; }
-    private void setearMedias() 
-    {
-        this.mediaCapas = 0;
+    //private double mediaCapas { get; set; }
+    //private void setearMedias() 
+    //{
+    //    this.mediaCapas = 0;
 
-        if (this.capas != null)
-        {
-            double temp = 0;
-            int cant = 0;
-            foreach (Entrada entrada in this.capas)
-            {
-                temp += entrada.setearMedias();
-                cant++;
-            }
+    //    if (this.capas != null)
+    //    {
+    //        double temp = 0;
+    //        int cant = 0;
+    //        foreach (Entrada entrada in this.capas)
+    //        {
+    //            temp += entrada.setearMedias();
+    //            cant++;
+    //        }
 
-            if (cant > 0)
-                this.mediaCapas = temp / cant;
-        }
-    }
+    //        if (cant > 0)
+    //            this.mediaCapas = temp / cant;
+    //    }
+    //}
     //private void crearPuntosMuestreo() { }
 
     //se crea la instancia Muestreo con su respectiva lista de posibles puntos de Muestreos.
@@ -206,18 +208,118 @@ class Controlador
         IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, rango, error, pathArchivo);    
     } 
 
-    public void crearBlackmore(bool filaColumna, int vertical, int horizontal)
+    public void crearBlackmore(bool filasColumnas, int vertical, int horizontal, List<DTCapasBlackmore> capas, double dst, string nombreCapaBlackmore, string rutaCapaBlackmore)
     {
-        this.blackmore = new Blackmore(filaColumna, vertical, horizontal);
-        List<Celda> celdas = this.blackmore.getCeldas();
-        foreach (Celda c in celdas)
+
+        this.capas = new List<Capa>();
+
+        IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
+        IWorkspace workspaceBlackmore = workspaceFactory.OpenFromFile(rutaCapaBlackmore, 0);
+        this.wsBlackmore = workspaceBlackmore;
+
+        ILayer layerCapaBase = null;
+        Entrada entradaBase = null;
+        //IFeatureLayer fLayerCapaBase;
+        //IFeatureClass fClassTemplate = null;
+        
+        //se crean las capas de entrada(instancias)
+        int indice = 0;
+        foreach (DTCapasBlackmore dtCapa in capas)
         {
-            foreach (Entrada e in this.capas)
+            //creo una nueva entrada
+            Entrada capaEntrada = new Entrada();
+            capaEntrada.setNombreAtributo(dtCapa.getListaAtributos()[0].ToString());
+            capaEntrada.setNombre(dtCapa.getNombreCapa());
+            //capa de union no tiene por el momento
+            capaEntrada.setLayerCapa(dtCapa.getCapa());
+            capaEntrada.setIndice(indice);
+            if (dtCapa.esCapaBase())
             {
-                DTDatosDM datosCelda = e.calcularDsYMedia(c);
-                this.blackmore.setDatos(c, datosCelda);
+                capaEntrada.setEsCapaBase(true);
+                layerCapaBase = dtCapa.getCapa();
+                entradaBase = capaEntrada;
+                //fLayerCapaBase = dtCapa.getCapa() as FeatureLayer;
+                //fClassTemplate = fLayerCapaBase.FeatureClass;
+            }
+            else
+            {
+                capaEntrada.setEsCapaBase(false);
+            }
+ 
+            //agrego la capa a la lista de capas del controlador
+            this.capas.Add(capaEntrada);
+            indice++;
+        }
+
+        //paso 1
+        //creo la instancia de Blackmore, se crea la capa de red (futura salida del modulo)
+        this.blackmore = new Blackmore(filasColumnas, vertical, horizontal, dst,
+                                       layerCapaBase, nombreCapaBlackmore, 
+                                       this.wsBlackmore);
+
+        //paso 2
+        IFeatureLayer poligonosBlackmore = this.blackmore.getPoligonosBlackmore();
+
+        string ahora = System.DateTime.Now.ToString("HHmmss");
+        //paso 3
+        String rutaCapaUnion = @"C:\Users\Gonzalo\Desktop\datosBlackmore\" + ahora + "_UNION" + entradaBase.getNombre() + ".shp";
+        IFeatureClass unionCapaBase = this.unionEspacial(poligonosBlackmore.FeatureClass, layerCapaBase, rutaCapaUnion, false, entradaBase.getNombreAtributo(),"merge_"+entradaBase.getIndice().ToString());
+
+
+        //paso 4
+        entradaBase.setCapaUnion(unionCapaBase);
+        double auxMediaCapas = entradaBase.getMedia();
+        int cantCapas = 1;
+
+        //paso 5
+        this.blackmore.crearCeldas(unionCapaBase);
+
+        //paso 6 y 7
+        foreach (Entrada capaEntrada in this.capas)
+        {
+            if (!capaEntrada.getEsCapaBase())
+            {
+                rutaCapaUnion = @"C:\Users\Gonzalo\Desktop\datosBlackmore\" + ahora + "_UNION" + capaEntrada.getNombre() + ".shp";
+                capaEntrada.setCapaUnion(this.unionEspacial(unionCapaBase, capaEntrada.getLayerCapa(), rutaCapaUnion, true, capaEntrada.getNombreAtributo(),"merge_"+capaEntrada.getIndice().ToString()));    
+                auxMediaCapas += capaEntrada.getMedia();
+                cantCapas++;
             }
         }
+
+        IFeatureClass featureUnion = entradaBase.getCapaUnion();
+        int indiceDst = this.crearFieldAFeatureClass(featureUnion, "std_dev", esriFieldType.esriFieldTypeDouble);
+        int indiceMean = this.crearFieldAFeatureClass(featureUnion, "mean", esriFieldType.esriFieldTypeDouble);
+        int indiceClasificacion = this.crearFieldAFeatureClass(featureUnion, "clase", esriFieldType.esriFieldTypeInteger);
+
+
+        //paso 8 y 9
+        foreach (Celda c in blackmore.getCeldas())
+        {
+            int fid = c.getFID();
+            double auxValor = 0;
+            double dstCelda = 0;
+            double valorCelda = 0;
+            int n = 0;
+            foreach (Entrada e in this.capas)
+            {
+                auxValor = e.getValorCelda(fid);
+                dstCelda += Math.Pow(auxValor - e.getMedia(), 2);
+                valorCelda += auxValor;
+                n++;
+                auxValor = 0;
+            }
+            c.setDesviacion(Math.Sqrt(dstCelda / n));
+            c.setMedia(valorCelda / n);
+            c.clasificar(dst, auxMediaCapas/cantCapas);
+
+
+            this.setValoresFeatureUnion(featureUnion,fid,indiceDst,c.getDesviacion(),indiceMean,c.getMedia(),indiceClasificacion,c.getClasificacion());
+
+        }
+
+        //
+
+
     }
 
     private IFeatureClass crearCapaPuntosZonificacion(IMap map, string nombreFeatureClass, List<PuntoZonificacion> listaPuntos, ProgressBar pBar)
@@ -574,16 +676,7 @@ class Controlador
     }
     
     //devuelve el IFeatureClass correspondiente a la capa de puntos de muestreo (sin optimizar).
-    private void crearRed(IMap targetMap,
-                          string nombreCapaPoligonos,
-                          string nombreCapa,
-                          IPoint puntoOrigen,
-                          IPoint puntoOpuesto,
-                          bool filasColumnas,
-                          int vertical,
-                          int horizontal,
-                          bool selectable,
-                          string capaZonificacion)
+    private void crearRed(IMap targetMap, string nombreCapaPoligonos, string nombreCapa, IPoint puntoOrigen, IPoint puntoOpuesto, bool filasColumnas, int vertical, int horizontal, bool selectable, string capaZonificacion)
     {
         Geoprocessor gp = new Geoprocessor();
 
@@ -591,6 +684,7 @@ class Controlador
         fishNet.out_feature_class = this.wsZonif.PathName + "\\" + nombreCapaPoligonos;
 
         fishNet.origin_coord = puntoOrigen.X.ToString() + " " + puntoOrigen.Y.ToString();
+
 
         double medio = (puntoOpuesto.Y + puntoOrigen.Y)/2;
         fishNet.y_axis_coord = puntoOrigen.X.ToString() + " " + medio.ToString();
@@ -810,5 +904,143 @@ class Controlador
         return this.ssa.cantMuestras;
     }
 
+    public List<DTCapasBlackmore> cargarCapasBlackmore()
+    {
+        List<DTCapasBlackmore> listaCapas = new List<DTCapasBlackmore>();
+
+        IMap targetMap = ArcMap.Document.FocusMap;
+
+        //cargo el combo de capas abiertas
+        IEnumLayer enumLayers = targetMap.get_Layers();
+        enumLayers.Reset();
+        ILayer layer = enumLayers.Next();
+
+        while (layer != null)
+        {
+            IFeatureLayer featureLayer = layer as IFeatureLayer;
+            if (featureLayer != null)
+            {
+                IFeatureClass fc = featureLayer.FeatureClass;
+                if (fc.Fields.FieldCount > 0)
+                {
+                    DTCapasBlackmore dtCapa = new DTCapasBlackmore();
+                    dtCapa.setCapa(layer);
+                    dtCapa.setNombreCapa(layer.Name.ToString());
+                    dtCapa.setCapaBase(false);
+                    bool tieneAtributos = false;
+
+                    for (int i = 0; i < fc.Fields.FieldCount; i++)
+                    {
+                        IField field = fc.Fields.get_Field(i);
+                        if (field.Type == esriFieldType.esriFieldTypeDouble || field.Type == esriFieldType.esriFieldTypeInteger ||
+                            field.Type == esriFieldType.esriFieldTypeSmallInteger || field.Type == esriFieldType.esriFieldTypeSingle)
+                        {
+                            dtCapa.agregarAtributo(field.Name.ToString());
+                            tieneAtributos = true; 
+                        }
+                    }
+
+                    if (tieneAtributos)
+                        listaCapas.Add(dtCapa);
+                }
+            }
+            layer = enumLayers.Next();
+        }
+        return listaCapas;
+    }
+
+    public IFeatureClass unionEspacial(IFeatureClass entidadDestino, ILayer entidadUnion, string entidadSalida, bool mantenerEntidades, string nombreAtributo, string atributoTablaUnion)
+    {
+        Geoprocessor gpt = new Geoprocessor();
+        try
+        {
+            IFeatureLayer featureLayerUnion = entidadUnion as IFeatureLayer;
+            IFeatureClass featureClassUnion = featureLayerUnion.FeatureClass;
+            IDataset dsUnion = (IDataset)entidadUnion;
+            string pathUnion = dsUnion.Workspace.PathName + @"\" + dsUnion.Name + ".shp";
+
+            IGPUtilities gputilities = new GPUtilitiesClass();
+            // Initialize the GPFieldMapping
+            IGPFieldMapping fieldmapping = new GPFieldMappingClass();
+            // Create a new output field
+            IDETable inputTableA = (IDETable)gputilities.MakeDataElement(pathUnion, null, null);
+
+            // Create a new FieldMap
+            IGPFieldMap campoMap = new GPFieldMapClass();
+            campoMap.MergeRule = ESRI.ArcGIS.Geoprocessing.esriGPFieldMapMergeRule.esriGPFieldMapMergeRuleMean;
+            
+            
+            campoMap.AddInputField(inputTableA, featureClassUnion.Fields.get_Field(featureClassUnion.FindField(nombreAtributo)), -1, -1); // this.capaPuntosMuestreo.FeatureClass.Fields.get_Field(this.capaPuntosMuestreo.FeatureClass.FindField("Valor")), -1, -1);
+
+            IFieldEdit fieldEdit = new FieldClass();
+            int indice = campoMap.FindInputField(inputTableA, featureClassUnion.Fields.get_Field(featureClassUnion.FindField(nombreAtributo)).Name);
+            fieldEdit.Name_2 = atributoTablaUnion;
+            fieldEdit.Type_2 = campoMap.Fields.get_Field(indice).Type;
+
+            campoMap.OutputField = fieldEdit;
+
+            fieldmapping.AddFieldMap(campoMap);
+
+            ESRI.ArcGIS.AnalysisTools.SpatialJoin sJoin = new ESRI.ArcGIS.AnalysisTools.SpatialJoin();
+            sJoin.target_features = entidadDestino;
+            sJoin.join_features = featureClassUnion; //@"C:\Users\Martin\Desktop\Nueva carpeta\saleotraaa.shp";//this.nombreCapaPuntosMuestreo;
+            sJoin.field_mapping = fieldmapping; //"Valor \"Valor\" true true false 19 Double 0 0 ,Mean,#," + @"C:\Users\\Martin\Desktop\Proyecto Grado\New folder\20110608_153342\salida50.shp" + ",Valor,-1,-1";
+            sJoin.join_operation = "JOIN_ONE_TO_ONE";
+            if (!mantenerEntidades)
+            {
+                sJoin.join_type = "KEEP_COMMON";
+            }
+            else
+            {
+                sJoin.join_type = "KEEP_ALL";
+            }
+            sJoin.match_option = "INTERSECT";
+            //String hora = System.DateTime.Now.ToString("HHmmss");
+            sJoin.out_feature_class = entidadSalida;//wsZonif.PathName + "\\" + hora + "join.shp";
+
+
+            IFeatureClass fc;
+            IQueryFilter qf;
+            IGPUtilities gpUtils = new GPUtilitiesClass();
+
+            IGeoProcessorResult result = (IGeoProcessorResult)gpt.Execute(sJoin, null);
+            gpUtils.DecodeFeatureLayer(result.GetOutput(0), out fc, out qf);
+
+            for (int i = 0; i < gpt.MessageCount; i++)
+            {
+                System.Diagnostics.Debug.WriteLine(gpt.GetMessage(i));
+            }
+
+
+            return fc;
+        }
+        catch
+        {
+            for (int i = 0; i < gpt.MessageCount; i++)
+            {
+                System.Diagnostics.Debug.WriteLine(gpt.GetMessage(i));
+            }
+
+            return null;
+        }
+
+    }
+
+    public void setValoresFeatureUnion(IFeatureClass featureUnion, int fid, int indiceDst, double dsv, int indiceMean, double mean, int indiceClasificacion, int clase)
+    {
+        IQueryFilter queryFilter = new QueryFilterClass();
+        queryFilter.WhereClause = "FID = " + fid.ToString();
+        IFeatureCursor featureCursor = featureUnion.Update(queryFilter, false);
+        IFeature celdaFeature = featureCursor.NextFeature();
+        if (celdaFeature != null)
+        {
+            celdaFeature.set_Value(indiceDst, dsv);
+            celdaFeature.set_Value(indiceMean, mean);
+            celdaFeature.set_Value(indiceClasificacion, clase);
+
+        }
+        featureCursor.UpdateFeature(celdaFeature);
+
+    }
 
 }

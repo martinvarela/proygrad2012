@@ -6,23 +6,88 @@ using System.Text;
 
 class Celda
 {
+    private int fid;
     private double desviacion;
     private double media;
     private int clasificacion;
 
     public Celda() { }
 
-    public void setDatos(DTDatosDM datos)
+    //1
+    public void setFID(int f)
     {
-        this.desviacion = datos.Desviacion;
-        this.media = datos.Media;
+        this.fid = f;
     }
-    public void setClasificacion(int c)
+    public int getFID()
     {
-        this.clasificacion = c;
+        return this.fid;
+    }
+    
+    //2
+    public void setDesviacion(double d)
+    {
+        this.desviacion = d;
+    }
+    public double getDesviacion()
+    {
+        return this.desviacion;
+    }
+    
+    //3
+    public void setMedia(double m)
+    {
+        this.media = m;
+    }
+    public double getMedia()
+    {
+        return this.media;
+    }
+
+    //4
+    // 1-Bajo rendimiento y Estable  
+    // 2-Bajo rendimiento y Inestable  
+    // 3-Alto rendimiento y Inestable 
+    // 4-Alto rendimiento y Estable 
+    public void clasificar(double parametroDST, double mediaGeneral)
+    {
+        if (this.desviacion <= parametroDST)
+        {
+            //es estable
+            if (this.media <= mediaGeneral)
+            {
+                //es estable y bajo rendimiento
+                this.clasificacion = 1;
+            }
+            else 
+            {
+                //es estable y alto rendimiento
+                this.clasificacion = 4;
+            }
+        }
+        else
+        {
+            //es inestable
+            if (this.media <= mediaGeneral)
+            {
+                //es inestable y bajo rendimiento
+                this.clasificacion = 2;
+            }
+            else 
+            {
+                //es inestable y alto rendimiento
+                this.clasificacion = 3;
+            }
+        }
     }
     public int getClasificacion()
     {
         return this.clasificacion;
     }
+
+    public void setDatos(DTDatosDM datos)
+    {
+        this.desviacion = datos.Desviacion;
+        this.media = datos.Media;
+    }
+
 }
