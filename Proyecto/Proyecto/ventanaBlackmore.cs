@@ -86,7 +86,7 @@ namespace Proyecto
 
         private void cboBase_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (this.cboBase.SelectedItem == "")
+            if (this.cboBase.SelectedItem.ToString() == "")
                 this.ptoVerdeBase.Visible = true;
             else
                 this.ptoVerdeBase.Visible = false;
