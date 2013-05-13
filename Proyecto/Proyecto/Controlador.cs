@@ -132,6 +132,11 @@ class Controlador
         
         if (conRed)
         {
+            int tamCelda = zonificacion.getTamanoCelda();
+            //hacer poligono de todo el campo
+            string nomPolExt = "polExt" + System.DateTime.Now.ToString("HHmmss");
+            IFeatureClass extensionPoligono = this.crearPoligonoExtension(nombreCapaPuntosZonificacion, nomPolExt, tamCelda);
+
             //se crea la capa de red con las filas y columnas pasadas como parametro
             //se carga en el controlar la capaPoligonos y capaPuntosMuestreo
             this.crearRed(map, this.nombreCapaPoligonos, nombreCapa, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filasColumnas, vertical, horizontal, true, this.nombreCapaPuntosZonificacion);
@@ -148,6 +153,11 @@ class Controlador
             //calcula los valores de los puntos de muestreo haciendo promedio en los puntos que "caen" dentro de la celda de la capa de poligonos
             //agrega cada punto de muestreo a la lista de la instancia de muestreo.
             this.cargarValoresPuntosMuestreo(map, muestreo, this.nombreCapaPuntosZonificacion, this.nombreCapaPoligonos, this.nombreCapaPuntosMuestreo, 2, 2, pBar);
+
+
+            //se quitan los puntos externos al campo
+            this.quitarPuntosExternos(this.nombreCapaPuntosMuestreo, extensionPoligono);
+            
 
             pBar.Visible = false;
             lblProgressBar.Text = "";
@@ -179,9 +189,7 @@ class Controlador
             activeView.Refresh();
             
         }
-        //this.capaPuntosMuestreo.Name = nombreCapa;
-        //this.capaPuntosMuestreo.FeatureClass.
-
+        
         return muestreo;
     }
 
@@ -189,7 +197,7 @@ class Controlador
     //metodoInterpolacion puede ser IDW o Kriging
     //rango ??? o cantmuestras
     //error maximo aceptado en % ej: 5
-    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double rango, double error, string rutaCapa)
+    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, int nroMuestras, double error, string rutaCapa)
     {
         IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
         
@@ -204,8 +212,8 @@ class Controlador
         IWorkspace workspace = workspaceFactory.OpenFromFile(pathCombinado, 0);
         this.wsSSA = workspace;
         this.ssa.setWorkspace(this.wsSSA);
-        
-        IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, rango, error, pathArchivo);    
+        this.ssa.cantMuestras = nroMuestras;
+        IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, error, pathArchivo);    
     } 
 
     public void crearBlackmore(bool filasColumnas, int vertical, int horizontal, List<DTCapasBlackmore> capas, double dst, string nombreCapaBlackmore, string rutaCapaBlackmore)
@@ -890,6 +898,66 @@ class Controlador
 
     }
 
+    private IFeatureClass crearPoligonoExtension(string nombreCapa, string nomSalida, int distAgregacion)
+    {
+        Geoprocessor gp = new Geoprocessor();
+        ESRI.ArcGIS.CartographyTools.AggregatePoints poligonoExt = new ESRI.ArcGIS.CartographyTools.AggregatePoints();
+        poligonoExt.in_features = this.capaPuntosZonificacion;
+        poligonoExt.out_feature_class = this.wsZonif.PathName + "\\" + nomSalida + ".shp";
+        poligonoExt.aggregation_distance = distAgregacion * 2;
+        gp.TemporaryMapLayers = true;
+        gp.AddOutputsToMap = false;
+        
+        IFeatureClass fc;
+        IQueryFilter qf;
+        try
+        {
+            IGPUtilities gpUtils = new GPUtilitiesClass();
+            IGeoProcessorResult result = (IGeoProcessorResult)gp.Execute(poligonoExt, null);
+            gpUtils.DecodeFeatureLayer(result.GetOutput(0), out fc, out qf);
+            return fc;
+        }   
+        catch
+        {
+            for (int i = 0; i < gp.MessageCount; i++)
+                System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
+            return null;
+        }
+
+    }
+
+    private void quitarPuntosExternos(string nomCapaMuestreo, IFeatureClass extensionCampo)
+    {
+        IGeoProcessor2 gp = new GeoProcessorClass();
+        // Create an IVariantArray to hold the parameter values.
+        IVariantArray parameters = new VarArrayClass();
+        try
+        {
+            // Create the geoprocessor.
+            // Populate the variant array with parameter values.
+            parameters.Add(nomCapaMuestreo);
+            parameters.Add(extensionCampo);
+            parameters.Add("OUTSIDE");
+            // Execute the tool.
+            gp.Execute("ErasePoint", parameters, null);
+
+            //borro la capa de extension, ya que no se usa mas
+            if (((IDataset)extensionCampo).CanDelete())
+            {
+                ((IDataset)extensionCampo).Delete();
+            }
+
+        }
+        catch
+        {
+            for (int i = 0; i < gp.MessageCount; i++)
+            {
+                System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
+            }
+        }
+
+    }
+
     public int setearRango(int r) {
         this.rango = r;
         if (this.area == -1)
@@ -900,8 +968,9 @@ class Controlador
 
     public int calcularNroMuestras()
     {
-        this.ssa.cantMuestras = (int)(Math.Round(this.area * 4 / Math.Pow(this.rango, 2)));
-        return this.ssa.cantMuestras;
+        int muestras = (int)(Math.Round(this.area * 4 / Math.Pow(this.rango, 2)));
+        //this.ssa.cantMuestras = muestras;
+        return muestras;
     }
 
     public List<DTCapasBlackmore> cargarCapasBlackmore()
@@ -1042,5 +1111,4 @@ class Controlador
         featureCursor.UpdateFeature(celdaFeature);
 
     }
-
 }

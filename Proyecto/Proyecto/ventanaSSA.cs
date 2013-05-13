@@ -58,9 +58,6 @@ namespace Proyecto
             //cboMetodoEstimacion.Items.Add("Kriging");
             cboMetodoEstimacion.SelectedIndex = 0;
 
-            //textbox Rango
-            this.ptoVerdeRango.Visible = true;
-
             //textbox error
             this.ptoVerdeError.Visible = true;
 
@@ -148,7 +145,7 @@ namespace Proyecto
                 //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
                 String rutaCapa = System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
                 Controlador controlador = Controlador.getInstancia;
-                controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), double.Parse(txtExpIDW.Text.ToString()), double.Parse(txtRango.Text.ToString()), double.Parse(txtError.Text.ToString()), rutaCapa);
+                controlador.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), double.Parse(txtExpIDW.Text.ToString()), int.Parse(txtCantMuestras.Text.ToString()),double.Parse(txtError.Text.ToString()), rutaCapa);
 
                 this.Close();
             }
@@ -171,6 +168,11 @@ namespace Proyecto
                 this.ptoVerdeCapa.Visible = false;
                 Controlador c = Controlador.getInstancia;
                 int muestras = c.calcularArea(this.cboCapaMuestreo.Text);
+                if (muestras != -1)
+                {
+                    this.txtCantMuestras.Text = muestras.ToString();
+                    this.ptoVerdeMuestras.Visible = false;
+                }
             }
         }
 
@@ -184,16 +186,20 @@ namespace Proyecto
         private void txtRango_LostFocus(object sender, EventArgs e)
         {
             int i;
+            int cantMuestras;
             if (int.TryParse(this.txtRango.Text, out i))
             {
-                this.ptoVerdeRango.Visible = false;
                 Controlador c = Controlador.getInstancia;
-                c.setearRango(i);
+                cantMuestras = c.setearRango(i);
+                if (cantMuestras != -1)
+                {
+                    this.txtCantMuestras.Text = cantMuestras.ToString();
+                    this.ptoVerdeMuestras.Visible = false;
+                }
             }
             else
             {
                 this.txtRango.Text = "";
-                this.ptoVerdeRango.Visible = true;
             }
         }
 
@@ -300,6 +306,22 @@ namespace Proyecto
                 this.ptoVerdeExp.Visible = true;
             }
         }
+        
+        private void txtCantMuestras_LostFocus(object sender, EventArgs e)
+        {
+            int i;
+            if (int.TryParse(this.txtCantMuestras.Text, out i))
+            {
+                this.ptoVerdeMuestras.Visible = false;
+                this.txtCantMuestras.Text = i.ToString();
+            }
+            else
+            {
+                this.txtCantMuestras.Text = "";
+                this.ptoVerdeMuestras.Visible = true;
+            }
+        }
+
 
     }
 }

@@ -44,7 +44,7 @@ class SSA
         this.ws = workspace;
     }
 
-    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double rango, double error, string pathArchivo)
+    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double error, string pathArchivo)
     {
         double factorReduccionAux = this.factorReduccion;
         int iteracionesAux = this.iteraciones;
@@ -94,7 +94,7 @@ class SSA
             System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
 
             //LOOP principal
-            while (iteration < iteracionesAux && (fitness*100 > error) )
+            while (iteration < iteracionesAux && (fitness > error) )
             {
                 iteration++;
 

@@ -79,6 +79,10 @@ namespace Proyecto
             }
         }
         
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9119ef5fbef174ee174f4f73339c16f15e47c482
         private void txtIteraciones_GotFocus(object sender, EventArgs e)
         {
             this.valorAux = txtIteraciones.Text.ToString();
