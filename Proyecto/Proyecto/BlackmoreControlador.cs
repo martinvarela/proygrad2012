@@ -143,6 +143,24 @@ class BlackmoreControlador : IBlackmore
                     if (((IDataset)(e.getCapaUnion())).CanDelete())
                         ((IDataset)(e.getCapaUnion())).Delete();
                 }
+                //se borran los atributos de la capa base que no se necesitan
+                else
+                {
+                    List<string> camposGuardar = new List<string>();
+                    camposGuardar.Add("FID");
+                    camposGuardar.Add("Shape");
+                    camposGuardar.Add("std_dev");
+                    camposGuardar.Add("mean");
+                    camposGuardar.Add("clase");
+                    IFields fields = e.getCapaUnion().Fields;
+                    IField f;
+                    for (int i = fields.FieldCount - 1; i >= 0; i--)
+                    {
+                        f = fields.get_Field(i);
+                        if (!camposGuardar.Contains(f.Name))
+                            e.getCapaUnion().DeleteField(f);
+                    }
+                }
             }
 
             //borro capa de poligonos inicial
