@@ -15,7 +15,8 @@ class Blackmore : Capa
     private int filas;
     private int columnas;
     private double parametroDST;
-    private IFeatureLayer featurePoligonosBlackmore;
+    private IFeatureLayer layerPoligonos;
+    private IFeatureClass featureBlackmore;
     private List<Celda> celdas;
 
     public List<Celda> getCeldas()
@@ -61,7 +62,7 @@ class Blackmore : Capa
 
     public IFeatureLayer getPoligonosBlackmore()
     {
-        return this.featurePoligonosBlackmore;
+        return this.layerPoligonos;
     }
 
     public Blackmore(bool filasColumnas, int vertical, int horizontal, double dst, ILayer layerTemplate, string nombreCapaBlackmore, IWorkspace wsCapaBlackmore)
@@ -128,7 +129,7 @@ class Blackmore : Capa
                 ESRI.ArcGIS.Geodatabase.IGeoDataset geoDataset = (ESRI.ArcGIS.Geodatabase.IGeoDataset)dataSet;
                 fLayer.SpatialReference = geoDataset.SpatialReference;
             }
-            this.featurePoligonosBlackmore = fLayer;
+            this.layerPoligonos = fLayer;
         }
         catch (NullReferenceException e)
         {

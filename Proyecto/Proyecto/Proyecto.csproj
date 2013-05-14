@@ -197,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blackmore.cs" />
+    <Compile Include="BlackmoreControlador.cs" />
     <Compile Include="botonBlackmore.cs" />
     <Compile Include="botonMuestreo.cs" />
     <Compile Include="botonOptimizar.cs" />
@@ -219,6 +220,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="ProyectoException.cs" />
     <Compile Include="Punto.cs" />
     <Compile Include="PuntoCapa.cs" />
     <Compile Include="PuntoMuestreo.cs" />
