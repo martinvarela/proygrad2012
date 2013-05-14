@@ -291,6 +291,13 @@ class Controlador
                 capaEntrada.setCapaUnion(this.unionEspacial(unionCapaBase, capaEntrada.getLayerCapa(), rutaCapaUnion, true, capaEntrada.getNombreAtributo(),"merge_"+capaEntrada.getIndice().ToString()));    
                 auxMediaCapas += capaEntrada.getMedia();
                 cantCapas++;
+
+                //se borran las capas auxiliares ya que no se usan mas, solo me quedo con la capa base
+                if (((IDataset)capaEntrada.getLayerCapa()).CanDelete())
+                {
+                    ((IDataset)capaEntrada.getLayerCapa()).Delete();
+                }
+
             }
         }
 
