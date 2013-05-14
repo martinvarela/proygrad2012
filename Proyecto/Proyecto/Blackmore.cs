@@ -135,4 +135,95 @@ class Blackmore : Capa
         }
     }
 
+
+
+    public void completarFeature(IFeatureClass featureUnion, List<Capa> entradas, double mediaGeneral)
+    {
+        //falta modificar el nombre de la capa para ser devuelta y setearla en la instancia de 'blackmore'
+
+        //paso  
+        int indiceDst = this.crearField(featureUnion, "std_dev", esriFieldType.esriFieldTypeDouble);
+        //paso 
+        int indiceMean = this.crearField(featureUnion, "mean", esriFieldType.esriFieldTypeDouble);
+        //paso
+        int indiceClasificacion = this.crearField(featureUnion, "clase", esriFieldType.esriFieldTypeInteger);
+
+        //paso 
+        foreach (Celda c in this.celdas)
+        {
+            int fid = c.getFID();
+            double auxValor = 0;
+            double dstCelda = 0;
+            double valorCelda = 0;
+            int n = 0;
+            foreach (Entrada e in entradas)
+            {
+                auxValor = e.getValorCelda(fid);
+                dstCelda += Math.Pow(auxValor - e.getMedia(), 2);
+                valorCelda += auxValor;
+                n++;
+                auxValor = 0;
+            }
+            c.setDesviacion(Math.Sqrt(dstCelda / n));
+            c.setMedia(valorCelda / n);
+            c.clasificar(this.parametroDST, mediaGeneral);
+
+            this.setValoresFeatureUnion(featureUnion, fid, indiceDst, c.getDesviacion(), indiceMean, c.getMedia(), indiceClasificacion, c.getClasificacion());
+        }
+    }
+
+    //crea un nuevo field con el nombre nombreField en el featureClass pasado como parametro
+    //devuelve el indice del field creado
+    //Exception OK
+    //ProyectoException
+    private int crearField(IFeatureClass featureClass, String nombreField, esriFieldType tipoField)
+    {
+        try
+        {
+            IField field = new FieldClass();
+            IFieldEdit fieldEdit = (IFieldEdit)field;
+            fieldEdit.Name_2 = nombreField;
+            fieldEdit.Type_2 = tipoField;
+
+            ISchemaLock schemaLock = (ISchemaLock)featureClass;
+            schemaLock.ChangeSchemaLock(esriSchemaLock.esriExclusiveSchemaLock);
+            featureClass.AddField(field);
+            return featureClass.FindField(nombreField);
+        }
+        catch
+        {
+            throw new ProyectoException("No se pudo agregar el campo " + nombreField + " a la tabla de salida.");
+        }
+    }
+
+
+    //Excepciones: OK
+    //ProyectoException
+    private void setValoresFeatureUnion(IFeatureClass featureUnion, int fid, int indiceDst, double dsv, int indiceMean, double mean, int indiceClasificacion, int clase)
+    {
+        try
+        {
+            IQueryFilter queryFilter = new QueryFilterClass();
+            queryFilter.WhereClause = "FID = " + fid.ToString();
+            IFeatureCursor featureCursor = featureUnion.Update(queryFilter, false);
+            IFeature celdaFeature = featureCursor.NextFeature();
+            if (celdaFeature != null)
+            {
+                celdaFeature.set_Value(indiceDst, dsv);
+                celdaFeature.set_Value(indiceMean, mean);
+                celdaFeature.set_Value(indiceClasificacion, clase);
+
+            }
+            featureCursor.UpdateFeature(celdaFeature);
+        }
+        catch (ProyectoException p)
+        {
+            throw new ProyectoException(p.Message);
+        }
+        catch
+        {
+            throw new ProyectoException("Ocurrio un error al escribir la tabla de valores de la nueva capa.");
+        }
+    }
+
 }

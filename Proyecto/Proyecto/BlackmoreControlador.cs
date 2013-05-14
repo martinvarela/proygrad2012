@@ -28,6 +28,7 @@ class BlackmoreControlador : IBlackmore
         {
             this.capas = new List<Capa>();
 
+            //paso 1
             //se setea el workspace de donde se guardaran los datos generados.
             //asi como tambien los datos creados temporalmente que luego se eliminaran. 
             IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
@@ -37,16 +38,19 @@ class BlackmoreControlador : IBlackmore
             ILayer layerCapaBase = null;
             this.entradaBase = new Entrada();
 
+            //paso 2
             //se crean las capas de entrada(instancias)
             int indice = 0;
             foreach (DTCapasBlackmore dtCapa in capasDT)
             {
                 //creo una nueva entrada
+                //paso 3
                 Entrada capaEntrada = new Entrada();
                 capaEntrada.setNombreAtributo(dtCapa.getListaAtributos()[0].ToString());
                 capaEntrada.setNombre(dtCapa.getNombreCapa());
                 capaEntrada.setLayerCapa(dtCapa.getCapa());
                 capaEntrada.setIndice(indice);
+                //paso 4
                 if (dtCapa.esCapaBase())
                 {
                     capaEntrada.setEsCapaBase(true);
@@ -58,36 +62,39 @@ class BlackmoreControlador : IBlackmore
                     capaEntrada.setEsCapaBase(false);
                 }
 
+                //paso 5
                 //agrego la capa a la lista de capas del controlador
                 this.capas.Add(capaEntrada);
                 indice++;
             }
 
+
             string ahora = System.DateTime.Now.ToString("HHmmss");
-            //paso 
+            //paso 6 
             //creo la instancia de Blackmore, se crea la capa de red
             this.blackmore = new Blackmore(filasColumnas, vertical, horizontal, dst,
                                            layerCapaBase, ahora + "_celdasAux",
                                            this.wsBlackmore);
 
-            //paso 2
+            //paso 7
             IFeatureLayer poligonosBlackmore = this.blackmore.getPoligonosBlackmore();
-
-            //paso 3
             String rutaCapaUnion = rutaCapaBlackmore + @"\" + nombreCapaBlackmore + ".shp";
             IFeatureClass unionCapaBase = this.unionEspacial(poligonosBlackmore.FeatureClass, layerCapaBase, rutaCapaUnion, false, entradaBase.getNombreAtributo(), "merge_" + entradaBase.getIndice().ToString());
 
-            //paso 4
+            //paso 8
             entradaBase.setCapaUnion(unionCapaBase);
+
+            //paso 9
             double auxMediaCapas = entradaBase.getMedia();
             int cantCapas = 1;
 
-            //paso 5
+            //paso 10
             this.blackmore.crearCeldas(unionCapaBase);
 
-            //paso 6 y 7
+            //paso 11*
             foreach (Entrada capaEntrada in this.capas)
             {
+                //paso 12*, 13*
                 if (!capaEntrada.getEsCapaBase())
                 {
                     rutaCapaUnion = rutaCapaBlackmore + @"\" + ahora + "_UNION" + capaEntrada.getNombre() + ".shp";
@@ -98,42 +105,12 @@ class BlackmoreControlador : IBlackmore
                 }
             }
 
-            //paso 
+            //paso 14
             IFeatureClass featureUnion = entradaBase.getCapaUnion();
-            //falta modificar el nombre de la capa para ser devuelta y setearla en la instancia de 'blackmore'
 
-            //paso  
-            int indiceDst = this.crearField(featureUnion, "std_dev", esriFieldType.esriFieldTypeDouble);
-            //paso 
-            int indiceMean = this.crearField(featureUnion, "mean", esriFieldType.esriFieldTypeDouble);
-            //paso
-            int indiceClasificacion = this.crearField(featureUnion, "clase", esriFieldType.esriFieldTypeInteger);
+            //paso 15
+            this.blackmore.completarFeature(featureUnion,this.capas,auxMediaCapas/cantCapas);
 
-
-            //paso 
-            foreach (Celda c in blackmore.getCeldas())
-            {
-                int fid = c.getFID();
-                double auxValor = 0;
-                double dstCelda = 0;
-                double valorCelda = 0;
-                int n = 0;
-                foreach (Entrada e in this.capas)
-                {
-                    auxValor = e.getValorCelda(fid);
-                    dstCelda += Math.Pow(auxValor - e.getMedia(), 2);
-                    valorCelda += auxValor;
-                    n++;
-                    auxValor = 0;
-                }
-                c.setDesviacion(Math.Sqrt(dstCelda / n));
-                c.setMedia(valorCelda / n);
-                c.clasificar(dst, auxMediaCapas / cantCapas);
-
-
-                this.setValoresFeatureUnion(featureUnion, fid, indiceDst, c.getDesviacion(), indiceMean, c.getMedia(), indiceClasificacion, c.getClasificacion());
-
-            }
 
             ////se borran las capas auxiliares ya que no se usan mas, solo me quedo con la capa base
             foreach (Entrada e in this.capas)
@@ -153,13 +130,13 @@ class BlackmoreControlador : IBlackmore
                     camposGuardar.Add("mean");
                     camposGuardar.Add("clase");
                     IFields fields = e.getCapaUnion().Fields;
-                    IField f;
-                    for (int i = fields.FieldCount - 1; i >= 0; i--)
-                    {
-                        f = fields.get_Field(i);
-                        if (!camposGuardar.Contains(f.Name))
-                            e.getCapaUnion().DeleteField(f);
-                    }
+                    //IField f;
+                    //for (int i = fields.FieldCount - 1; i >= 0; i--)
+                    //{
+                    //    f = fields.get_Field(i);
+                    //    if (!camposGuardar.Contains(f.Name))
+                    //        e.getCapaUnion().DeleteField(f);
+                    //}
                 }
             }
 
@@ -306,59 +283,5 @@ class BlackmoreControlador : IBlackmore
     }
 
 
-    //GONZALO: me parece q esta funcion va para Blackmore
-    //GONZALO: ademas de lo que hace deberia 'limpiar' la tabla, o sea, eliminar los atributos estan de mas
-    //Excepciones: OK
-    //ProyectoException
-    private void setValoresFeatureUnion(IFeatureClass featureUnion, int fid, int indiceDst, double dsv, int indiceMean, double mean, int indiceClasificacion, int clase)
-    {
-        try
-        {
-            IQueryFilter queryFilter = new QueryFilterClass();
-            queryFilter.WhereClause = "FID = " + fid.ToString();
-            IFeatureCursor featureCursor = featureUnion.Update(queryFilter, false);
-            IFeature celdaFeature = featureCursor.NextFeature();
-            if (celdaFeature != null)
-            {
-                celdaFeature.set_Value(indiceDst, dsv);
-                celdaFeature.set_Value(indiceMean, mean);
-                celdaFeature.set_Value(indiceClasificacion, clase);
-
-            }
-            featureCursor.UpdateFeature(celdaFeature);
-        }
-        catch (ProyectoException p)
-        {
-            throw new ProyectoException(p.Message);
-        }
-        catch
-        {
-            throw new ProyectoException("Ocurrio un error al escribir la tabla de valores de la nueva capa.");
-        }
-    }
-
-    //crea un nuevo field con el nombre nombreField en el featureClass pasado como parametro
-    //devuelve el indice del field creado
-    //Exception OK
-    //ProyectoException
-    private int crearField(IFeatureClass featureClass, String nombreField, esriFieldType tipoField)
-    {
-        try
-        {
-            IField field = new FieldClass();
-            IFieldEdit fieldEdit = (IFieldEdit)field;
-            fieldEdit.Name_2 = nombreField;
-            fieldEdit.Type_2 = tipoField;
-
-            ISchemaLock schemaLock = (ISchemaLock)featureClass;
-            schemaLock.ChangeSchemaLock(esriSchemaLock.esriExclusiveSchemaLock);
-            featureClass.AddField(field);
-            return featureClass.FindField(nombreField);
-        }
-        catch 
-        {
-            throw new ProyectoException("No se pudo agregar el campo " + nombreField + " a la tabla de salida.");
-        }
-    }
 
 }
