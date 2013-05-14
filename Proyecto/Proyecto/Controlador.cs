@@ -332,10 +332,8 @@ class Controlador
                 {
                     f = fields.get_Field(i);
                     if (!camposGuardar.Contains(f.Name))
-                    {
                         e.getCapaUnion().DeleteField(f);
                     }
-                }
             }
         }
 
