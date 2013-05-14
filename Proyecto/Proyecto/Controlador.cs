@@ -269,12 +269,6 @@ class Controlador
                 auxMediaCapas += capaEntrada.getMedia();
                 cantCapas++;
 
-                //se borran las capas auxiliares ya que no se usan mas, solo me quedo con la capa base
-                if (((IDataset)capaEntrada.getLayerCapa()).CanDelete())
-                {
-                    ((IDataset)capaEntrada.getLayerCapa()).Delete();
-                }
-
             }
         }
 
@@ -315,7 +309,20 @@ class Controlador
 
         }
 
-        //
+        ////se borran las capas auxiliares ya que no se usan mas, solo me quedo con la capa base
+        foreach (Entrada e in this.capas)
+        {
+            if (!e.getEsCapaBase()) 
+            {
+                if (((IDataset)(e.getCapaUnion())).CanDelete())
+                    ((IDataset)(e.getCapaUnion())).Delete();
+            }
+        }
+
+        //borro capa de poligonos inicial
+        if (((IDataset)(this.blackmore.getPoligonosBlackmore().FeatureClass)).CanDelete())
+            ((IDataset)(this.blackmore.getPoligonosBlackmore().FeatureClass)).Delete();
+            
 
 
     }
