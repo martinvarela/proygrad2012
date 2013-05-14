@@ -53,7 +53,6 @@ class Controlador
 
     //atributos
     private Zonificacion zonificacion { get; set; }
-    //private List<PuntoMuestreo> puntosMuestreo;
     private List<Capa> capas;
     private Muestreo muestreo { get; set; }
     private Blackmore blackmore;
@@ -61,28 +60,6 @@ class Controlador
 
     public SSA getSSA() { return this.ssa; }
     public void setSSA(SSA s) { this.ssa = s; }
-
-
-    //private double mediaCapas { get; set; }
-    //private void setearMedias() 
-    //{
-    //    this.mediaCapas = 0;
-
-    //    if (this.capas != null)
-    //    {
-    //        double temp = 0;
-    //        int cant = 0;
-    //        foreach (Entrada entrada in this.capas)
-    //        {
-    //            temp += entrada.setearMedias();
-    //            cant++;
-    //        }
-
-    //        if (cant > 0)
-    //            this.mediaCapas = temp / cant;
-    //    }
-    //}
-    //private void crearPuntosMuestreo() { }
 
     //se crea la instancia Muestreo con su respectiva lista de posibles puntos de Muestreos.
     //se devuelve en el arcmap la capa "CR-hhMMss" que se cambiara por el nombre pasado como parametro que contiene los posibles puntos de muestreo(todos) 
@@ -216,7 +193,7 @@ class Controlador
         IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, error, pathArchivo);    
     } 
 
-    public void crearBlackmore(bool filasColumnas, int vertical, int horizontal, List<DTCapasBlackmore> capas, double dst, string nombreCapaBlackmore, string rutaCapaBlackmore)
+    public void crearBlackmore(bool filasColumnas, int vertical, int horizontal, List<DTCapasBlackmore> capasDT, double dst, string nombreCapaBlackmore, string rutaCapaBlackmore)
     {
 
         this.capas = new List<Capa>();
@@ -232,7 +209,7 @@ class Controlador
         
         //se crean las capas de entrada(instancias)
         int indice = 0;
-        foreach (DTCapasBlackmore dtCapa in capas)
+        foreach (DTCapasBlackmore dtCapa in capasDT)
         {
             //creo una nueva entrada
             Entrada capaEntrada = new Entrada();
@@ -259,18 +236,18 @@ class Controlador
             indice++;
         }
 
+        string ahora = System.DateTime.Now.ToString("HHmmss");
         //paso 1
         //creo la instancia de Blackmore, se crea la capa de red (futura salida del modulo)
         this.blackmore = new Blackmore(filasColumnas, vertical, horizontal, dst,
-                                       layerCapaBase, nombreCapaBlackmore, 
+                                       layerCapaBase, ahora + "_celdasAux", 
                                        this.wsBlackmore);
 
         //paso 2
         IFeatureLayer poligonosBlackmore = this.blackmore.getPoligonosBlackmore();
 
-        string ahora = System.DateTime.Now.ToString("HHmmss");
         //paso 3
-        String rutaCapaUnion = @"C:\Users\Gonzalo\Desktop\datosBlackmore\" + ahora + "_UNION" + entradaBase.getNombre() + ".shp";
+        String rutaCapaUnion = rutaCapaBlackmore + @"\" + nombreCapaBlackmore + ".shp";
         IFeatureClass unionCapaBase = this.unionEspacial(poligonosBlackmore.FeatureClass, layerCapaBase, rutaCapaUnion, false, entradaBase.getNombreAtributo(),"merge_"+entradaBase.getIndice().ToString());
 
 
@@ -287,8 +264,8 @@ class Controlador
         {
             if (!capaEntrada.getEsCapaBase())
             {
-                rutaCapaUnion = @"C:\Users\Gonzalo\Desktop\datosBlackmore\" + ahora + "_UNION" + capaEntrada.getNombre() + ".shp";
-                capaEntrada.setCapaUnion(this.unionEspacial(unionCapaBase, capaEntrada.getLayerCapa(), rutaCapaUnion, true, capaEntrada.getNombreAtributo(),"merge_"+capaEntrada.getIndice().ToString()));    
+                rutaCapaUnion = rutaCapaBlackmore + @"\" + ahora + "_UNION" + capaEntrada.getNombre() + ".shp";
+                capaEntrada.setCapaUnion(this.unionEspacial(unionCapaBase, capaEntrada.getLayerCapa(), rutaCapaUnion, true, capaEntrada.getNombreAtributo(),"merge_" + capaEntrada.getIndice().ToString()));    
                 auxMediaCapas += capaEntrada.getMedia();
                 cantCapas++;
 
@@ -301,13 +278,19 @@ class Controlador
             }
         }
 
+        //paso 
         IFeatureClass featureUnion = entradaBase.getCapaUnion();
+        //falta modificar el nombre de la capa para ser devuelta y setearla en la instancia de 'blackmore'
+
+        //paso  
         int indiceDst = this.crearFieldAFeatureClass(featureUnion, "std_dev", esriFieldType.esriFieldTypeDouble);
+        //paso 
         int indiceMean = this.crearFieldAFeatureClass(featureUnion, "mean", esriFieldType.esriFieldTypeDouble);
+        //paso
         int indiceClasificacion = this.crearFieldAFeatureClass(featureUnion, "clase", esriFieldType.esriFieldTypeInteger);
 
 
-        //paso 8 y 9
+        //paso 
         foreach (Celda c in blackmore.getCeldas())
         {
             int fid = c.getFID();
@@ -550,14 +533,8 @@ class Controlador
         return featureClass;
     }
 
-    private void cargarValoresPuntosMuestreo(IMap map,
-                                             Muestreo muestreo,
-                                             String nombreCapaPuntosZonificacion,
-                                             String nombreCapaPoligonos,
-                                             String nombreCapaPuntosMuestreos,
-                                             int indiceAtributoEnTablaPoligonos,
-                                             int indiceAtributoEnTablaPuntos,
-                                             ProgressBar pBar)
+    private void cargarValoresPuntosMuestreo(IMap map, Muestreo muestreo, String nombreCapaPuntosZonificacion, String nombreCapaPoligonos, String nombreCapaPuntosMuestreos,
+                                             int indiceAtributoEnTablaPoligonos, int indiceAtributoEnTablaPuntos, ProgressBar pBar)
     {
 
         //se crea el campo Promedio en la capa de Puntos de Muestreos

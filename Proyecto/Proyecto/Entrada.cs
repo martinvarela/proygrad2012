@@ -56,7 +56,7 @@ class Entrada : Capa
     }
 
     //2
-    public void setCapaUnion(IFeatureClass l)
+    public void     setCapaUnion(IFeatureClass l)
     {
         this.capaUnion = l;
         //calcula la media de la capa
