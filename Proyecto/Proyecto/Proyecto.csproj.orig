@@ -62,10 +62,13 @@
     <Reference Include="ESRI.ArcGIS.AnalysisTools, Version=10.0.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="ESRI.ArcGIS.ArcCatalog, Version=10.0.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+=======
+>>>>>>> 040f8442f244b8e99642f6bceb32ccabdb27f669
     <Reference Include="ESRI.ArcGIS.ArcCatalogUI, Version=10.0.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -122,10 +125,13 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+<<<<<<< HEAD
     <Reference Include="ESRI.ArcGIS.EngineCore, Version=10.0.0.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+=======
+>>>>>>> 040f8442f244b8e99642f6bceb32ccabdb27f669
     <Reference Include="ESRI.ArcGIS.Framework">
       <Private>False</Private>
     </Reference>
