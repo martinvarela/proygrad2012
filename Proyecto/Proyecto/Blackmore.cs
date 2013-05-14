@@ -28,13 +28,6 @@ class Blackmore : Capa
         celda.setDatos(datosCelda);
     }
 
-    //public void agregarCelda(Celda celda)
-    //{
-    //    if (this.celdas == null)
-    //        this.celdas = new List<Celda>();
-
-    //    this.celdas.Add(celda);
-    //}
 
     //crea una instancia de Celda para cada registro de featureCapa.
     //Setea el atributo FID de cada registro en la Celda

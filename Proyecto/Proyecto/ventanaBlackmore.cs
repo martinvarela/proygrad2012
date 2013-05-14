@@ -21,41 +21,53 @@ namespace Proyecto
 
         public ventanaBlackmore()
         {
-            InitializeComponent();
-
-            Controlador c = Controlador.getInstancia;
-            this.listaCapas = c.cargarCapasBlackmore();
-
-            foreach (DTCapasBlackmore capa in this.listaCapas)
+            try
             {
-                //agrego la nueva fila
-                int i;
-                i = dgvVentana.Rows.Add(new DataGridViewRow());
+                InitializeComponent();
 
-                DataGridViewCell check = new DataGridViewCheckBoxCell();
-                check.Value = false;
-                dgvVentana.Rows[i].Cells[0] = check;
+                Fabrica fabrica = Fabrica.getInstancia;
+                IBlackmore iBlackmore = fabrica.getIBlackmore();
+                this.listaCapas = iBlackmore.cargarCapasBlackmore();
 
-                DataGridViewCell nombreCapa = new DataGridViewTextBoxCell();
-                nombreCapa.Value = capa.getNombreCapa();
-                dgvVentana.Rows[i].Cells[1] = nombreCapa;
-
-                //cargo el combo con los atributos
-                DataGridViewComboBoxCell comboAtributos = new DataGridViewComboBoxCell();
-                List<string> listaAtributos = capa.getListaAtributos();
-                foreach (string atributo in listaAtributos)
+                foreach (DTCapasBlackmore capa in this.listaCapas)
                 {
-                    comboAtributos.Items.Add(atributo);
+                    //agrego la nueva fila
+                    int i;
+                    i = dgvVentana.Rows.Add(new DataGridViewRow());
+
+                    DataGridViewCell check = new DataGridViewCheckBoxCell();
+                    check.Value = false;
+                    dgvVentana.Rows[i].Cells[0] = check;
+
+                    DataGridViewCell nombreCapa = new DataGridViewTextBoxCell();
+                    nombreCapa.Value = capa.getNombreCapa();
+                    dgvVentana.Rows[i].Cells[1] = nombreCapa;
+
+                    //cargo el combo con los atributos
+                    DataGridViewComboBoxCell comboAtributos = new DataGridViewComboBoxCell();
+                    List<string> listaAtributos = capa.getListaAtributos();
+                    foreach (string atributo in listaAtributos)
+                    {
+                        comboAtributos.Items.Add(atributo);
+                    }
+                    //se inicializa el combo de atributos
+                    comboAtributos.Value = listaAtributos[0];
+
+                    dgvVentana.Rows[i].Cells[2] = comboAtributos;
                 }
-                //se inicializa el combo de atributos
-                comboAtributos.Value = listaAtributos[0];
 
-                dgvVentana.Rows[i].Cells[2] = comboAtributos;
+                this.cboTipoRed.SelectedIndex = 0;
+                this.Visible = true;
             }
-
-            this.cboTipoRed.SelectedIndex = 0;
-
+            catch (ProyectoException p)
+            {
+                String[] strErrores = new String[1];
+                strErrores[0] = p.Message;
+                VentanaErrores v = new VentanaErrores(1, strErrores);
+                v.ShowDialog();
+            }
         }
+
 
         private void dgvVentana_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
@@ -151,98 +163,6 @@ namespace Proyecto
             }
         }
 
-        private void btnAceptar_Click(object sender, EventArgs e)
-        {
-            //control previo de datos para la ejecucion de la funcion
-            /////////////////////////////////////////////////////////
-
-            String[] stringErrores = new String[6];
-            for (int i = 0; i < stringErrores.Length; i++)
-                stringErrores[i] = "";
-            int cantidadErrores = 0;
-
-            if (ptoVerdeBase.Visible)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblBase.Text + ": Se debe seleccionar una capa base.";
-            }
-
-            Controlador controlador = Controlador.getInstancia;
-            List<DTCapasBlackmore> capasMarcadas = new List<DTCapasBlackmore>();
-            for (int i = 0; i < this.dgvVentana.RowCount; i++)
-            {
-                if ((bool)this.dgvVentana.Rows[i].Cells[0].FormattedValue)
-                {
-                    DTCapasBlackmore dt = new DTCapasBlackmore();
-                    dt.setNombreCapa(this.dgvVentana.Rows[i].Cells[1].Value.ToString());
-                    dt.agregarAtributo(this.dgvVentana.Rows[i].Cells[2].Value.ToString());
-                    dt.setCapa(this.listaCapas[i].getCapa());
-                    if (dt.getNombreCapa() == this.cboBase.SelectedItem.ToString())
-                        dt.setCapaBase(true);
-                    else
-                        dt.setCapaBase(false);
-                    capasMarcadas.Add(dt);
-                }
-            }
-
-            if (capasMarcadas.Count < 2)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblDGV.Text + ": Se deben de marcar al menos dos capas";
-            }
-            if (ptoVerdeEstabilidad.Visible)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblEstabilidad.Text + ": Se debe ingresar al menos un valor.";
-            }
-            if (ptoVerdeVertical.Visible)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVertical.Text + ": El valor debe ser entero y mayor que cero.";
-            }
-            if (ptoVerdeHorizontal.Visible)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblHorizontal.Text + ": El valor debe ser entero y mayor que cero.";
-            }
-            if (ptoVerdeRuta.Visible)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblRuta.Text + ": Ruta inválida donde se guardará la capa de Blackmore.";
-            }
-
-
-            //si esta no hay errores, ejecuto la funcion de crear capa de Blackmore
-            ///////////////////////////////////////////////////////////////////////
-
-            if (cantidadErrores == 0)
-            {
-
-                //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
-                String rutaCapa = Path.GetDirectoryName(this.txtRuta.Text.ToString());
-                String nombreCapa = Path.GetFileNameWithoutExtension(this.txtRuta.Text.ToString());
-
-                //desabilito el boton Aceptar
-                this.btnAceptar.Enabled = false;
-
-                bool filasColumnas;
-                if (this.cboTipoRed.SelectedIndex == 0)
-                    filasColumnas = true;
-                else
-                    filasColumnas = false;
-
-                //llamada a crear Blackmore
-                controlador.crearBlackmore(filasColumnas, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), capasMarcadas, double.Parse(this.txtEstabilidad.Text), nombreCapa, rutaCapa);
-
-                this.Close();
-            }
-            else
-            {
-                VentanaErrores ventanaErrores = new VentanaErrores(cantidadErrores, stringErrores);
-                ventanaErrores.ShowDialog();
-            }
-        }
-
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -275,6 +195,105 @@ namespace Proyecto
                 btnAyuda.Text = "Mostrar ayuda >>";
             }
         }
+        
+        private void btnAceptar_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //control previo de datos para la ejecucion de la funcion
+                /////////////////////////////////////////////////////////
 
+                String[] stringErrores = new String[6];
+                for (int i = 0; i < stringErrores.Length; i++)
+                    stringErrores[i] = "";
+                int cantidadErrores = 0;
+
+                if (ptoVerdeBase.Visible)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblBase.Text + ": Se debe seleccionar una capa base.";
+                }
+
+                Fabrica fabrica = Fabrica.getInstancia;
+                IBlackmore iBlackmore = fabrica.getIBlackmore();
+
+                List<DTCapasBlackmore> capasMarcadas = new List<DTCapasBlackmore>();
+                for (int i = 0; i < this.dgvVentana.RowCount; i++)
+                {
+                    if ((bool)this.dgvVentana.Rows[i].Cells[0].FormattedValue)
+                    {
+                        DTCapasBlackmore dt = new DTCapasBlackmore();
+                        dt.setNombreCapa(this.dgvVentana.Rows[i].Cells[1].Value.ToString());
+                        dt.agregarAtributo(this.dgvVentana.Rows[i].Cells[2].Value.ToString());
+                        dt.setCapa(this.listaCapas[i].getCapa());
+                        if (dt.getNombreCapa() == this.cboBase.SelectedItem.ToString())
+                            dt.setCapaBase(true);
+                        else
+                            dt.setCapaBase(false);
+                        capasMarcadas.Add(dt);
+                    }
+                }
+
+                if (capasMarcadas.Count < 2)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblDGV.Text + ": Se deben de marcar al menos dos capas";
+                }
+                if (ptoVerdeEstabilidad.Visible)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblEstabilidad.Text + ": Se debe ingresar al menos un valor.";
+                }
+                if (ptoVerdeVertical.Visible)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVertical.Text + ": El valor debe ser entero y mayor que cero.";
+                }
+                if (ptoVerdeHorizontal.Visible)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblHorizontal.Text + ": El valor debe ser entero y mayor que cero.";
+                }
+                if (ptoVerdeRuta.Visible)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblRuta.Text + ": Ruta inválida donde se guardará la capa de Blackmore.";
+                }
+
+                //si esta no hay errores, ejecuto la funcion de crear capa de Blackmore
+                ///////////////////////////////////////////////////////////////////////
+                if (cantidadErrores == 0)
+                {
+                    //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
+                    String rutaCapa = Path.GetDirectoryName(this.txtRuta.Text.ToString());
+                    String nombreCapa = Path.GetFileNameWithoutExtension(this.txtRuta.Text.ToString());
+
+                    //desabilito el boton Aceptar
+                    this.btnAceptar.Enabled = false;
+
+                    bool filasColumnas;
+                    if (this.cboTipoRed.SelectedIndex == 0)
+                        filasColumnas = true;
+                    else
+                        filasColumnas = false;
+
+                    //llamada a crear Blackmore
+                    iBlackmore.crearBlackmore(filasColumnas, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), capasMarcadas, double.Parse(this.txtEstabilidad.Text), nombreCapa, rutaCapa);
+                    this.Close();
+                }
+                else
+                {
+                    VentanaErrores ventanaErrores = new VentanaErrores(cantidadErrores, stringErrores);
+                    ventanaErrores.ShowDialog();
+                }
+            }
+            catch (ProyectoException p)
+            {
+                String[] strErrores = new String[1];
+                strErrores[0] = p.Message;
+                VentanaErrores v = new VentanaErrores(1, strErrores);
+                v.ShowDialog();
+            }
+        }
     }
 }

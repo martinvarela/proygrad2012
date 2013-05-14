@@ -10,32 +10,17 @@ using ESRI.ArcGIS.Geoprocessing;
 using ESRI.ArcGIS.DataSourcesFile;
 
 
-class BlackmoreControlador
+class BlackmoreControlador : IBlackmore
 {
-    private static BlackmoreControlador instancia;
     private IWorkspace wsBlackmore;
-
-    private BlackmoreControlador() 
-    { }
-
-    public static BlackmoreControlador getInstancia
-    {
-        get
-        {
-            if (instancia == null)
-            {
-                instancia = new BlackmoreControlador();    
-            }
-            return instancia;
-        }
-    }
-    
     private List<Capa> capas;
     private Blackmore blackmore;
     private Entrada entradaBase;
 
+    public BlackmoreControlador() { }
 
-    //Excepciones
+    //GONZALO: verificar si no hay alto acoplamiento
+    //Excepciones: OK
     //ProyectoException
     public void crearBlackmore(bool filasColumnas, int vertical, int horizontal, List<DTCapasBlackmore> capasDT, double dst, string nombreCapaBlackmore, string rutaCapaBlackmore)
     {
@@ -168,12 +153,16 @@ class BlackmoreControlador
         {
             throw new ProyectoException(e.Message);
         }
+        catch
+        {
+            throw new ProyectoException("No se pudo completar la operación, verifique los datos.");
+        }
     }
 
 
     //retorna una lista de datatypes con los datos de las capas cargadas en el ArcMap.
     //filtros de capa: capas con featureClass y que tienen al menos 1 atributo double o entero corto o entero largo o float(single)
-    //Excepciones: 
+    //Excepciones: OK
     //ProyectoException
     public List<DTCapasBlackmore> cargarCapasBlackmore()
     {
@@ -218,7 +207,6 @@ class BlackmoreControlador
                                 tieneAtributos = true;
                             }
                         }
-
                         if (tieneAtributos)
                             listaCapas.Add(dtCapa);
                     }
@@ -226,15 +214,19 @@ class BlackmoreControlador
                 layer = enumLayers.Next();
             }
             if (listaCapas.Count > 0)
+            {
                 return listaCapas;
+            }
             else
+            {
                 throw new ProyectoException("No existen capas abiertas con el tipo requerido.");
+            }
         }
     }
 
 
     //devuelve un FeatureClass con la union de las entidades pasadas por parametro
-    //Excepciones:
+    //Excepciones: OK
     //ProyectoException
     private IFeatureClass unionEspacial(IFeatureClass entidadDestino, ILayer entidadUnion, string entidadSalida, bool mantenerEntidades, string nombreAtributo, string atributoTablaUnion)
     {
@@ -292,63 +284,63 @@ class BlackmoreControlador
         catch
         {
             throw new ProyectoException("Ocurrio un error al intentar realizar la Union Espacial de las capas, por favor verifique los tipos de Shapefile.");
-            //for (int i = 0; i < gpt.MessageCount; i++)
-            //{
-            //    System.Diagnostics.Debug.WriteLine(gpt.GetMessage(i));
-            //}
-
-            //return null;
         }
-
     }
 
 
     //GONZALO: me parece q esta funcion va para Blackmore
     //GONZALO: ademas de lo que hace deberia 'limpiar' la tabla, o sea, eliminar los atributos estan de mas
+    //Excepciones: OK
+    //ProyectoException
     private void setValoresFeatureUnion(IFeatureClass featureUnion, int fid, int indiceDst, double dsv, int indiceMean, double mean, int indiceClasificacion, int clase)
     {
-        IQueryFilter queryFilter = new QueryFilterClass();
-        queryFilter.WhereClause = "FID = " + fid.ToString();
-        IFeatureCursor featureCursor = featureUnion.Update(queryFilter, false);
-        IFeature celdaFeature = featureCursor.NextFeature();
-        if (celdaFeature != null)
+        try
         {
-            celdaFeature.set_Value(indiceDst, dsv);
-            celdaFeature.set_Value(indiceMean, mean);
-            celdaFeature.set_Value(indiceClasificacion, clase);
+            IQueryFilter queryFilter = new QueryFilterClass();
+            queryFilter.WhereClause = "FID = " + fid.ToString();
+            IFeatureCursor featureCursor = featureUnion.Update(queryFilter, false);
+            IFeature celdaFeature = featureCursor.NextFeature();
+            if (celdaFeature != null)
+            {
+                celdaFeature.set_Value(indiceDst, dsv);
+                celdaFeature.set_Value(indiceMean, mean);
+                celdaFeature.set_Value(indiceClasificacion, clase);
 
+            }
+            featureCursor.UpdateFeature(celdaFeature);
         }
-        featureCursor.UpdateFeature(celdaFeature);
+        catch (ProyectoException p)
+        {
+            throw new ProyectoException(p.Message);
+        }
+        catch
+        {
+            throw new ProyectoException("Ocurrio un error al escribir la tabla de valores de la nueva capa.");
+        }
     }
-
 
     //crea un nuevo field con el nombre nombreField en el featureClass pasado como parametro
     //devuelve el indice del field creado
-    //Exception
+    //Exception OK
     //ProyectoException
     private int crearField(IFeatureClass featureClass, String nombreField, esriFieldType tipoField)
     {
-        IField field = new FieldClass();
-        IFieldEdit fieldEdit = (IFieldEdit)field;
-        fieldEdit.Name_2 = nombreField;
-        fieldEdit.Type_2 = tipoField;
-
-        ISchemaLock schemaLock = (ISchemaLock)featureClass;
         try
         {
+            IField field = new FieldClass();
+            IFieldEdit fieldEdit = (IFieldEdit)field;
+            fieldEdit.Name_2 = nombreField;
+            fieldEdit.Type_2 = tipoField;
+
+            ISchemaLock schemaLock = (ISchemaLock)featureClass;
             schemaLock.ChangeSchemaLock(esriSchemaLock.esriExclusiveSchemaLock);
             featureClass.AddField(field);
+            return featureClass.FindField(nombreField);
         }
         catch 
         {
             throw new ProyectoException("No se pudo agregar el campo " + nombreField + " a la tabla de salida.");
-            //Console.WriteLine(exc.Message);
         }
-        //finally
-        //{
-        //    schemaLock.ChangeSchemaLock(esriSchemaLock.esriSharedSchemaLock);
-        //}
-        return featureClass.FindField(nombreField);
     }
 
 }
