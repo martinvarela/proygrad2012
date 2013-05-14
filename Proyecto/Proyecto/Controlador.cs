@@ -984,6 +984,7 @@ class Controlador
         return muestras;
     }
 
+    //GONZALO: ya la pase a BlackmoreControlador
     public List<DTCapasBlackmore> cargarCapasBlackmore()
     {
         List<DTCapasBlackmore> listaCapas = new List<DTCapasBlackmore>();
@@ -1029,6 +1030,7 @@ class Controlador
         return listaCapas;
     }
 
+    //GONZALO: ya la pase a BlackmoreControlador
     public IFeatureClass unionEspacial(IFeatureClass entidadDestino, ILayer entidadUnion, string entidadSalida, bool mantenerEntidades, string nombreAtributo, string atributoTablaUnion)
     {
         Geoprocessor gpt = new Geoprocessor();
@@ -1106,6 +1108,7 @@ class Controlador
 
     }
 
+    //GONZALO: ya la pase a BlackmoreControlador, aunque me parece q tendria q estar en Blackmore
     public void setValoresFeatureUnion(IFeatureClass featureUnion, int fid, int indiceDst, double dsv, int indiceMean, double mean, int indiceClasificacion, int clase)
     {
         IQueryFilter queryFilter = new QueryFilterClass();
