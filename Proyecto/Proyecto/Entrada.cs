@@ -105,6 +105,7 @@ class Entrada : Capa
             this.media = mediaAux / cant;
         else
             this.media = -1;
+        System.Runtime.InteropServices.Marshal.ReleaseComObject(cursorCeldas);
 
     }
 
@@ -129,17 +130,17 @@ class Entrada : Capa
     //busco en la tabla de union el registro cuyo FID sea 'fid' y devuelvo el valor del campo 'Entrada.nombreAtributo'
     public double getValorCelda(int fid)
     {
+        double resultado = -1;
         IQueryFilter queryFilter = new QueryFilterClass();
         queryFilter.WhereClause = "FID = " + fid.ToString();
         IFeatureCursor featureCursor = this.capaUnion.Search(queryFilter, false);
         IFeature selPuntosFeature = featureCursor.NextFeature();
         if (selPuntosFeature != null)
         {
-            return (double)selPuntosFeature.get_Value(selPuntosFeature.Fields.FindField("merge_"+this.indice.ToString()));
+            resultado = (double)selPuntosFeature.get_Value(selPuntosFeature.Fields.FindField("merge_"+this.indice.ToString()));
         }
-        else 
-        {
-            return -1;
-        }
+
+        System.Runtime.InteropServices.Marshal.ReleaseComObject(featureCursor);
+        return resultado;
     }
 }

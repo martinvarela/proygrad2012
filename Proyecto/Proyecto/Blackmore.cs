@@ -46,6 +46,8 @@ class Blackmore : Capa
             this.celdas.Add(c);
             poligono = cursorPoligono.NextFeature();
         }
+        System.Runtime.InteropServices.Marshal.ReleaseComObject(cursorPoligono);
+
     }
 
     public double getParametroDST()
@@ -98,7 +100,7 @@ class Blackmore : Capa
         fishNet.labels = "NO_LABELS";
 
         
-        gp.AddOutputsToMap = true;
+        gp.AddOutputsToMap = false;
         gp.OverwriteOutput = true;
 
         IFeatureClass fc0;
@@ -178,6 +180,7 @@ class Blackmore : Capa
     //ProyectoException
     private int crearField(IFeatureClass featureClass, String nombreField, esriFieldType tipoField)
     {
+        ISchemaLock schemaLock = (ISchemaLock)featureClass;
         try
         {
             IField field = new FieldClass();
@@ -185,7 +188,6 @@ class Blackmore : Capa
             fieldEdit.Name_2 = nombreField;
             fieldEdit.Type_2 = tipoField;
 
-            ISchemaLock schemaLock = (ISchemaLock)featureClass;
             schemaLock.ChangeSchemaLock(esriSchemaLock.esriExclusiveSchemaLock);
             featureClass.AddField(field);
             return featureClass.FindField(nombreField);
@@ -194,6 +196,10 @@ class Blackmore : Capa
         {
             throw new ProyectoException("No se pudo agregar el campo " + nombreField + " a la tabla de salida.");
         }
+        finally
+        {
+            schemaLock.ChangeSchemaLock(esriSchemaLock.esriSharedSchemaLock);
+        }
     }
 
 
@@ -201,6 +207,7 @@ class Blackmore : Capa
     //ProyectoException
     private void setValoresFeatureUnion(IFeatureClass featureUnion, int fid, int indiceDst, double dsv, int indiceMean, double mean, int indiceClasificacion, int clase)
     {
+
         try
         {
             IQueryFilter queryFilter = new QueryFilterClass();
@@ -212,9 +219,9 @@ class Blackmore : Capa
                 celdaFeature.set_Value(indiceDst, dsv);
                 celdaFeature.set_Value(indiceMean, mean);
                 celdaFeature.set_Value(indiceClasificacion, clase);
-
             }
             featureCursor.UpdateFeature(celdaFeature);
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(featureCursor);
         }
         catch (ProyectoException p)
         {

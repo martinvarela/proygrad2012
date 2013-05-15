@@ -19,7 +19,6 @@ class BlackmoreControlador : IBlackmore
 
     public BlackmoreControlador() { }
 
-    //GONZALO: verificar si no hay alto acoplamiento
     //Excepciones: OK
     //ProyectoException
     public void crearBlackmore(bool filasColumnas, int vertical, int horizontal, List<DTCapasBlackmore> capasDT, double dst, string nombreCapaBlackmore, string rutaCapaBlackmore)
@@ -109,7 +108,7 @@ class BlackmoreControlador : IBlackmore
             IFeatureClass featureUnion = entradaBase.getCapaUnion();
 
             //paso 15
-            this.blackmore.completarFeature(featureUnion,this.capas,auxMediaCapas/cantCapas);
+            this.blackmore.completarFeature(featureUnion, this.capas, auxMediaCapas / cantCapas);
 
 
             ////se borran las capas auxiliares ya que no se usan mas, solo me quedo con la capa base
@@ -130,30 +129,38 @@ class BlackmoreControlador : IBlackmore
                     camposGuardar.Add("mean");
                     camposGuardar.Add("clase");
                     IFields fields = e.getCapaUnion().Fields;
-                    //IField f;
-                    //for (int i = fields.FieldCount - 1; i >= 0; i--)
-                    //{
-                    //    f = fields.get_Field(i);
-                    //    if (!camposGuardar.Contains(f.Name))
-                    //        e.getCapaUnion().DeleteField(f);
-                    //}
+                    IField f;
+                    for (int i = fields.FieldCount - 1; i >= 0; i--)
+                    {
+                        f = fields.get_Field(i);
+                        if (!camposGuardar.Contains(f.Name))
+                            this.deleteField(e.getCapaUnion(), f.Name.ToString());
+                    }
                 }
             }
 
             //borro capa de poligonos inicial
             if (((IDataset)(this.blackmore.getPoligonosBlackmore().FeatureClass)).CanDelete())
                 ((IDataset)(this.blackmore.getPoligonosBlackmore().FeatureClass)).Delete();
-        }
-        catch (ProyectoException e)
-        {
-            throw new ProyectoException(e.Message);
+
+            
+            //agrega la salida al mapa
+            IFeatureLayer fl = new FeatureLayer();
+            fl.FeatureClass = entradaBase.getCapaUnion();
+            ILayer layer = (ILayer)fl;
+            layer.Name = fl.FeatureClass.AliasName;
+            IMap targetMap = ArcMap.Document.FocusMap;
+            targetMap.AddLayer(layer);
+
+            ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)targetMap;
+            activeView.Refresh();
+
         }
         catch
         {
-            throw new ProyectoException("No se pudo completar la operación, verifique los datos.");
+            throw new ProyectoException("Ocurrio un error al ejecutar la herramienta 'CrearBlackmore'.");
         }
     }
-
 
     //retorna una lista de datatypes con los datos de las capas cargadas en el ArcMap.
     //filtros de capa: capas con featureClass y que tienen al menos 1 atributo double o entero corto o entero largo o float(single)
@@ -282,6 +289,28 @@ class BlackmoreControlador : IBlackmore
         }
     }
 
+    //Elimina el field 'nombreField' de la FeatureClass 'featureClass'
+    //Excepciones: OK
+    //ProyectoException
+    public void deleteField(IObjectClass featureClass, String nombreField)
+    {
+        int indiceField = featureClass.FindField(nombreField);
+        IField field = featureClass.Fields.get_Field(indiceField);
 
+        ISchemaLock schemaLock = (ISchemaLock)featureClass;
+        try
+        {
+            schemaLock.ChangeSchemaLock(esriSchemaLock.esriExclusiveSchemaLock);
+            featureClass.DeleteField(field);
+        }
+        catch
+        {
+            throw new ProyectoException("Error al intentar los campos de la tabla de salida.");
+        }
+        finally
+        {
+            schemaLock.ChangeSchemaLock(esriSchemaLock.esriSharedSchemaLock);
+        }
+    }
 
 }

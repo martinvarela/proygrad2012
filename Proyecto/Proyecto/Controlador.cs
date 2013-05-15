@@ -888,6 +888,8 @@ class Controlador
                 ((IDataset)fc).Delete();
             }
 
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(cursorPoligono);
+
             if (this.rango == -1)
             {
                 return -1;
@@ -896,15 +898,14 @@ class Controlador
             {
                 return calcularNroMuestras();
             }
-            
+
         }
-        catch 
+        catch
         {
             for (int i = 0; i < gp.MessageCount; i++)
                 System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
             return -1;
         }
-
     }
 
     private IFeatureClass crearPoligonoExtension(string nombreCapa, string nomSalida, int distAgregacion)
@@ -1121,6 +1122,7 @@ class Controlador
 
         }
         featureCursor.UpdateFeature(celdaFeature);
+        System.Runtime.InteropServices.Marshal.ReleaseComObject(featureCursor);
 
     }
 }
