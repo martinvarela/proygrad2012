@@ -269,20 +269,15 @@ class SSA
         }
         catch
         {
-            for (int i = 0; i < gp2.MessageCount; i++)
-                System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
-            System.Diagnostics.Debug.WriteLine("Caught exception #2.");
+            //for (int i = 0; i < gp2.MessageCount; i++)
+            //    System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
+            //System.Diagnostics.Debug.WriteLine("Caught exception #2.");
             errorTotal = 9999999999999999;
         }
 
-       
-        
-
         //borro la capa auxiliar creada
         if (((IDataset)capaPuntosMuestreoOptimo).CanDelete())
-        {
             ((IDataset)capaPuntosMuestreoOptimo).Delete();
-        }
 
         //return suma errores
         return errorTotal;
