@@ -196,70 +196,79 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Blackmore.cs" />
-    <Compile Include="BlackmoreControlador.cs" />
-    <Compile Include="botonBlackmore.cs" />
-    <Compile Include="botonMuestreo.cs" />
-    <Compile Include="botonOptimizar.cs" />
-    <Compile Include="Capa.cs" />
-    <Compile Include="Celda.cs" />
+    <Compile Include="Datatype\DTParametrosSSA.cs" />
+    <Compile Include="Datatype\DTPCrearPuntosMuestreo.cs" />
+    <Compile Include="Datatype\DTPUnionEspacial.cs" />
+    <Compile Include="IMuestreo.cs" />
+    <Compile Include="IOptimizar.cs" />
+    <Compile Include="Logica\Blackmore.cs" />
+    <Compile Include="Logica\BlackmoreControlador.cs" />
+    <Compile Include="Logica\botonBlackmore.cs" />
+    <Compile Include="Logica\botonMuestreo.cs" />
+    <Compile Include="Logica\botonOptimizar.cs" />
+    <Compile Include="Logica\Capa.cs" />
+    <Compile Include="Logica\Celda.cs" />
     <Compile Include="Config.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Config.esriaddinx</DependentUpon>
     </Compile>
     <Compile Include="Controlador.cs" />
-    <Compile Include="Coordenada.cs" />
-    <Compile Include="DTCapasBlackmore.cs" />
-    <Compile Include="DTDatosDM.cs" />
-    <Compile Include="DTVariable.cs" />
-    <Compile Include="Entrada.cs" />
+    <Compile Include="Logica\Coordenada.cs" />
+    <Compile Include="Datatype\DTCapasBlackmore.cs" />
+    <Compile Include="Datatype\DTDatosDM.cs" />
+    <Compile Include="Datatype\DTPBlackmore.cs" />
+    <Compile Include="Datatype\DTPCrearBlackmore.cs" />
+    <Compile Include="Datatype\DTVariable.cs" />
+    <Compile Include="Logica\Entrada.cs" />
     <Compile Include="Fabrica.cs" />
     <Compile Include="IBlackmore.cs" />
-    <Compile Include="Muestreo.cs" />
+    <Compile Include="Logica\Muestreo.cs" />
+    <Compile Include="Logica\MuestreoControlador.cs" />
+    <Compile Include="Logica\OptimizarControlador.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ProyectoException.cs" />
-    <Compile Include="Punto.cs" />
-    <Compile Include="PuntoCapa.cs" />
-    <Compile Include="PuntoMuestreo.cs" />
-    <Compile Include="PuntoZonificacion.cs" />
-    <Compile Include="SSA.cs" />
-    <Compile Include="Variable.cs" />
-    <Compile Include="ventanaBlackmore.cs">
+    <Compile Include="Logica\ProyectoException.cs" />
+    <Compile Include="Logica\Punto.cs" />
+    <Compile Include="Logica\PuntoCapa.cs" />
+    <Compile Include="Logica\PuntoMuestreo.cs" />
+    <Compile Include="Logica\PuntoZonificacion.cs" />
+    <Compile Include="Logica\SSA.cs" />
+    <Compile Include="Logica\Variable.cs" />
+    <Compile Include="Presentacion\ventanaBlackmore.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ventanaBlackmore.Designer.cs">
+    <Compile Include="Presentacion\ventanaBlackmore.Designer.cs">
       <DependentUpon>ventanaBlackmore.cs</DependentUpon>
     </Compile>
-    <Compile Include="VentanaErrores.cs">
+    <Compile Include="Presentacion\VentanaErrores.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VentanaErrores.Designer.cs">
+    <Compile Include="Presentacion\VentanaErrores.Designer.cs">
       <DependentUpon>VentanaErrores.cs</DependentUpon>
     </Compile>
-    <Compile Include="ventanaMuestreo.cs">
+    <Compile Include="Presentacion\ventanaMuestreo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ventanaMuestreo.Designer.cs">
+    <Compile Include="Presentacion\ventanaMuestreo.Designer.cs">
       <DependentUpon>ventanaMuestreo.cs</DependentUpon>
     </Compile>
-    <Compile Include="ventanaParametrosSSA.cs">
+    <Compile Include="Presentacion\ventanaParametrosSSA.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ventanaParametrosSSA.Designer.cs">
+    <Compile Include="Presentacion\ventanaParametrosSSA.Designer.cs">
       <DependentUpon>ventanaParametrosSSA.cs</DependentUpon>
     </Compile>
-    <Compile Include="ventanaSSA.cs">
+    <Compile Include="Presentacion\ventanaSSA.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ventanaSSA.Designer.cs">
+    <Compile Include="Presentacion\ventanaSSA.Designer.cs">
       <DependentUpon>ventanaSSA.cs</DependentUpon>
     </Compile>
-    <Compile Include="Zonificacion.cs" />
+    <Compile Include="Logica\Zonificacion.cs" />
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Config.esriaddinx">
@@ -299,27 +308,27 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ventanaBlackmore.resx">
+    <EmbeddedResource Include="Presentacion\ventanaBlackmore.resx">
       <DependentUpon>ventanaBlackmore.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="VentanaErrores.af.resx">
+    <EmbeddedResource Include="Presentacion\VentanaErrores.af.resx">
       <DependentUpon>VentanaErrores.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="VentanaErrores.resx">
+    <EmbeddedResource Include="Presentacion\VentanaErrores.resx">
       <DependentUpon>VentanaErrores.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ventanaMuestreo.resx">
+    <EmbeddedResource Include="Presentacion\ventanaMuestreo.resx">
       <DependentUpon>ventanaMuestreo.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ventanaParametrosSSA.resx">
+    <EmbeddedResource Include="Presentacion\ventanaParametrosSSA.resx">
       <DependentUpon>ventanaParametrosSSA.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="ventanaSSA.resx">
+    <EmbeddedResource Include="Presentacion\ventanaSSA.resx">
       <DependentUpon>ventanaSSA.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>

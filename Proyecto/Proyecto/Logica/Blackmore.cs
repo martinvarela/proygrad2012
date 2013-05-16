@@ -16,7 +16,6 @@ class Blackmore : Capa
     private int columnas;
     private double parametroDST;
     private IFeatureLayer layerPoligonos;
-    private IFeatureClass featureBlackmore;
     private List<Celda> celdas;
 
     public List<Celda> getCeldas()
@@ -60,8 +59,16 @@ class Blackmore : Capa
         return this.layerPoligonos;
     }
 
-    public Blackmore(bool filasColumnas, int vertical, int horizontal, double dst, ILayer layerTemplate, string nombreCapaBlackmore, IWorkspace wsCapaBlackmore)
+    public Blackmore(DTPBlackmore dtp)
     {
+        bool filasColumnas = dtp.getFilasColumnas();
+        int vertical = dtp.getVertical();
+        int horizontal = dtp.getHorizontal();
+        double dst = dtp.getDdst();
+        ILayer layerTemplate = dtp.getLayerTemplate();
+        string nombreCapaBlackmore = dtp.getNombreCapaBlackmore();
+        IWorkspace wsCapaBlackmore = dtp.getWsCapaBlackmore();
+
         if (filasColumnas)
         {
             this.filas = vertical;

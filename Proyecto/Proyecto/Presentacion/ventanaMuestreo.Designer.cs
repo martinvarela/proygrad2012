@@ -547,7 +547,6 @@
             this.Name = "ventanaMuestreo";
             this.RightToLeftLayout = true;
             this.Text = "Puntos de muestreo";
-            this.Load += new System.EventHandler(this.ventanaMuestreo_Load);
             this.panelAyuda.ResumeLayout(false);
             this.panelAyuda.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ptoVerdeHorizontal)).EndInit();

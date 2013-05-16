@@ -23,8 +23,6 @@ namespace Proyecto
             ventana.MaximizeBox = false;
             //no se puede cambiar el tamano
             ventana.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-
-            ventana.Visible = true;
         }
 
         protected override void OnUpdate()

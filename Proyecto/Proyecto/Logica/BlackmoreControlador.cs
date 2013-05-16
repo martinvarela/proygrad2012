@@ -21,10 +21,18 @@ class BlackmoreControlador : IBlackmore
 
     //Excepciones: OK
     //ProyectoException
-    public void crearBlackmore(bool filasColumnas, int vertical, int horizontal, List<DTCapasBlackmore> capasDT, double dst, string nombreCapaBlackmore, string rutaCapaBlackmore)
+    public void crearBlackmore(DTPCrearBlackmore dtp)
     {
         try
         {
+            bool filasColumnas = dtp.getFilasColumnas();
+            int vertical = dtp.getVertical();
+            int horizontal = dtp.getHorizontal();
+            List<DTCapasBlackmore> capasDT = dtp.getCapasDT();
+            double dst = dtp.getDst();
+            string nombreCapaBlackmore = dtp.getNombreCapaBlackmore();
+            string rutaCapaBlackmore = dtp.getRutaCapaBlackmore();
+
             this.capas = new List<Capa>();
 
             //paso 1
@@ -71,14 +79,14 @@ class BlackmoreControlador : IBlackmore
             string ahora = System.DateTime.Now.ToString("HHmmss");
             //paso 6 
             //creo la instancia de Blackmore, se crea la capa de red
-            this.blackmore = new Blackmore(filasColumnas, vertical, horizontal, dst,
-                                           layerCapaBase, ahora + "_celdasAux",
-                                           this.wsBlackmore);
+            DTPBlackmore dtpblackmore = new DTPBlackmore(filasColumnas, vertical, horizontal, dst, layerCapaBase, ahora + "_celdasAux", this.wsBlackmore);
+            this.blackmore = new Blackmore(dtpblackmore);
 
             //paso 7
             IFeatureLayer poligonosBlackmore = this.blackmore.getPoligonosBlackmore();
             String rutaCapaUnion = rutaCapaBlackmore + @"\" + nombreCapaBlackmore + ".shp";
-            IFeatureClass unionCapaBase = this.unionEspacial(poligonosBlackmore.FeatureClass, layerCapaBase, rutaCapaUnion, false, entradaBase.getNombreAtributo(), "merge_" + entradaBase.getIndice().ToString());
+            DTPUnionEspacial dtpu = new DTPUnionEspacial(poligonosBlackmore.FeatureClass, layerCapaBase, rutaCapaUnion, false, entradaBase.getNombreAtributo(), "merge_" + entradaBase.getIndice().ToString());
+            IFeatureClass unionCapaBase = this.unionEspacial(dtpu);
 
             //paso 8
             entradaBase.setCapaUnion(unionCapaBase);
@@ -97,7 +105,8 @@ class BlackmoreControlador : IBlackmore
                 if (!capaEntrada.getEsCapaBase())
                 {
                     rutaCapaUnion = rutaCapaBlackmore + @"\" + ahora + "_UNION" + capaEntrada.getNombre() + ".shp";
-                    capaEntrada.setCapaUnion(this.unionEspacial(unionCapaBase, capaEntrada.getLayerCapa(), rutaCapaUnion, true, capaEntrada.getNombreAtributo(), "merge_" + capaEntrada.getIndice().ToString()));
+                    DTPUnionEspacial dtpu1 = new DTPUnionEspacial(unionCapaBase, capaEntrada.getLayerCapa(), rutaCapaUnion, true, capaEntrada.getNombreAtributo(), "merge_" + capaEntrada.getIndice().ToString());
+                    capaEntrada.setCapaUnion(this.unionEspacial(dtpu1));
                     auxMediaCapas += capaEntrada.getMedia();
                     cantCapas++;
 
@@ -230,11 +239,18 @@ class BlackmoreControlador : IBlackmore
     //devuelve un FeatureClass con la union de las entidades pasadas por parametro
     //Excepciones: OK
     //ProyectoException
-    private IFeatureClass unionEspacial(IFeatureClass entidadDestino, ILayer entidadUnion, string entidadSalida, bool mantenerEntidades, string nombreAtributo, string atributoTablaUnion)
+    private IFeatureClass unionEspacial(DTPUnionEspacial dtp)
     {
         Geoprocessor gpt = new Geoprocessor();
         try
         {
+            IFeatureClass entidadDestino = dtp.getEntidadDestino();
+            ILayer entidadUnion = dtp.getEntidadUnion();
+            string entidadSalida = dtp.getEntidadSalida();
+            bool mantenerEntidades = dtp.getMantenerEntidades();
+            string nombreAtributo = dtp.getNombreAtributo();
+            string atributoTablaUnion = dtp.getAtributoTablaUnion();
+
             IFeatureLayer featureLayerUnion = entidadUnion as IFeatureLayer;
             IFeatureClass featureClassUnion = featureLayerUnion.FeatureClass;
             IDataset dsUnion = (IDataset)entidadUnion;

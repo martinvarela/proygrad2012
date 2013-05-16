@@ -17,12 +17,13 @@ namespace Proyecto
             InitializeComponent();
 
             this.cboTipoRed.SelectedIndex = 0;
+            this.Visible = true;
         }
 
         private void botonAbrir_Click(object sender, EventArgs e)
         {
             OpenFileDialog open = new OpenFileDialog();
-            
+
             open.Filter = "ZF Files|*.ZF|All Files|*.*";
             open.FilterIndex = 1;
 
@@ -31,105 +32,138 @@ namespace Proyecto
                 txtArchivoZF.Text = open.FileName;
             }
         }
-        
+
         private void Zonificacion_Click(object sender, EventArgs e)
         {
-            //control previo de datos para la ejecucion de la funcion
-            String[] stringErrores = new String[5];
-            for (int i = 0; i < stringErrores.Length; i++) 
-                stringErrores[i] = "";
-            int cantidadErrores = 0;
-            if (ptoVerdeZF.Visible)
+            try
             {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblOpenFileZF.Text + ": Ruta inválida para el archivo de zonificación(*.ZF).";
-            }
-            if (ptoVerdeVariables.Visible)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVariables.Text + ": Se debe marcar alguna variable.";
-            }
-            if (ptoVerdeVertical.Visible)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVertical.Text + ": El valor debe ser entero y mayor que cero.";
-            }
-            if (ptoVerdeHorizontal.Visible)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblHorizontal.Text + ": El valor debe ser entero y mayor que cero.";
-            }
-            if (ptoVerdeDestino.Visible)
-            {
-                cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblMuestreo.Text + ": Ruta inválida donde se guardará la capa de posibles puntos de muestreo.";
-            }
-            
-
-            //si esta no hay errores, ejecuto la funcion de crear puntos de muestreo
-            if (cantidadErrores == 0)
-            {
-                Controlador controlador = Controlador.getInstancia;
-                List<int> variables = new List<int>();
-                for (int i = 0; i < chkLstVariables.Items.Count; i++)
+                //control previo de datos para la ejecucion de la funcion
+                String[] stringErrores = new String[5];
+                for (int i = 0; i < stringErrores.Length; i++)
+                    stringErrores[i] = "";
+                int cantidadErrores = 0;
+                if (ptoVerdeZF.Visible)
                 {
-                    if (chkLstVariables.GetItemChecked(i))
-                        variables.Add(i);
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblOpenFileZF.Text + ": Ruta inválida para el archivo de zonificación(*.ZF).";
+                }
+                if (ptoVerdeVariables.Visible)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVariables.Text + ": Se debe marcar alguna variable.";
+                }
+                if (ptoVerdeVertical.Visible)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblVertical.Text + ": El valor debe ser entero y mayor que cero.";
+                }
+                if (ptoVerdeHorizontal.Visible)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblHorizontal.Text + ": El valor debe ser entero y mayor que cero.";
+                }
+                if (ptoVerdeDestino.Visible)
+                {
+                    cantidadErrores++;
+                    stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblMuestreo.Text + ": Ruta inválida donde se guardará la capa de posibles puntos de muestreo.";
                 }
 
-                //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
-                String rutaCapa = Path.GetDirectoryName(this.txtMuestreo.Text.ToString());
-                String nombreCapa = Path.GetFileNameWithoutExtension(this.txtMuestreo.Text.ToString());
+                //si esta no hay errores, ejecuto la funcion de crear puntos de muestreo
+                if (cantidadErrores == 0)
+                {
+                    Controlador controlador = Controlador.getInstancia;
+                    List<int> variables = new List<int>();
+                    for (int i = 0; i < chkLstVariables.Items.Count; i++)
+                    {
+                        if (chkLstVariables.GetItemChecked(i))
+                            variables.Add(i);
+                    }
 
-                //desabilito el boton Aceptar
-                this.btnAceptar.Enabled = false;
+                    //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
+                    String rutaCapa = Path.GetDirectoryName(this.txtMuestreo.Text.ToString());
+                    String nombreCapa = Path.GetFileNameWithoutExtension(this.txtMuestreo.Text.ToString());
 
-                if (chkSinRed.Checked)
-                {
-                    controlador.crearPuntosMuestreo(false, txtArchivoZF.Text, true, 0, 0, variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar);
+                    //desabilito el boton Aceptar
+                    this.btnAceptar.Enabled = false;
+
+                    Fabrica fabrica = Fabrica.getInstancia;
+                    IMuestreo imuestreo = fabrica.getIMuestreo();
+                    if (chkSinRed.Checked)
+                    {
+                        imuestreo.crearPuntosMuestreo(new DTPCrearPuntosMuestreo(false, txtArchivoZF.Text, true, 0, 0, variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar));
+                    }
+                    else if (this.cboTipoRed.SelectedIndex == 0)
+                    {
+                        imuestreo.crearPuntosMuestreo(new DTPCrearPuntosMuestreo(true, txtArchivoZF.Text, true, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar));
+                    }
+                    else if (this.cboTipoRed.SelectedIndex == 1)
+                    {
+                        imuestreo.crearPuntosMuestreo(new DTPCrearPuntosMuestreo(true, txtArchivoZF.Text, false, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar));
+                    }
+
+                    this.Close();
                 }
-                else if (this.cboTipoRed.SelectedIndex == 0)
+                else
                 {
-                    controlador.crearPuntosMuestreo(true, txtArchivoZF.Text, true, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar);
+                    VentanaErrores ventanaErrores = new VentanaErrores(cantidadErrores, stringErrores);
+                    ventanaErrores.ShowDialog();
                 }
-                else if (this.cboTipoRed.SelectedIndex == 1)
-                {
-                    controlador.crearPuntosMuestreo(true, txtArchivoZF.Text, false, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar);
-                }
-                
-                this.Close();
             }
-            else
+            catch (ProyectoException p)
             {
-                VentanaErrores ventanaErrores = new VentanaErrores(cantidadErrores, stringErrores);
-                ventanaErrores.ShowDialog();
+                String[] strErrores = new String[1];
+                strErrores[0] = p.Message;
+                VentanaErrores v = new VentanaErrores(1, strErrores);
+                v.ShowDialog();
+            }
+            catch
+            {
+                String[] strErrores = new String[1];
+                strErrores[0] = "Error imprevisto.";
+                VentanaErrores v = new VentanaErrores(1, strErrores);
+                v.ShowDialog();
             }
         }
 
         private void txtArchivoZF_TextChanged(object sender, EventArgs e)
         {
-            if (txtArchivoZF.Text.EndsWith(".ZF"))
+            try
             {
-                ptoVerdeZF.Visible = false;
-                Controlador controlador = Controlador.getInstancia;
-                List<string> listaVariables = controlador.cargarVariables(txtArchivoZF.Text);
-                foreach (string nombreVariable in listaVariables)
+                if (txtArchivoZF.Text.EndsWith(".ZF"))
                 {
-                    this.chkLstVariables.Items.Add(nombreVariable);
+                    ptoVerdeZF.Visible = false;
+                    Fabrica fabrica = Fabrica.getInstancia;
+                    IMuestreo imuestreo = fabrica.getIMuestreo();
+                    List<string> listaVariables = imuestreo.cargarVariables(txtArchivoZF.Text);
+                    foreach (string nombreVariable in listaVariables)
+                    {
+                        this.chkLstVariables.Items.Add(nombreVariable);
+                    }
                 }
-
-                //this.cargarVariables(txtArchivoZF.Text);
+                else
+                {
+                    ptoVerdeZF.Visible = true;
+                }
             }
-            else
+            catch (ProyectoException p)
             {
-                ptoVerdeZF.Visible = true;
+                String[] strErrores = new String[1];
+                strErrores[0] = p.Message;
+                VentanaErrores v = new VentanaErrores(1, strErrores);
+                v.ShowDialog();
+            }
+            catch
+            {
+                String[] strErrores = new String[1];
+                strErrores[0] = "Error imprevisto.";
+                VentanaErrores v = new VentanaErrores(1, strErrores);
+                v.ShowDialog();
             }
         }
 
         private void botonAbrirMuestreo_Click(object sender, EventArgs e)
         {
             SaveFileDialog destino = new SaveFileDialog();
-            //destino.CheckPathExists = true;
             destino.OverwritePrompt = false;
             if (destino.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
@@ -245,7 +279,7 @@ namespace Proyecto
         private void txtVertical_LostFocus(object sender, EventArgs e)
         {
             int i = 0;
-            if (int.TryParse(this.txtVertical.Text.ToString(),out i) && i>0)
+            if (int.TryParse(this.txtVertical.Text.ToString(), out i) && i > 0)
             {
                 ptoVerdeVertical.Visible = false;
             }
@@ -298,11 +332,6 @@ namespace Proyecto
         private void chkSinRed_GotFocus(object sender, EventArgs e)
         {
             cboTipoRed_GotFucus(sender, e);
-        }
-
-        private void ventanaMuestreo_Load(object sender, EventArgs e)
-        {
-
         }
 
     }

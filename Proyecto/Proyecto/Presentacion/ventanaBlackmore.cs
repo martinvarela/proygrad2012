@@ -278,7 +278,8 @@ namespace Proyecto
                         filasColumnas = false;
 
                     //llamada a crear Blackmore
-                    iBlackmore.crearBlackmore(filasColumnas, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), capasMarcadas, double.Parse(this.txtEstabilidad.Text), nombreCapa, rutaCapa);
+                    DTPCrearBlackmore dtp = new DTPCrearBlackmore(filasColumnas, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), capasMarcadas, double.Parse(this.txtEstabilidad.Text), nombreCapa, rutaCapa);
+                    iBlackmore.crearBlackmore(dtp);
                     this.Close();
                 }
                 else

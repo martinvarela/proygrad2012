@@ -6,11 +6,8 @@ using System.Text;
 class Fabrica
 {
     private static Fabrica instancia;
-    private IBlackmore moduloBlackmore;
     private Fabrica()
-    {
-        this.moduloBlackmore = new BlackmoreControlador();
-    }
+    { }
 
     public static Fabrica getInstancia
     {
@@ -26,6 +23,14 @@ class Fabrica
 
     public IBlackmore getIBlackmore()
     {
-        return this.moduloBlackmore;
+        return new BlackmoreControlador();
+    }
+    public IMuestreo getIMuestreo()
+    {
+        return new MuestreoControlador();
+    }
+    public IOptimizar getIOptimizar()
+    {
+        return new OptimizarControlador();
     }
 }
