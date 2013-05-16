@@ -68,7 +68,7 @@ namespace Proyecto
             }
         }
 
-
+        //dgvVentana
         private void dgvVentana_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == 0)
@@ -85,7 +85,16 @@ namespace Proyecto
                 this.ptoVerdeBase.Visible = true;
             }
         }
-        
+
+        private void dgvVentana_GotFocus(object sender, EventArgs e) 
+        {
+            panelAyuda.Controls.Clear();
+
+            panelAyuda.Controls.Add(labelTituloCapas);
+            panelAyuda.Controls.Add(labelDescripcionCapas);
+        }
+
+        //btnRuta
         private void btnRuta_Click(object sender, EventArgs e)
         {
             SaveFileDialog destino = new SaveFileDialog();
@@ -96,6 +105,7 @@ namespace Proyecto
             }
         }
 
+        //cboBase
         private void cboBase_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.cboBase.SelectedItem.ToString() == "")
@@ -103,7 +113,15 @@ namespace Proyecto
             else
                 this.ptoVerdeBase.Visible = false;
         }
+        private void cboBase_GotFocus(object sender, EventArgs e)
+        {
+            panelAyuda.Controls.Clear();
 
+            panelAyuda.Controls.Add(labelTituloCapaBase);
+            panelAyuda.Controls.Add(labelDescripcionCapaBase);
+        }
+
+        //txtEstabilidad
         private void txtEstabilidad_LostFocus(object sender, EventArgs e)
         {
             double i;
@@ -118,7 +136,15 @@ namespace Proyecto
                 this.ptoVerdeEstabilidad.Visible = true;
             }
         }
+        private void txtEstabilidad_GotFocus(object sender, EventArgs e)
+        {
+            panelAyuda.Controls.Clear();
 
+            panelAyuda.Controls.Add(labelTituloEstabilidad);
+            panelAyuda.Controls.Add(labelDescripcionEstabilidad);
+        }
+
+        //cboTipoRed
         private void cboTipoRed_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (this.cboTipoRed.SelectedIndex == 0)
@@ -134,7 +160,15 @@ namespace Proyecto
                 this.lblVertical.Text = "Alto";
             }
         }
+        private void cboTipoRed_GotFocus(object sender, EventArgs e)
+        {
+            panelAyuda.Controls.Clear();
 
+            panelAyuda.Controls.Add(labelTituloTipoRed);
+            panelAyuda.Controls.Add(labelDescripcionTipo);
+        }        
+
+        //txtVertical
         private void txtVertical_LostFocus(object sender, EventArgs e)
         {
             int i = 0;
@@ -148,7 +182,12 @@ namespace Proyecto
                 ptoVerdeVertical.Visible = true;
             }
         }
-
+        private void txtVertical_GotFocus(object sender, EventArgs e)
+        {
+            this.cboTipoRed_GotFocus(sender, e);
+        }
+        
+        //txtHorizontal
         private void txtHorizontal_LostFocus(object sender, EventArgs e)
         {
             int i = 0;
@@ -162,12 +201,20 @@ namespace Proyecto
                 ptoVerdeHorizontal.Visible = true;
             }
         }
+        private void txtHorizontal_GotFocus(object sender, EventArgs e)
+        {
+            this.cboTipoRed_GotFocus(sender, e);
+        }
 
+
+        //btnCancelar
         private void btnCancelar_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
+
+        //txtRuta
         private void txtRuta_TextChanged(object sender, EventArgs e)
         {
             if (txtRuta.Text != "")
@@ -179,23 +226,33 @@ namespace Proyecto
                 ptoVerdeRuta.Visible = true;
             }
         }
+        private void txtRuta_GotFocus(object sender, EventArgs e)
+        {
+            panelAyuda.Controls.Clear();
 
+            panelAyuda.Controls.Add(labelTituloRuta);
+            panelAyuda.Controls.Add(labelDescripcionRuta);
+        }
+
+        //btnAyuda
         private void btnAyuda_Click(object sender, EventArgs e)
         {
             if (btnAyuda.Text.ToString() == "Mostrar ayuda >>")
             {
                 panelAyuda.Visible = true;
-                this.Size = new Size(925, 465);
+                this.Size = new Size(925, 512);
                 btnAyuda.Text = "Ocultar ayuda <<";
             }
             else
             {
                 panelAyuda.Visible = true;
-                this.Size = new Size(477, 465);
+                this.Size = new Size(477, 512);
                 btnAyuda.Text = "Mostrar ayuda >>";
             }
         }
         
+
+        //btnAceptar
         private void btnAceptar_Click(object sender, EventArgs e)
         {
             try

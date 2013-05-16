@@ -153,6 +153,25 @@
         COsI/xqK+gkrS83rXuNC0wAAAABJRU5ErkJggg==
 </value>
   </data>
+  <data name="labelDescripcionTipo.Text" xml:space="preserve">
+    <value>Tipo de celda
+
+Por cantidad de celdas, determina que se crearán las celdas especificando las cantidades.
+Columnas - Cantidad de columnas en las que se dividirá la capa base.
+Filas - Cantidad de filas en las que se dividirá la capa base.
+
+Tamaño de celda, determina que se crearán las celdas especificando sus dimensiones.
+Alto - Alto de cada celda con las que se dividirá la capa base. (Metros)
+Ancho - Ancho de cada celda con las que se dividirá la capa base. (Metros)
+</value>
+  </data>
+  <data name="labelDescripcionCapas.Text" xml:space="preserve">
+    <value>Se muestran las capas disponibles para el estudio de la variabilidad asi como los atributos de cada una de ellas.
+
+Unicamente se mostrarán capas de tipo POINT, POLYGON o POLYLINE que tengan al menos un atributo de tipo numérico.
+
+El atributo elegido de cada capa será por el cuál se realizará la caracterización.</value>
+  </data>
   <data name="ptoVerdeHorizontal.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6
