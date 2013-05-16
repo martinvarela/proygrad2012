@@ -8,6 +8,8 @@ using Proyecto;
 using ESRI.ArcGIS.Geoprocessor;
 using ESRI.ArcGIS.Geoprocessing;
 using ESRI.ArcGIS.DataSourcesFile;
+using ESRI.ArcGIS.Display;
+using ESRI.ArcGIS.esriSystem;
 
 
 class BlackmoreControlador : IBlackmore
@@ -156,6 +158,8 @@ class BlackmoreControlador : IBlackmore
             //agrega la salida al mapa
             IFeatureLayer fl = new FeatureLayer();
             fl.FeatureClass = entradaBase.getCapaUnion();
+            IGeoFeatureLayer pGeoFeatureLayer = fl as IGeoFeatureLayer;
+            this.definirColoresClasesCapa(pGeoFeatureLayer, "clase");
             ILayer layer = (ILayer)fl;
             layer.Name = fl.FeatureClass.AliasName;
             IMap targetMap = ArcMap.Document.FocusMap;
@@ -327,6 +331,101 @@ class BlackmoreControlador : IBlackmore
         {
             schemaLock.ChangeSchemaLock(esriSchemaLock.esriSharedSchemaLock);
         }
+    }
+
+    //Funcion que setea las clases con los diferentes colores y leyendas para la capa blackmore
+    //agrega 4 Clases: "1","2","3","4"
+    private void definirColoresClasesCapa(IGeoFeatureLayer pGeoFeatureLayer, string nombreCampo)
+    {
+
+        IRandomColorRamp pRandomColorRamp = new RandomColorRampClass();
+        //Se crea la ColorRamp
+        pRandomColorRamp.MinSaturation = 20;
+        pRandomColorRamp.MaxSaturation = 40;
+        pRandomColorRamp.MinValue = 85;
+        pRandomColorRamp.MaxValue = 100;
+        pRandomColorRamp.StartHue = 76;
+        pRandomColorRamp.EndHue = 188;
+        pRandomColorRamp.UseSeed = true;
+        pRandomColorRamp.Seed = 43;
+        
+        //Se crea el Renderer .
+        IUniqueValueRenderer pUniqueValueRenderer = new UniqueValueRendererClass();
+
+        ISimpleFillSymbol pSimpleFillSymbol = new SimpleFillSymbolClass();
+        pSimpleFillSymbol.Style = esriSimpleFillStyle.esriSFSSolid;
+        pSimpleFillSymbol.Outline.Width = 0.4;
+
+        //Seteo de propiedades
+        pUniqueValueRenderer.FieldCount = 1;
+        pUniqueValueRenderer.set_Field(0, nombreCampo);
+        pUniqueValueRenderer.DefaultSymbol = pSimpleFillSymbol as ISymbol;
+        pUniqueValueRenderer.UseDefaultSymbol = false;
+        
+        //Se agregan las clases
+        string nombreEtiqueta = "Clasificacion";
+        ISimpleFillSymbol pClassSymbol = new SimpleFillSymbolClass();
+        pClassSymbol.Style = esriSimpleFillStyle.esriSFSSolid;
+        pClassSymbol.Outline.Width = 0.4;
+        pUniqueValueRenderer.AddValue("1", nombreEtiqueta, pClassSymbol as
+                    ISymbol);
+        pUniqueValueRenderer.set_Label("1", "Estable - Bajo Rendimiento");
+        pUniqueValueRenderer.set_Symbol("1", pClassSymbol as ISymbol);
+
+        ISimpleFillSymbol pClassSymbol2 = new SimpleFillSymbolClass();
+        pClassSymbol2.Style = esriSimpleFillStyle.esriSFSSolid;
+        pClassSymbol2.Outline.Width = 0.4;
+        pUniqueValueRenderer.AddValue("2", nombreEtiqueta, pClassSymbol2 as
+                    ISymbol);
+        pUniqueValueRenderer.set_Label("2", "Inestable - Bajo Rendimiento");
+        pUniqueValueRenderer.set_Symbol("2", pClassSymbol2 as ISymbol);
+
+        ISimpleFillSymbol pClassSymbol3 = new SimpleFillSymbolClass();
+        pClassSymbol3.Style = esriSimpleFillStyle.esriSFSSolid;
+        pClassSymbol3.Outline.Width = 0.4;
+        pUniqueValueRenderer.AddValue("3", nombreEtiqueta, pClassSymbol3 as
+                    ISymbol);
+        pUniqueValueRenderer.set_Label("3", "Inestable - Alto Rendimiento");
+        pUniqueValueRenderer.set_Symbol("3", pClassSymbol3 as ISymbol);
+
+        ISimpleFillSymbol pClassSymbol4 = new SimpleFillSymbolClass();
+        pClassSymbol4.Style = esriSimpleFillStyle.esriSFSSolid;
+        pClassSymbol4.Outline.Width = 0.4;
+        pUniqueValueRenderer.AddValue("4", nombreEtiqueta, pClassSymbol4 as
+                    ISymbol);
+        pUniqueValueRenderer.set_Label("4", "Estable - Alto Rendimiento");
+        pUniqueValueRenderer.set_Symbol("4", pClassSymbol4 as ISymbol);
+
+        //Seteo del valor de la ColorRamp
+        pRandomColorRamp.Size = pUniqueValueRenderer.ValueCount;
+        bool bOK;
+        pRandomColorRamp.CreateRamp(out bOK);
+
+        IEnumColors pEnumColors = pRandomColorRamp.Colors;
+        pEnumColors.Reset();
+
+        //Se cargan los simbolos con los colores al renderer
+        for (int j = 0; j <= pUniqueValueRenderer.ValueCount - 1; j++)
+        {
+            string xv;
+            xv = pUniqueValueRenderer.get_Value(j);
+            if (xv != "")
+            {
+                ISimpleFillSymbol pSimpleFillColor = pUniqueValueRenderer.get_Symbol(xv)
+                    as ISimpleFillSymbol;
+                pSimpleFillColor.Color = pEnumColors.Next();
+                pUniqueValueRenderer.set_Symbol(xv, pSimpleFillColor as ISymbol);
+
+            }
+        }
+
+        //Se asigna el renderer a la capa
+        pGeoFeatureLayer.Renderer = pUniqueValueRenderer as IFeatureRenderer;
+
+        IUID pUID = new UIDClass();
+        pUID.Value = "{683C994E-A17B-11D1-8816-080009EC732A}";
+        pGeoFeatureLayer.RendererPropertyPageClassID = pUID as UIDClass;
+
     }
 
 }
