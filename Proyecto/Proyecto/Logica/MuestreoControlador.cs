@@ -97,7 +97,7 @@ class MuestreoControlador : IMuestreo
 
                 //se crea la capa de red con las filas y columnas pasadas como parametro
                 //se carga en el controlar la capaPoligonos y capaPuntosMuestreo
-                this.crearRed(map, this.nombreCapaPoligonos, nombreCapa, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filasColumnas, vertical, horizontal, true, this.nombreCapaPuntosZonificacion);
+                this.crearRed(new DTPCrearRed(map, this.nombreCapaPoligonos, nombreCapa, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filasColumnas, vertical, horizontal, true, this.nombreCapaPuntosZonificacion));
 
                 //paso 5
                 lblProgressBar.Text = "Creando layer con los puntos de red...";
@@ -110,7 +110,7 @@ class MuestreoControlador : IMuestreo
 
                 //calcula los valores de los puntos de muestreo haciendo promedio en los puntos que "caen" dentro de la celda de la capa de poligonos
                 //agrega cada punto de muestreo a la lista de la instancia de muestreo.
-                this.cargarValoresPuntosMuestreo(map, muestreo, this.nombreCapaPuntosZonificacion, this.nombreCapaPoligonos, this.nombreCapaPuntosMuestreo, 2, 2, pBar);
+                this.cargarValoresPuntosMuestreo(new DTPCargarValoresPuntosMuestreo(map, muestreo, this.nombreCapaPuntosZonificacion, this.nombreCapaPoligonos, this.nombreCapaPuntosMuestreo, 2, 2, pBar));
 
                 //se quitan los puntos externos al campo
                 this.quitarPuntosExternos(this.nombreCapaPuntosMuestreo, extensionPoligono);
@@ -372,10 +372,21 @@ class MuestreoControlador : IMuestreo
     //devuelve el IFeatureClass correspondiente a la capa de puntos de muestreo (sin optimizar).
     //Excepciones: OK
     //ProyectoException
-    private void crearRed(IMap targetMap, string nombreCapaPoligonos, string nombreCapa, IPoint puntoOrigen, IPoint puntoOpuesto, bool filasColumnas, int vertical, int horizontal, bool selectable, string capaZonificacion)
+    private void crearRed(DTPCrearRed dtp)
     {
         try
         {
+            IMap targetMap = dtp.getTargetMap();
+            string nombreCapaPoligonos = dtp.getNombreCapaPoligonos();
+            string nombreCapa = dtp.getNombreCapa();
+            IPoint puntoOrigen = dtp.getPuntoOrigen();
+            IPoint puntoOpuesto = dtp.getPuntoOpuesto();
+            bool filasColumnas = dtp.getFilasColumnas();
+            int vertical = dtp.getVertical();
+            int horizontal = dtp.getHorizontal();
+            bool selectable = dtp.getSelectable();
+            string capaZonificacion = dtp.getCapaZonificacion();
+
             Geoprocessor gp = new Geoprocessor();
             ESRI.ArcGIS.DataManagementTools.CreateFishnet fishNet = new ESRI.ArcGIS.DataManagementTools.CreateFishnet();
 
@@ -454,10 +465,19 @@ class MuestreoControlador : IMuestreo
     //Carga en la capa de puntos de muestreo los valores de los puntos usando los poligonos de la capa de poligonos pasada como parametro
     //Excepciones: OK
     //ProyectoException
-    private void cargarValoresPuntosMuestreo(IMap map, Muestreo muestreo, String nombreCapaPuntosZonificacion, String nombreCapaPoligonos, String nombreCapaPuntosMuestreos, int indiceAtributoEnTablaPoligonos, int indiceAtributoEnTablaPuntos, ProgressBar pBar)
+    private void cargarValoresPuntosMuestreo(DTPCargarValoresPuntosMuestreo dtp)
     {
         try
         {
+            IMap map = dtp.getMap();
+            Muestreo muestreo = dtp.getMuestreo();
+            string nombreCapaPuntosZonificacion = dtp.getNombreCapaPuntosZonificacion();
+            string nombreCapaPoligonos = dtp.getNombreCapaPoligonos();
+            string nombreCapaPuntosMuestreos = dtp.getNombreCapaPuntosMuestreos();
+            int indiceAtributoEnTablaPoligonos = dtp.getIndiceAtributoEnTablaPoligonos();
+            int indiceAtributoEnTablaPuntos = dtp.getIndiceAtributoEnTablaPuntos();
+            ProgressBar pBar = dtp.getPBar();
+
             //se crea el campo Promedio en la capa de Puntos de Muestreos
             int indicePromedioFieldPuntosMuestreo = this.crearFieldAFeatureClass(this.capaPuntosMuestreo.FeatureClass, "Valor", esriFieldType.esriFieldTypeDouble);
 

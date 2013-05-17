@@ -196,8 +196,10 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Datatype\DTPCargarValoresPuntosMuestreo.cs" />
     <Compile Include="Datatype\DTParametrosSSA.cs" />
     <Compile Include="Datatype\DTPCrearPuntosMuestreo.cs" />
+    <Compile Include="Datatype\DTPCrearRed.cs" />
     <Compile Include="Datatype\DTPUnionEspacial.cs" />
     <Compile Include="IMuestreo.cs" />
     <Compile Include="IOptimizar.cs" />
