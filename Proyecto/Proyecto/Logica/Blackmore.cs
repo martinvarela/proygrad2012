@@ -168,9 +168,12 @@ class Blackmore : Capa
             foreach (Entrada e in entradas)
             {
                 auxValor = e.getValorCelda(fid);
-                dstCelda += Math.Pow(auxValor - e.getMedia(), 2);
-                valorCelda += auxValor;
-                n++;
+                if (auxValor != 0)
+                {
+                    dstCelda += Math.Pow(auxValor - e.getMedia(), 2);
+                    valorCelda += auxValor;
+                    n++;
+                }
                 auxValor = 0;
             }
             c.setDesviacion(Math.Sqrt(dstCelda / n));

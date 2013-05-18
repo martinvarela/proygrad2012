@@ -63,11 +63,17 @@ class Entrada : Capa
         int cant = 0;
         IFeatureCursor cursorCeldas = this.capaUnion.Search(null, false);
         int indice = this.capaUnion.FindField("merge_" + this.indice.ToString());
+        int indJoinCount = this.capaUnion.FindField("Join_Count");
+        int cantEnCelda;
         IFeature datosCeldas = cursorCeldas.NextFeature();
         while (datosCeldas != null)
         {
-            mediaAux += (double)datosCeldas.get_Value(indice);
-            cant++;
+            cantEnCelda = (int)datosCeldas.get_Value(indJoinCount);
+            if (cantEnCelda > 0)
+            {
+                mediaAux += (double)datosCeldas.get_Value(indice);
+                cant++;                
+            }
             datosCeldas = cursorCeldas.NextFeature();
         }
         if (cant > 0)
