@@ -6,15 +6,15 @@ using System.Text;
 
 class Muestreo
 {
-    private String nombre { get; set; }
-    private String ruta { get; set; }
-    //private SistemaCoordenada sistemaCoordinada { get; set; }
     private List<PuntoMuestreo> puntosMuestreo;
 
-    internal List<PuntoMuestreo> PuntosMuestreo
+    public List<PuntoMuestreo> getPuntosMuestreo()
     {
-        get { return puntosMuestreo; }
-        set { puntosMuestreo = value; }
+        return this.puntosMuestreo;
+    }
+    public void setPuntosMuestreo(List<PuntoMuestreo> l)
+    {
+        this.puntosMuestreo = l;
     }
 
     public void agregarPuntoMuestreo(PuntoMuestreo puntoMuestreo)
@@ -24,13 +24,5 @@ class Muestreo
 
         this.puntosMuestreo.Add(puntoMuestreo);
     }
-
-    public void sacarPuntoMuestreo(PuntoMuestreo puntoMuestreo)
-    {
-        if (this.puntosMuestreo != null)
-            this.puntosMuestreo.Remove(puntoMuestreo);
-    }
-
-
 }
 

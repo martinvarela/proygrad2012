@@ -144,10 +144,10 @@ namespace Proyecto
                     IFeatureClass featureClass = featureLayer.FeatureClass;
 
                     //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
-                    String rutaCapa = System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
+                    string rutaCapa = System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
                     Fabrica fabrica = Fabrica.getInstancia;
                     IOptimizar ioptimizar = fabrica.getIOptimizar();
-                    ioptimizar.optimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), double.Parse(txtExpIDW.Text.ToString()), int.Parse(txtCantMuestras.Text.ToString()), double.Parse(txtError.Text.ToString()), rutaCapa);
+                    ioptimizar.optimizarMuestreo(new DTPOptimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), double.Parse(txtExpIDW.Text.ToString()), int.Parse(txtCantMuestras.Text.ToString()), double.Parse(txtError.Text.ToString()), rutaCapa));
 
                     this.Close();
                 }

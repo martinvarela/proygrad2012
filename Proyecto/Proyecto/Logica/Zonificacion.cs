@@ -21,57 +21,72 @@ using System.Globalization;
 
 class Zonificacion
 {
-    //public SSA ssa;
- 
     private int columnas;
-    public int Columnas
-    {
-        get { return columnas; }
-        set { columnas = value; }
-    }
-
     private int filas;
-    public int Filas
+    private int tamanoCelda;
+    private IPoint puntoOrigen;
+    private IPoint puntoOpuesto;
+    public Coordenada coordenadaInicial;
+    private List<Variable> variables;
+    private List<PuntoZonificacion> puntosZonificacion;
+
+    public int getColumnas()
     {
-        get { return filas; }
-        set { filas = value; }
+        return this.columnas;
+    }
+    public void setColumnas(int c)
+    {
+        this.columnas = c;
     }
 
-    public Coordenada coordenadaInicial;
-
-    private int tamanoCelda;
+    public int getFilas()
+    {
+        return this.filas;
+    }
+    public void setFilas(int f)
+    {
+        this.filas = f;
+    }
 
     public int getTamanoCelda()
     {
-        return tamanoCelda;
+        return this.tamanoCelda;
     }
 
-    private List<Variable> variables;
-    internal List<Variable> Variables
+    public List<Variable> getVariables()
     {
-        get { return variables; }
-        set { variables = value; }
+        return this.variables;
     }
-    
-    private List<PuntoZonificacion> puntosZonificacion;
-    internal List<PuntoZonificacion> PuntosZonificacion
+    public void setVariables(List<Variable> l)
     {
-        get { return puntosZonificacion; }
-        set { puntosZonificacion = value; }
+        this.variables = l;
     }
 
-    private ESRI.ArcGIS.Geometry.IPoint puntoOrigen;
-    public ESRI.ArcGIS.Geometry.IPoint PuntoOrigen
+    public List<PuntoZonificacion> getPuntosZonificacion()
     {
-        get { return puntoOrigen; }
-        set { puntoOrigen = value; }
+        return this.puntosZonificacion;
+    }
+    public void setPuntosZonificacion(List<PuntoZonificacion> l)
+    {
+        this.puntosZonificacion = l;
+    }
+
+    public IPoint getPuntoOrigen()
+    {
+        return this.puntoOrigen;
+    }
+    public void setPuntoOrigen(IPoint p)
+    {
+        this.puntoOrigen = p;
     }
     
-    private ESRI.ArcGIS.Geometry.IPoint puntoOpuesto;
-    public ESRI.ArcGIS.Geometry.IPoint PuntoOpuesto
+    public IPoint getPuntoOpuesto()
     {
-        get { return puntoOpuesto; }
-        set { puntoOpuesto = value; }
+        return this.puntoOpuesto;
+    }
+    public void setPuntoOpuesto(IPoint p)
+    {
+        this.puntoOpuesto = p;
     }
 
     public Zonificacion(String rutaEntrada, List<int> variables_seleccion, System.Windows.Forms.ProgressBar pBar)
@@ -100,7 +115,6 @@ class Zonificacion
         //Leo la linea actual del archivo
         sLine = objReader.ReadLine();
 
-
         //se setea el separador decimal ',' para una correcta lectura del archivo ZF
         if (!CultureInfo.CurrentCulture.IsReadOnly)
             CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator = ",";
@@ -111,22 +125,22 @@ class Zonificacion
             if (((sLine != "") && sLine.Substring(0, string_rows.Length) == string_rows))
             {
                 Rows = Int32.Parse(sLine.Substring(string_rows.Length, sLine.Length - string_rows.Length));
-                this.Filas = Rows;
+                this.filas = Rows;
             }
             else if (((sLine != "") && sLine.Substring(0, string_cols.Length) == string_cols))
             {
                 Cols = Int32.Parse(sLine.Substring(string_cols.Length, sLine.Length - string_cols.Length));
-                this.Columnas = Cols;
+                this.columnas = Cols;
             }
             else if (((sLine != "") && (sLine.Length >= string_Xinicial.Length) && sLine.Substring(0, string_Xinicial.Length) == string_Xinicial))
             {
                 xinicial = Double.Parse(sLine.Substring(string_Xinicial.Length, sLine.Length - string_Xinicial.Length));
-                this.coordenadaInicial.X = xinicial;
+                this.coordenadaInicial.setX(xinicial);
             }
             else if (((sLine != "") && (sLine.Length >= string_Yinicial.Length) && sLine.Substring(0, string_Yinicial.Length) == string_Yinicial))
             {
                 yinicial = Double.Parse(sLine.Substring(string_Yinicial.Length, sLine.Length - string_Yinicial.Length));
-                this.coordenadaInicial.Y = yinicial;
+                this.coordenadaInicial.setY(yinicial);
             }
             else if (((sLine != "") && (sLine.Length >= string_CellSize.Length) && sLine.Substring(0, string_CellSize.Length) == string_CellSize))
             {
@@ -138,14 +152,14 @@ class Zonificacion
                 cant_variables = Int32.Parse(sLine.Substring(string_cant_variables.Length, sLine.Length - string_cant_variables.Length));
                 int i = 1;
                 sLine = objReader.ReadLine();
-                String nombreVariable = "";
+                string nombreVariable = "";
 
                 int p = 0;
                 while (i <= cant_variables && sLine != "" && p < variables_seleccion.Count)
                 {
                     if ((i - 1) == variables_seleccion[p]) //es i-1 porque en el archivo ZF el i comienza en 1 y la seleccion de variable comienza en 0
                     {
-                        String aux = "Var" + i + ": ";
+                        string aux = "Var" + i + ": ";
                         if ((sLine.Substring(0, aux.Length) == aux))
                         {
                             nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
@@ -184,15 +198,15 @@ class Zonificacion
         pBar.Visible = true;
 
         //comienza el proceso de los puntos de la zonificacion
-        for (int iy = 1; iy <= this.Filas; iy++)
+        for (int iy = 1; iy <= this.filas; iy++)
         {
-            for (int ix = 1; ix <= this.Columnas; ix++)
+            for (int ix = 1; ix <= this.columnas; ix++)
             {
                 sLine = objReader.ReadLine();
 
                 PuntoZonificacion ptoZonificacion = new PuntoZonificacion();
-                ptoZonificacion.Coordenada = calcularCoordenada(this.coordenadaInicial, this.tamanoCelda, ix - 1, iy - 1);
-                ptoZonificacion.Variables = this.Variables;
+                ptoZonificacion.setCoordenada(calcularCoordenada(this.coordenadaInicial, this.tamanoCelda, ix - 1, iy - 1));
+                ptoZonificacion.setVariables(this.variables);
 
                 char[] coma = { ';' };
                 string[] datos = null;
@@ -207,7 +221,7 @@ class Zonificacion
                         break;
                     }
                     else
-                        ptoZonificacion.agregarDato(ptoZonificacion.Variables[i].Nombre, float.Parse(datos[variables_seleccion[i]]));
+                        ptoZonificacion.agregarDato(ptoZonificacion.getVariables()[i].getNombre(), float.Parse(datos[variables_seleccion[i]]));
                 }
                 //agrego el punto solo si tiene datos
                 if (puntoUtil)
@@ -234,9 +248,9 @@ class Zonificacion
         pBar.Step = 1;
         pBar.Value = 1;
         pBar.Visible = true;
-        for (int i = 0; i < this.Variables.Count; i++)
+        for (int i = 0; i < this.variables.Count; i++)
         {
-            this.Variables[i].calcularMedia(this.puntosZonificacion);
+            this.variables[i].calcularMedia(this.puntosZonificacion);
             pBar.PerformStep();
         }
         for (int i = 0; i < this.puntosZonificacion.Count; i++)
@@ -273,19 +287,19 @@ class Zonificacion
     private Coordenada calcularCoordenada(Coordenada coordenadaInicial, int TamanoCelda, int x, int y)
     {
         Coordenada coordenada = new Coordenada();
-        coordenada.X = coordenadaInicial.X + TamanoCelda * x;
-        coordenada.Y = coordenadaInicial.Y - TamanoCelda * y;
+        coordenada.setX((double)(coordenadaInicial.getX() + TamanoCelda * x));
+        coordenada.setY((double)(coordenadaInicial.getY() - TamanoCelda * y));
         return coordenada;
 
     }
 
     //Calcula la distancia entre dos puntos y devuelve la distancia en metros luego de redondear el resultado
-    private int calcularDistancia(int i, int j)
-    {
-        double cuadX = (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X) * (this.puntosZonificacion[i].Coordenada.X - this.puntosZonificacion[j].Coordenada.X);
-        double cuadY = (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y) * (this.puntosZonificacion[i].Coordenada.Y - this.puntosZonificacion[j].Coordenada.Y);
-        double distancia = Math.Sqrt(cuadX + cuadY);
-        return (int)Math.Round(distancia);
-    }
+    //private int calcularDistancia(int i, int j)
+    //{
+    //    double cuadX = (this.puntosZonificacion[i].Coordenada.getX() - this.puntosZonificacion[j].Coordenada.getX()) * (this.puntosZonificacion[i].Coordenada.getX() - this.puntosZonificacion[j].Coordenada.getX());
+    //    double cuadY = (this.puntosZonificacion[i].Coordenada.getY() - this.puntosZonificacion[j].Coordenada.getY()) * (this.puntosZonificacion[i].Coordenada.getY() - this.puntosZonificacion[j].Coordenada.getY());
+    //    double distancia = Math.Sqrt(cuadX + cuadY);
+    //    return (int)Math.Round(distancia);
+    //}
 
 }

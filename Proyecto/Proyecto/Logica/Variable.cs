@@ -5,16 +5,21 @@ using System.Text;
 
 class Variable
 {
-    private String nombre;
-    public String Nombre
-    {
-        get { return nombre; }
-        set { nombre = value; }
-    }
-    private float media; //{ get; set; }
+    private string nombre;
+    private double media; //{ get; set; }
     private List<PuntoZonificacion> puntosZonificacion;
+
+    public string getNombre()
+    {
+        return this.nombre;
+    }
+    public void setNombre(string s)
+    {
+        this.nombre = s;
+    }
     
-    public Variable() { }
+    public Variable()
+    { }
 
     public Variable(string nombreVariable)
     {
@@ -23,25 +28,21 @@ class Variable
 
     public void calcularMedia(List<PuntoZonificacion> listaPuntos)
     {
-        float temp = 0;
+        double temp = 0;
         int cant = 0;
-        float medicion;
+        double medicion;
         this.puntosZonificacion = listaPuntos;
         for (int i = 0; i < this.puntosZonificacion.Count; i++)
         {
             PuntoZonificacion p = this.puntosZonificacion[i];
-            medicion = p.getMedicion(this.Nombre);
+            medicion = p.getMedicion(this.nombre);
             temp += medicion;
             cant++;
         }
         this.media = temp / cant;
-
-
     }
-//    private void actualizar() { }
 
     public DTVariable getDatos()
-
     {
         return new DTVariable(this.nombre,this.media);
     }

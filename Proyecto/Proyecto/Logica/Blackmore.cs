@@ -18,47 +18,6 @@ class Blackmore : Capa
     private IFeatureLayer layerPoligonos;
     private List<Celda> celdas;
 
-    public List<Celda> getCeldas()
-    {
-        return this.celdas;
-    }
-    public void setDatos(Celda celda, DTDatosDM datosCelda)
-    {
-        celda.setDatos(datosCelda);
-    }
-
-
-    //crea una instancia de Celda para cada registro de featureCapa.
-    //Setea el atributo FID de cada registro en la Celda
-    public void crearCeldas(IFeatureClass featureCapa)
-    {
-        IFeatureCursor cursorPoligono = featureCapa.Search(null, false);
-        int indice = featureCapa.FindField("FID");
-        IFeature poligono = cursorPoligono.NextFeature();
-        
-        this.celdas = new List<Celda>();
-        while (poligono != null)
-        {
-            Celda c = new Celda();
-            c.setFID((int)poligono.get_Value(indice));
-
-            this.celdas.Add(c);
-            poligono = cursorPoligono.NextFeature();
-        }
-        System.Runtime.InteropServices.Marshal.ReleaseComObject(cursorPoligono);
-
-    }
-
-    public double getParametroDST()
-    {
-        return this.parametroDST;
-    }
-
-    public IFeatureLayer getPoligonosBlackmore()
-    {
-        return this.layerPoligonos;
-    }
-
     public Blackmore(DTPBlackmore dtp)
     {
         bool filasColumnas = dtp.getFilasColumnas();
@@ -100,13 +59,13 @@ class Blackmore : Capa
         fishNet.number_columns = this.columnas;
         fishNet.cell_height = this.alto;
         fishNet.cell_width = this.ancho;
-        
+
 
         fishNet.template = layerTemplate;
         fishNet.geometry_type = "POLYGON";
         fishNet.labels = "NO_LABELS";
 
-        
+
         gp.AddOutputsToMap = false;
         gp.OverwriteOutput = true;
 
@@ -145,6 +104,41 @@ class Blackmore : Capa
     }
 
 
+    //crea una instancia de Celda para cada registro de featureCapa.
+    //Setea el atributo FID de cada registro en la Celda
+    public void crearCeldas(IFeatureClass featureCapa)
+    {
+        IFeatureCursor cursorPoligono = featureCapa.Search(null, false);
+        int indice = featureCapa.FindField("FID");
+        IFeature poligono = cursorPoligono.NextFeature();
+        
+        this.celdas = new List<Celda>();
+        while (poligono != null)
+        {
+            Celda c = new Celda();
+            c.setFID((int)poligono.get_Value(indice));
+
+            this.celdas.Add(c);
+            poligono = cursorPoligono.NextFeature();
+        }
+        System.Runtime.InteropServices.Marshal.ReleaseComObject(cursorPoligono);
+
+    }
+
+    public IFeatureLayer getPoligonosBlackmore()
+    {
+        return this.layerPoligonos;
+    }
+
+    public List<Celda> getCeldas()
+    {
+        return this.celdas;
+    }
+
+    public void setDatos(Celda celda, DTDatosDM datosCelda)
+    {
+        celda.setDatos(datosCelda);
+    }
 
     public void completarFeature(IFeatureClass featureUnion, List<Capa> entradas, double mediaGeneral)
     {
@@ -177,7 +171,7 @@ class Blackmore : Capa
             c.setMedia(valorCelda / n);
             c.clasificar(this.parametroDST, mediaGeneral);
 
-            this.setValoresFeatureUnion(featureUnion, fid, indiceDst, c.getDesviacion(), indiceMean, c.getMedia(), indiceClasificacion, c.getClasificacion());
+            this.setValoresFeatureUnion(new DTPSetValoresFeatureUnion(featureUnion, fid, indiceDst, c.getDesviacion(), indiceMean, c.getMedia(), indiceClasificacion, c.getClasificacion()));
         }
     }
 
@@ -185,7 +179,7 @@ class Blackmore : Capa
     //devuelve el indice del field creado
     //Exception OK
     //ProyectoException
-    private int crearField(IFeatureClass featureClass, String nombreField, esriFieldType tipoField)
+    private int crearField(IFeatureClass featureClass, string nombreField, esriFieldType tipoField)
     {
         ISchemaLock schemaLock = (ISchemaLock)featureClass;
         try
@@ -212,11 +206,19 @@ class Blackmore : Capa
 
     //Excepciones: OK
     //ProyectoException
-    private void setValoresFeatureUnion(IFeatureClass featureUnion, int fid, int indiceDst, double dsv, int indiceMean, double mean, int indiceClasificacion, int clase)
+    private void setValoresFeatureUnion(DTPSetValoresFeatureUnion dtp)
     {
-
         try
         {
+            IFeatureClass featureUnion = dtp.getFeatureUnion();
+            int fid = dtp.getFid();
+            int indiceDst = dtp.getIndiceDst() ;
+            double dsv = dtp.getDsv();
+            int indiceMean = dtp.getIndiceMean();
+            double mean = dtp.getMean();
+            int indiceClasificacion = dtp.getIndiceClasificacion();
+            int clase = dtp.getClase();
+
             IQueryFilter queryFilter = new QueryFilterClass();
             queryFilter.WhereClause = "FID = " + fid.ToString();
             IFeatureCursor featureCursor = featureUnion.Update(queryFilter, false);

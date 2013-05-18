@@ -6,60 +6,53 @@ using System.Collections;
 class PuntoZonificacion
 {
     private Coordenada coordenada;
-    internal Coordenada Coordenada
-    {
-        get { return coordenada; }
-        set { coordenada = value; }
-    }
-
-    private float variabilidad;
-    public float Variabilidad
-    {
-        get { return variabilidad; }
-        set { variabilidad = value; }
-    }
-    
+    private double variabilidad;
     private Hashtable hashDato;
-    
     private List<Variable> variables;
-    internal List<Variable> Variables
-    {
-        get { return variables; }
-        set { variables = value; }
-    }
-    
 
-    public PuntoZonificacion() { }
+    public Coordenada getCoordenada()
+    {
+       return this.coordenada;
+    }
+    public void setCoordenada(Coordenada c)
+    {
+        this.coordenada = c;
+    }
+
+    public double getVariabilidad()
+    {
+        return this.variabilidad;
+    }
+    public void setVariabilidad(double d)
+    {
+        this.variabilidad = d;
+    }    
+    
+    public List<Variable> getVariables()
+    {
+        return this.variables;
+    }
+    public void setVariables(List<Variable> l)
+    {
+        this.variables = l;
+    }    
+
+    public PuntoZonificacion()
+    { }
 
     public void calcularVariabilidad()
     {
         DTVariable datosVariable;
-        float medicion =0;
-        float temp = 0;
+        double medicion =0;
+        double temp = 0;
         int cant = 0;
 
-        /*for (int i = 0; i < variables_seleccion.Length; i++)
-        {
-            datosVariable = this.Variables[variables_seleccion[i]].getDatos();
-            medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
-            temp += (float)Math.Pow((double)((medicion - datosVariable.Media) / datosVariable.Media),2);
-            cant++;
-        }*/
-        //for (int i = 0; i < this.Variables.Count; i++)
-        //{
-        //    datosVariable = this.Variables[i].getDatos();
-        //    medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
-        //    temp += (float)Math.Pow((double)((medicion - datosVariable.Media) / datosVariable.Media),2);
-        //    cant++;
-        //}
-        //this.variabilidad = (float)Math.Sqrt(temp / cant);
-        
         //mas de 1 variable, se normalizan los valores
-        if (this.Variables.Count > 1)
+        if (this.getVariables().Count > 1)
         {
-            for (int i = 0; i < this.Variables.Count; i++)
+            for (int i = 0; i < this.getVariables().Count; i++)
             {
-                datosVariable = this.Variables[i].getDatos();
+                datosVariable = this.getVariables()[i].getDatos();
                 medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
                 temp += (float)(medicion / datosVariable.Media);
                 cant++;
@@ -68,19 +61,19 @@ class PuntoZonificacion
         }
         else
         {   //una sola variable, no se normaliza
-            datosVariable = this.Variables[0].getDatos();
-            medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
+            datosVariable = this.getVariables()[0].getDatos();
+            medicion = (double)this.hashDato[datosVariable.Nombre.ToString()];
             this.variabilidad = medicion; 
         }
 
     }
     
-    public float getMedicion(String nombre)  
+    public double getMedicion(String nombre)  
     {
-        return (float)this.hashDato[nombre.ToString()];
+        return (double)this.hashDato[nombre.ToString()];
     }
 
-    public void agregarDato(String nombreVariable, float dato)
+    public void agregarDato(String nombreVariable, double dato)
     {
         if (this.hashDato == null)
             this.hashDato = new Hashtable();

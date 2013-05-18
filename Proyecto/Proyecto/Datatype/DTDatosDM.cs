@@ -6,18 +6,25 @@ using System.Text;
 
 class DTDatosDM
 {
-
     private double desviacion;
-    public double Desviacion
-    {
-        get { return desviacion; }
-        set { desviacion = value; }
-    }
     private double media;
-    public double Media
+    
+    public double getDesviacion()
     {
-        get { return media; }
-        set { media = value; }
+        return this.desviacion;
+    }
+    public void setDesviacion(double d)
+    {
+        this.desviacion = d;
+    }
+
+    public double getMedia()
+    {
+        return this.media;
+    }
+    public void setMedia(double m)
+    {
+        this.media = m;
     }
 
     public DTDatosDM() { }
@@ -27,6 +34,4 @@ class DTDatosDM
         this.desviacion = desviacion;
         this.media = media;
     }
-
-        
 }

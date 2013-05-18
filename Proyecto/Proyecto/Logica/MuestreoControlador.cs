@@ -23,6 +23,7 @@ class MuestreoControlador : IMuestreo
     private IFeatureClass capaPuntosZonificacion;
     private IFeatureLayer capaPuntosMuestreo;
     private IFeatureLayer capaPoligonos;
+    private Zonificacion zonificacion;
 
     public MuestreoControlador() 
     { }
@@ -57,7 +58,7 @@ class MuestreoControlador : IMuestreo
             lblProgressBar.Text = "Cargando puntos de zonificación...";
             lblProgressBar.Visible = true;
 
-            Zonificacion zonificacion = new Zonificacion(rutaEntrada, variablesMarcadas, pBar);
+            this.zonificacion = new Zonificacion(rutaEntrada, variablesMarcadas, pBar);
             //lblProgressBar.Text = "";
 
             //paso 2
@@ -71,7 +72,7 @@ class MuestreoControlador : IMuestreo
             //paso 4
             //se crea una layer temporal con los puntos de zonificacion sacados del .ZF
             //IMap map = ArcMap.Document.FocusMap;
-            String ahora = System.DateTime.Now.ToString("HHmmss");
+            string ahora = System.DateTime.Now.ToString("HHmmss");
             if (conRed)
             {
                 this.nombreCapaPuntosZonificacion = "PZ_" + ahora;
@@ -84,7 +85,7 @@ class MuestreoControlador : IMuestreo
             }
 
             lblProgressBar.Text = "Creando layer con los puntos de zonificación...";
-            this.capaPuntosZonificacion = this.crearCapaPuntosZonificacion(map, nombreCapaPuntosZonificacion, zonificacion.PuntosZonificacion, pBar);
+            this.capaPuntosZonificacion = this.crearCapaPuntosZonificacion(map, nombreCapaPuntosZonificacion, zonificacion.getPuntosZonificacion(), pBar);
             lblProgressBar.Text = "";
 
 
@@ -97,7 +98,7 @@ class MuestreoControlador : IMuestreo
 
                 //se crea la capa de red con las filas y columnas pasadas como parametro
                 //se carga en el controlar la capaPoligonos y capaPuntosMuestreo
-                this.crearRed(new DTPCrearRed(map, this.nombreCapaPoligonos, nombreCapa, zonificacion.PuntoOrigen, zonificacion.PuntoOpuesto, filasColumnas, vertical, horizontal, true, this.nombreCapaPuntosZonificacion));
+                this.crearRed(new DTPCrearRed(map, this.nombreCapaPoligonos, nombreCapa, zonificacion.getPuntoOrigen(), zonificacion.getPuntoOpuesto(), filasColumnas, vertical, horizontal, true, this.nombreCapaPuntosZonificacion));
 
                 //paso 5
                 lblProgressBar.Text = "Creando layer con los puntos de red...";
@@ -186,10 +187,10 @@ class MuestreoControlador : IMuestreo
                     cant_variables = Int32.Parse(sLine.Substring(string_cant_variables.Length, sLine.Length - string_cant_variables.Length));
                     int i = 1;
                     sLine = objReader.ReadLine();
-                    String nombreVariable = "";
+                    string nombreVariable = "";
                     while (i <= cant_variables && sLine != "")
                     {
-                        String aux = "Var" + i + ": ";
+                        string aux = "Var" + i + ": ";
                         if ((sLine.Substring(0, aux.Length) == aux))
                         {
                             nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
@@ -246,11 +247,11 @@ class MuestreoControlador : IMuestreo
             foreach (PuntoZonificacion aux in listaPuntos)
             {
                 point = new ESRI.ArcGIS.Geometry.PointClass();
-                point.X = aux.Coordenada.X;
-                point.Y = aux.Coordenada.Y;
+                point.X = aux.getCoordenada().getX();
+                point.Y = aux.getCoordenada().getY();
 
                 featureBuffer.Shape = point;
-                featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.Variabilidad);
+                featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), aux.getVariabilidad());
                 featureOID = FeatureCursor.InsertFeature(featureBuffer);
 
                 pBar.PerformStep();
@@ -564,7 +565,7 @@ class MuestreoControlador : IMuestreo
     //devuelve el indice del field creado
     //Excepciones: OK
     //ProyectoException
-    private int crearFieldAFeatureClass(IFeatureClass featureClass, String nombreField, esriFieldType tipoField)
+    private int crearFieldAFeatureClass(IFeatureClass featureClass, string nombreField, esriFieldType tipoField)
     {
         IField field = new FieldClass();
         IFieldEdit fieldEdit = (IFieldEdit)field;

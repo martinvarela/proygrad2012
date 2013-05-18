@@ -14,13 +14,13 @@ using ESRI.ArcGIS.esriSystem;
 
 class SSA
 {
+    private IWorkspace ws;
     private double temperaturaInicial;
     private double factorReduccion;
     private int iteraciones;
     public int cantMuestras;
     public List<int> muestreados;
     public List<int> todos;
-    private IWorkspace ws;
 
     public SSA()
     {
@@ -30,22 +30,46 @@ class SSA
         //this.cantMuestras = 30;
     }
 
-    public double getTemperaturaInicial() { return this.temperaturaInicial; }
-    public void setTemperaturaInicial(double t) { this.temperaturaInicial = t; }
+    public double getTemperaturaInicial()
+    {
+        return this.temperaturaInicial;
+    }
+    public void setTemperaturaInicial(double t) 
+    { 
+        this.temperaturaInicial = t; 
+    }
 
-    public double getFactorReduccion() { return this.factorReduccion; }
-    public void setFactorReduccion(double f) { this.factorReduccion = f; }
+    public double getFactorReduccion() 
+    { 
+        return this.factorReduccion; 
+    }
+    public void setFactorReduccion(double f) 
+    { 
+        this.factorReduccion = f; 
+    }
 
-    public int getIteraciones() { return this.iteraciones; }
-    public void setIteraciones(int i) { this.iteraciones = i; }
+    public int getIteraciones() 
+    { 
+        return this.iteraciones; 
+    }
+    public void setIteraciones(int i) 
+    { 
+        this.iteraciones = i; 
+    }
 
     public void setWorkspace(IWorkspace workspace)
     {
         this.ws = workspace;
     }
 
-    public IFeatureClass SimulatedAnnealing(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, double error, string pathArchivo)
+    public IFeatureClass simulatedAnnealing(DTPSimulatedAnnealing dtp)
     {
+        IFeatureClass capaPuntosMuestreo = dtp.getCapaPuntosMuestreo();
+        string metodoInterpolacion = dtp.getMetodoInterpolacion();
+        double expIDW = dtp.getExpIDW();
+        double error = dtp.getError();
+        string pathArchivo = dtp.getPathArchivo();
+
         double factorReduccionAux = this.factorReduccion;
         int iteracionesAux = this.iteraciones;
         int cantMuestrasAux = this.cantMuestras;
@@ -59,8 +83,8 @@ class SSA
             IGeometry g = featurePunto.Shape;
             IPoint p = g as IPoint;
             Coordenada c = new Coordenada();
-            c.X = p.X;
-            c.Y = p.Y;
+            c.setX(p.X);
+            c.setY(p.Y);
             PuntoMuestreo puntoMuestreo = new PuntoMuestreo();
             puntoMuestreo.setCoordenada(c);
             puntoMuestreo.setValor((double) featurePunto.get_Value(indice)); 
@@ -75,7 +99,7 @@ class SSA
         {
             double temperaturaInicialAux = this.temperaturaInicial;
             //a partir de los puntos, selecciona las muestras iniciales
-            Inicializar(listaPuntosMuestreo, cantMuestrasAux);
+            inicializar(listaPuntosMuestreo, cantMuestrasAux);
 
             List<int> auxMuestreados;
             List<int> auxTodos;
@@ -89,7 +113,7 @@ class SSA
             double delta;
 
             //calculo fitness del muestreo inicial
-            fitness = CalcularFitnessIDW(listaPuntosMuestreo, muestreados, capaPuntosMuestreo, expIDW);
+            fitness = calcularFitnessIDW(new DTPCalcularFitnessIDW(listaPuntosMuestreo, muestreados, capaPuntosMuestreo, expIDW));
        
             System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
 
@@ -98,10 +122,10 @@ class SSA
             {
                 iteration++;
 
-                auxMuestreados = ClonarLista(muestreados);
-                auxTodos = ClonarLista(todos);
-                MoverMuestra(auxMuestreados, auxTodos);
-                auxFitness = CalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo, expIDW);
+                auxMuestreados = clonarLista(muestreados);
+                auxTodos = clonarLista(todos);
+                moverMuestra(auxMuestreados, auxTodos);
+                auxFitness = calcularFitnessIDW(new DTPCalcularFitnessIDW(listaPuntosMuestreo, auxMuestreados, capaPuntosMuestreo, expIDW));
                 System.Diagnostics.Debug.WriteLine(" auxFitnens: " + auxFitness);
                 delta = ((auxFitness - fitness)/fitness)*100;
                 //if the new distance is better accept it and assign it
@@ -138,7 +162,7 @@ class SSA
             IMap map = ArcMap.Document.FocusMap;
 
             //creo y agrego al mapa la capa de muestreo optimo
-            String nombreCapaPuntosMuestreoOptimo = "MO" +muestreados.Count.ToString() + "_"  + System.DateTime.Now.ToString("ddMMyyyy_HHmmss");
+            string nombreCapaPuntosMuestreoOptimo = "MO" +muestreados.Count.ToString() + "_"  + System.DateTime.Now.ToString("ddMMyyyy_HHmmss");
             IFeatureClass result = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, muestreados);
             IFeatureLayer featureLayerResult = new FeatureLayerClass();
             featureLayerResult.FeatureClass = result;
@@ -190,19 +214,23 @@ class SSA
         
     }
 
-    
     //el fitness es el error cuadratico medio entre los valores en los puntos reales 
     //y los valores en los puntos interpolados con las muestras
-    private double CalcularFitnessIDW(List<PuntoMuestreo> listaPuntosMuestreo, List<int> listaIndicesMuestras, IFeatureClass capaPuntosMuestreo, double expIDW)
+    private double calcularFitnessIDW(DTPCalcularFitnessIDW dtp)
     {
+        List<PuntoMuestreo> listaPuntosMuestreo = dtp.getListaPuntosMuestreo();
+        List<int> listaIndicesMuestras = dtp.getListaIndicesMuestras();
+        IFeatureClass capaPuntosMuestreo = dtp.getCapaPuntosMuestreo();
+        double expIDW = dtp.getExpIDW();
+
         IMap map = ArcMap.Document.FocusMap; 
         
         
-        String nombreCapaPuntosMuestreoOptimo = "MO" + System.DateTime.Now.ToString("ddHHmmssfff");
+        string nombreCapaPuntosMuestreoOptimo = "MO" + System.DateTime.Now.ToString("ddHHmmssfff");
 
         //agregar como parametro 
         IFeatureClass capaPuntosMuestreoOptimo = this.crearCapaPuntosMuestreo(map, nombreCapaPuntosMuestreoOptimo, listaPuntosMuestreo, listaIndicesMuestras );
-        String nombreCapaIDW = "IDW";// +System.DateTime.Now.ToString("ddHHmmss");
+        string nombreCapaIDW = "IDW";// +System.DateTime.Now.ToString("ddHHmmss");
 
         Geoprocessor gp = new Geoprocessor();
         ESRI.ArcGIS.GeostatisticalAnalystTools.IDW capaIDW = new ESRI.ArcGIS.GeostatisticalAnalystTools.IDW();
@@ -225,7 +253,7 @@ class SSA
             System.Diagnostics.Debug.WriteLine("Caught exception #2.");
         }
 
-        String nombreCapaEstimacion = "Estimacion";// +System.DateTime.Now.ToString("ddHHmmss");
+        string nombreCapaEstimacion = "Estimacion";
 
         Geoprocessor gp2 = new Geoprocessor();
         ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints capaEstimacion = new ESRI.ArcGIS.GeostatisticalAnalystTools.GALayerToPoints();
@@ -243,7 +271,6 @@ class SSA
         double errorTotal = 0;
         try
         {
-            //System.Diagnostics.Debug.WriteLine("Executing the try statement.");
             IGeoProcessorResult result = (IGeoProcessorResult)gp2.Execute(capaEstimacion, null);
             gpUtils.DecodeFeatureLayer(result.GetOutput(0), out fc, out qf);
             //recorrer la capa capaEstimacion, hacer el cuadrado de cada error y sumarlos
@@ -269,9 +296,7 @@ class SSA
         }
         catch
         {
-            //for (int i = 0; i < gp2.MessageCount; i++)
-            //    System.Diagnostics.Debug.WriteLine(gp2.GetMessage(i));
-            //System.Diagnostics.Debug.WriteLine("Caught exception #2.");
+
             errorTotal = 9999999999999999;
         }
 
@@ -284,9 +309,8 @@ class SSA
 
     }
 
-    
     //aca voy a tener una lista con los indices de los puntos de muestreo y voy a modificar uno al azar
-    public void MoverMuestra(List<int> auxMuestreados, List<int> auxTodos)
+    public void moverMuestra(List<int> auxMuestreados, List<int> auxTodos)
     {
         Random rnd = new Random();
         int mover = rnd.Next(auxMuestreados.Count); // creates a number between 0 and auxMuestreados.Count
@@ -307,7 +331,7 @@ class SSA
         }
     }
 
-    private void Inicializar(List<PuntoMuestreo> listaMuestreo, int cantMuestrasAux)
+    private void inicializar(List<PuntoMuestreo> listaMuestreo, int cantMuestrasAux)
     {
         this.todos = new List<int>();
         this.muestreados = new List<int>();
@@ -334,22 +358,24 @@ class SSA
         }
     }
 
-    public List<PuntoZonificacion> ClonarZonif(List<PuntoZonificacion> zonif) {
+    public List<PuntoZonificacion> clonarZonif(List<PuntoZonificacion> zonif)
+    {
         List<PuntoZonificacion> resultado = new List<PuntoZonificacion>();
         for (int i = 0; i < zonif.Count; i++)
         {
             PuntoZonificacion puntoRes = new PuntoZonificacion();
             Coordenada coordenada = new Coordenada();
-            coordenada.X = zonif[i].Coordenada.X;
-            coordenada.Y = zonif[i].Coordenada.Y;
-            puntoRes.Coordenada = coordenada;
-            puntoRes.Variabilidad = zonif[i].Variabilidad;
+            coordenada.setX(zonif[i].getCoordenada().getX());
+            coordenada.setY(zonif[i].getCoordenada().getY());
+            puntoRes.setCoordenada(coordenada);
+            puntoRes.setVariabilidad(zonif[i].getVariabilidad());
             resultado.Add(puntoRes);
         }
         return resultado;
     }
 
-    public List<int> ClonarLista( List<int> lista ){
+    public List<int> clonarLista(List<int> lista)
+    {
         List<int> res = new List<int>();
         for (int i=0; i < lista.Count; i++)
         {
@@ -372,44 +398,31 @@ class SSA
 
         IWorkspaceEdit workspaceEdit = (IWorkspaceEdit)this.ws;
 
-        //Start an edit session and operation
         workspaceEdit.StartEditing(true);
         workspaceEdit.StartEditOperation();
 
         object featureOID;
 
-        //With a feature buffer you have the ability to set the attribute for a specific field to be
-        //the same for all features added to the buffer.
-        //featureBuffer.set_Value(featureBuffer.Fields.FindField("Valor"), 0);
-
-        //Here you can set the featurebuffers's shape by setting the featureBuffer.Shape
-        //to a geomerty that matched the featureclasses.
-        //Create 100 features using FeatureBuffer and insert into a feature cursor
-        ESRI.ArcGIS.Geometry.IPoint point;// = new ESRI.ArcGIS.Geometry.PointClass();
+        ESRI.ArcGIS.Geometry.IPoint point;
         int indiceValor = nuevaFeatureClass.FindField("Valor");
-        //foreach (PuntoMuestreo aux in listaPuntosMuestreo)
+
         foreach (int i in listaIndicesMuestreo)
         {
             point = new ESRI.ArcGIS.Geometry.PointClass();
-            point.X = listaPuntosMuestreo[i].getCoordenada().X;
-            point.Y = listaPuntosMuestreo[i].getCoordenada().Y;
+            point.X = listaPuntosMuestreo[i].getCoordenada().getX();
+            point.Y = listaPuntosMuestreo[i].getCoordenada().getY();
 
             featureBuffer.Shape = point;
             featureBuffer.set_Value(indiceValor, listaPuntosMuestreo[i].getValor());
 
-            //Insert the feature into the feature cursor
             featureOID = FeatureCursor.InsertFeature(featureBuffer);
-
         }
-        //Flush the feature cursor to the database
-        //Calling flush allows you to handle any errors at a known time rather then on the cursor destruction.
+
         FeatureCursor.Flush();
 
-        //Stop editing
         workspaceEdit.StopEditOperation();
         workspaceEdit.StopEditing(true);
 
-        //Release the Cursor
         System.Runtime.InteropServices.Marshal.ReleaseComObject(FeatureCursor);
 
         IFeatureLayer featureLayer = new FeatureLayerClass();
@@ -419,16 +432,10 @@ class SSA
         ILayer layer = (ILayer)featureLayer;
         layer.Name = featureLayer.FeatureClass.AliasName;
         
-        // Add the Layer to the focus map
-        //map.AddLayer(layer);
-
-        //ESRI.ArcGIS.Carto.IActiveView activeView = (ESRI.ArcGIS.Carto.IActiveView)map;
-        //activeView.Refresh();
-        
         return nuevaFeatureClass;
     }
 
-    public IFeatureClass crearFeatureClassConFields(String featureClassName, IFeatureWorkspace featureWorkspace)
+    public IFeatureClass crearFeatureClassConFields(string featureClassName, IFeatureWorkspace featureWorkspace)
     {
         IFeatureClassDescription fcDescription = new FeatureClassDescriptionClass();
         IObjectClassDescription ocDescription = (IObjectClassDescription)fcDescription;

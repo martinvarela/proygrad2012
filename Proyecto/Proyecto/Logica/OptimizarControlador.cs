@@ -28,10 +28,17 @@ class OptimizarControlador : IOptimizar
     //error maximo aceptado en % ej: 5
     //Excepciones: OK
     //ProyectoException
-    public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, int nroMuestras, double error, string rutaCapa)
+    public void optimizarMuestreo(DTPOptimizarMuestreo dtp)
     {
         try
         {
+            IFeatureClass capaPuntosMuestreo = dtp.getCapaPuntosMuestreo();
+            string metodoInterpolacion = dtp.getMetodoInterpolacion();
+            double expIDW = dtp.getExpIDW();
+            int nroMuestras = dtp.getNroMuestras();
+            double error = dtp.getError();
+            string rutaCapa = dtp.getRutaCapa();
+
             IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
 
             //esta ruta la indica el usuario
@@ -46,7 +53,7 @@ class OptimizarControlador : IOptimizar
             this.wsSSA = workspace;
             this.ssa.setWorkspace(this.wsSSA);
             this.ssa.cantMuestras = nroMuestras;
-            IFeatureClass resultado = this.ssa.SimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, error, pathArchivo);
+            IFeatureClass resultado = this.ssa.simulatedAnnealing(new DTPSimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, error, pathArchivo));
         }
         catch (ProyectoException p)
         {

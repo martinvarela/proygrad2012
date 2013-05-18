@@ -5,9 +5,9 @@ using System.Text;
 
 class Capa
 {
-    private String nombre;
+    private string nombre;
 
-    public String getNombre()
+    public string getNombre()
     {
         return this.nombre;
     }

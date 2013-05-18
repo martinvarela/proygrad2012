@@ -42,9 +42,9 @@ class Controlador
         }
     }
     
-    //private String nombreCapaPuntosZonificacion;
-    //private String nombreCapaPoligonos;
-    //private String nombreCapaPuntosMuestreo;
+    //private string nombreCapaPuntosZonificacion;
+    //private string nombreCapaPoligonos;
+    //private string nombreCapaPuntosMuestreo;
 
     //private IFeatureClass capaPuntosZonificacion;
     //private IFeatureLayer capaPuntosMuestreo;
@@ -64,7 +64,7 @@ class Controlador
     //se crea la instancia Muestreo con su respectiva lista de posibles puntos de Muestreos.
     //se devuelve en el arcmap la capa "CR-hhMMss" que se cambiara por el nombre pasado como parametro que contiene los posibles puntos de muestreo(todos) 
     //para realizar de forma manual el semivariograma de forma de encontrar cual es el RANGO.
-    //public Muestreo crearPuntosMuestreo(bool conRed, String rutaEntrada, bool filasColumnas, int vertical, int horizontal, List<int> variablesMarcadas, ProgressBar pBar, String rutaCapa, String nombreCapa, Label lblProgressBar)
+    //public Muestreo crearPuntosMuestreo(bool conRed, string rutaEntrada, bool filasColumnas, int vertical, int horizontal, List<int> variablesMarcadas, ProgressBar pBar, string rutaCapa, string nombreCapa, Label lblProgressBar)
     //{
     //    IMap map = ArcMap.Document.FocusMap;
         
@@ -90,7 +90,7 @@ class Controlador
     //    //paso 4
     //    //se crea una layer temporal con los puntos de zonificacion sacados del .ZF
     //    //IMap map = ArcMap.Document.FocusMap;
-    //    String ahora = System.DateTime.Now.ToString("HHmmss");
+    //    string ahora = System.DateTime.Now.ToString("HHmmss");
     //    if (conRed)
     //    {
     //        this.nombreCapaPuntosZonificacion = "PZ_" + ahora;
@@ -174,7 +174,7 @@ class Controlador
     //metodoInterpolacion puede ser IDW o Kriging
     //rango ??? o cantmuestras
     //error maximo aceptado en % ej: 5
-    //public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, int nroMuestras, double error, string rutaCapa)
+    //public void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, string metodoInterpolacion, double expIDW, int nroMuestras, double error, string rutaCapa)
     //{
     //    IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
         
@@ -248,7 +248,7 @@ class Controlador
     //    IFeatureLayer poligonosBlackmore = this.blackmore.getPoligonosBlackmore();
 
     //    //paso 3
-    //    String rutaCapaUnion = rutaCapaBlackmore + @"\" + nombreCapaBlackmore + ".shp";
+    //    string rutaCapaUnion = rutaCapaBlackmore + @"\" + nombreCapaBlackmore + ".shp";
     //    IFeatureClass unionCapaBase = this.unionEspacial(poligonosBlackmore.FeatureClass, layerCapaBase, rutaCapaUnion, false, entradaBase.getNombreAtributo(),"merge_"+entradaBase.getIndice().ToString());
 
 
@@ -561,7 +561,7 @@ class Controlador
     //    return featureClass;
     //}
 
-    //private void cargarValoresPuntosMuestreo(IMap map, Muestreo muestreo, String nombreCapaPuntosZonificacion, String nombreCapaPoligonos, String nombreCapaPuntosMuestreos,
+    //private void cargarValoresPuntosMuestreo(IMap map, Muestreo muestreo, string nombreCapaPuntosZonificacion, string nombreCapaPoligonos, string nombreCapaPuntosMuestreos,
     //                                         int indiceAtributoEnTablaPoligonos, int indiceAtributoEnTablaPuntos, ProgressBar pBar)
     //{
 
@@ -667,7 +667,7 @@ class Controlador
 
     ////crea un nuevo field con el nombre nombreField en el featureClass pasado como parametro
     ////devuelve el indice del field creado
-    //private int crearFieldAFeatureClass(IFeatureClass featureClass, String nombreField, esriFieldType tipoField)
+    //private int crearFieldAFeatureClass(IFeatureClass featureClass, string nombreField, esriFieldType tipoField)
     //{
     //    IField field = new FieldClass();
     //    IFieldEdit fieldEdit = (IFieldEdit)field;
@@ -804,10 +804,10 @@ class Controlador
     //            cant_variables = Int32.Parse(sLine.Substring(string_cant_variables.Length, sLine.Length - string_cant_variables.Length));
     //            int i = 1;
     //            sLine = objReader.ReadLine();
-    //            String nombreVariable = "";
+    //            string nombreVariable = "";
     //            while (i <= cant_variables && sLine != "")
     //            {
-    //                String aux = "Var" + i + ": ";
+    //                string aux = "Var" + i + ": ";
     //                if ((sLine.Substring(0, aux.Length) == aux))
     //                {
     //                    nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);

@@ -6,17 +6,24 @@ using System.Text;
 class Coordenada
 {
     private double x;
-    public double X
+    private double y;
+
+    public void setX(double x)
     {
-        get { return x; }
-        set { x = value; }
+        this.x = x;
+    }
+    public double getX()
+    {
+        return this.x;
     }
 
-    private double y;
-    public double Y
+    public void setY(double y)
     {
-        get { return y; }
-        set { y = value; }
+        this.y = y;
+    }
+    public double getY()
+    {
+        return this.y;
     }
 
 }

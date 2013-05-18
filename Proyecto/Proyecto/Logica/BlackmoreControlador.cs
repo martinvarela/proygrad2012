@@ -86,7 +86,7 @@ class BlackmoreControlador : IBlackmore
 
             //paso 7
             IFeatureLayer poligonosBlackmore = this.blackmore.getPoligonosBlackmore();
-            String rutaCapaUnion = rutaCapaBlackmore + @"\" + nombreCapaBlackmore + ".shp";
+            string rutaCapaUnion = rutaCapaBlackmore + @"\" + nombreCapaBlackmore + ".shp";
             DTPUnionEspacial dtpu = new DTPUnionEspacial(poligonosBlackmore.FeatureClass, layerCapaBase, rutaCapaUnion, false, entradaBase.getNombreAtributo(), "merge_" + entradaBase.getIndice().ToString());
             IFeatureClass unionCapaBase = this.unionEspacial(dtpu);
 
@@ -312,7 +312,7 @@ class BlackmoreControlador : IBlackmore
     //Elimina el field 'nombreField' de la FeatureClass 'featureClass'
     //Excepciones: OK
     //ProyectoException
-    public void deleteField(IObjectClass featureClass, String nombreField)
+    public void deleteField(IObjectClass featureClass, string nombreField)
     {
         int indiceField = featureClass.FindField(nombreField);
         IField field = featureClass.Fields.get_Field(indiceField);

@@ -6,7 +6,7 @@ using ESRI.ArcGIS.Geodatabase;
 
 interface IOptimizar
 {
-    void optimizarMuestreo(IFeatureClass capaPuntosMuestreo, String metodoInterpolacion, double expIDW, int nroMuestras, double error, string rutaCapa);
+    void optimizarMuestreo(DTPOptimizarMuestreo dtp);
     
     List<string> cargarCapasMuestreo();
 

@@ -7,56 +7,25 @@ using ESRI.ArcGIS.Geodatabase;
 
 class Entrada : Capa
 {
-    private String nombreAtributo; //1
+    private string nombreAtributo; //1
     private IFeatureClass capaUnion; //2
     private ILayer layerCapa; //3
     private bool esCapaBase; //4
     private double media; //5
     private int indice; //6
-    //private List<PuntoCapa> puntosCapa;
-
-
-    public DTDatosDM calcularDsYMedia(Celda celda)
-    {
-        List<PuntoCapa> puntos = this.interseccion(celda);
-        double temp = 0;
-        int cant = 0;
-        foreach (PuntoCapa p in puntos)
-        {
-            temp += Math.Pow((p.getValor() - this.media),2);
-            cant++;
-        }
-        DTDatosDM datosCelda = new DTDatosDM((double)(temp / cant), this.media);
-        return datosCelda;
-
-    }
-    public List<PuntoCapa> interseccion(Celda celda)
-    {
-        //:HACER!!
-
-        return new List<PuntoCapa>();
-    }
-    //public void agregarPuntoCapa(PuntoCapa puntoCapa)
-
-    //{
-    //    if (this.puntosCapa == null)
-    //        this.puntosCapa = new List<PuntoCapa>();
-
-    //    this.puntosCapa.Add(puntoCapa);
-    //}
 
     //1
     public void setNombreAtributo(String s)
     {
         this.nombreAtributo = s;
     }
-    public String getNombreAtributo()
+    public string getNombreAtributo()
     {
         return this.nombreAtributo;
     }
 
     //2
-    public void     setCapaUnion(IFeatureClass l)
+    public void setCapaUnion(IFeatureClass l)
     {
         this.capaUnion = l;
         //calcula la media de la capa
@@ -108,7 +77,6 @@ class Entrada : Capa
         System.Runtime.InteropServices.Marshal.ReleaseComObject(cursorCeldas);
 
     }
-
     public double getMedia()
     {
         return this.media;
@@ -124,8 +92,6 @@ class Entrada : Capa
         return this.indice;
     }
 
-
-
     //retorno el valor de la celda 'fid'.
     //busco en la tabla de union el registro cuyo FID sea 'fid' y devuelvo el valor del campo 'Entrada.nombreAtributo'
     public double getValorCelda(int fid)
@@ -137,10 +103,11 @@ class Entrada : Capa
         IFeature selPuntosFeature = featureCursor.NextFeature();
         if (selPuntosFeature != null)
         {
-            resultado = (double)selPuntosFeature.get_Value(selPuntosFeature.Fields.FindField("merge_"+this.indice.ToString()));
+            resultado = (double)selPuntosFeature.get_Value(selPuntosFeature.Fields.FindField("merge_" + this.indice.ToString()));
         }
 
         System.Runtime.InteropServices.Marshal.ReleaseComObject(featureCursor);
         return resultado;
     }
+
 }

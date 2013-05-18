@@ -7,15 +7,15 @@ using System.Text;
 class DTVariable
 {
 
-    private String nombre;
-    public String Nombre
+    private string nombre;
+    public string Nombre
     {
         get { return nombre; }
         set { nombre = value; }
     }
-    private float media;
+    private double media;
 
-    public float Media
+    public double Media
     {
         get { return media; }
         set { media = value; }
@@ -23,7 +23,7 @@ class DTVariable
 
     public DTVariable() { }
         
-    public DTVariable(String nombre, float media)
+    public DTVariable(String nombre, double media)
     {
         this.nombre = nombre;
         this.media = media;

@@ -7,17 +7,17 @@ using System.Windows.Forms;
 class DTPCrearPuntosMuestreo
 {
     private bool conRed;
-    private String rutaEntrada;
+    private string rutaEntrada;
     private bool filasColumnas;
     private int vertical;
     private int horizontal;
     private List<int> variablesMarcadas;
     private ProgressBar pBar;
-    private String rutaCapa;
-    private String nombreCapa;
+    private string rutaCapa;
+    private string nombreCapa;
     private Label lblProgressBar;
 
-    public DTPCrearPuntosMuestreo(bool conRed, String rutaEntrada, bool filasColumnas, int vertical, int horizontal, List<int> variablesMarcadas, ProgressBar pBar, String rutaCapa, String nombreCapa, Label lblProgressBar)
+    public DTPCrearPuntosMuestreo(bool conRed, string rutaEntrada, bool filasColumnas, int vertical, int horizontal, List<int> variablesMarcadas, ProgressBar pBar, string rutaCapa, string nombreCapa, Label lblProgressBar)
     {
         this.conRed = conRed;
         this.rutaEntrada = rutaEntrada;
@@ -35,7 +35,7 @@ class DTPCrearPuntosMuestreo
     {
         return this.conRed;
     }
-    public String getRutaEntrada()
+    public string getRutaEntrada()
     {
         return this.rutaEntrada;
     }
@@ -59,11 +59,11 @@ class DTPCrearPuntosMuestreo
     {
         return this.pBar;
     }
-    public String getRutaCapa()
+    public string getRutaCapa()
     {
         return this.rutaCapa;
     }
-    public String getNombreCapa()
+    public string getNombreCapa()
     {
         return this.nombreCapa;
     }

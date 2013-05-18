@@ -17,7 +17,7 @@ class DTPCargarValoresPuntosMuestreo
     private ProgressBar pBar;
 
 
-    public DTPCargarValoresPuntosMuestreo(IMap map, Muestreo muestreo, String nombreCapaPuntosZonificacion, String nombreCapaPoligonos, String nombreCapaPuntosMuestreos, int indiceAtributoEnTablaPoligonos, int indiceAtributoEnTablaPuntos, ProgressBar pBar)
+    public DTPCargarValoresPuntosMuestreo(IMap map, Muestreo muestreo, string nombreCapaPuntosZonificacion, string nombreCapaPoligonos, string nombreCapaPuntosMuestreos, int indiceAtributoEnTablaPoligonos, int indiceAtributoEnTablaPuntos, ProgressBar pBar)
     {
         this.map = map;
         this.muestreo = muestreo;

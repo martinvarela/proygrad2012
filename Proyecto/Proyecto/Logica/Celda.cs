@@ -43,6 +43,11 @@ class Celda
         return this.media;
     }
 
+    public int getClasificacion()
+    {
+        return this.clasificacion;
+    }
+
     //4
     // 1-Bajo rendimiento y Estable  
     // 2-Bajo rendimiento y Inestable  
@@ -79,15 +84,11 @@ class Celda
             }
         }
     }
-    public int getClasificacion()
-    {
-        return this.clasificacion;
-    }
 
     public void setDatos(DTDatosDM datos)
     {
-        this.desviacion = datos.Desviacion;
-        this.media = datos.Media;
+        this.desviacion = datos.getDesviacion();
+        this.media = datos.getMedia();
     }
 
 }

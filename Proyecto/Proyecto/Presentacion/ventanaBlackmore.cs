@@ -322,8 +322,8 @@ namespace Proyecto
                 if (cantidadErrores == 0)
                 {
                     //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
-                    String rutaCapa = Path.GetDirectoryName(this.txtRuta.Text.ToString());
-                    String nombreCapa = Path.GetFileNameWithoutExtension(this.txtRuta.Text.ToString());
+                    string rutaCapa = Path.GetDirectoryName(this.txtRuta.Text.ToString());
+                    string nombreCapa = Path.GetFileNameWithoutExtension(this.txtRuta.Text.ToString());
 
                     //desabilito el boton Aceptar
                     this.btnAceptar.Enabled = false;
