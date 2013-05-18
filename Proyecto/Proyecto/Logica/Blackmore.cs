@@ -6,6 +6,7 @@ using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geoprocessor;
 using ESRI.ArcGIS.Geoprocessing;
 using ESRI.ArcGIS.Carto;
+using ESRI.ArcGIS.Geometry;
 
 
 class Blackmore : Capa
@@ -41,6 +42,13 @@ class Blackmore : Capa
             this.alto = vertical;
             this.filas = 0;
             this.columnas = 0;
+            //se setea la proyeccion de la capa base si es que no la tiene
+            //esto es para que el tamaño de las celdas de la grilla sea en metros
+            IGeoDataset gds = layerTemplate as IGeoDataset;
+            IProjectedCoordinateSystem projCoordSys = gds.SpatialReference as IProjectedCoordinateSystem;
+            ISpatialReferenceFactory spatialReferenceFactory = new SpatialReferenceEnvironmentClass();
+            ISpatialReference spatialReference = spatialReferenceFactory.CreateProjectedCoordinateSystem((int)esriSRProjCSType.esriSRProjCS_WGS1984UTM_21S);
+            layerTemplate.SpatialReference = spatialReference;
         }
 
         this.parametroDST = dst;
@@ -59,13 +67,11 @@ class Blackmore : Capa
         fishNet.number_columns = this.columnas;
         fishNet.cell_height = this.alto;
         fishNet.cell_width = this.ancho;
-
-
+        
         fishNet.template = layerTemplate;
         fishNet.geometry_type = "POLYGON";
         fishNet.labels = "NO_LABELS";
-
-
+        
         gp.AddOutputsToMap = false;
         gp.OverwriteOutput = true;
 
