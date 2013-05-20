@@ -136,7 +136,7 @@ class BlackmoreControlador : IBlackmore
                     List<string> camposGuardar = new List<string>();
                     camposGuardar.Add("FID");
                     camposGuardar.Add("Shape");
-                    camposGuardar.Add("std_dev");
+                    camposGuardar.Add("CV");
                     camposGuardar.Add("mean");
                     camposGuardar.Add("clase");
                     IFields fields = e.getCapaUnion().Fields;

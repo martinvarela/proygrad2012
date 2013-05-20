@@ -24,9 +24,9 @@ class SSA
 
     public SSA()
     {
-        this.temperaturaInicial = 14.427;
-        this.factorReduccion = 0.994;
-        this.iteraciones = 1000;
+        this.temperaturaInicial = 31.067;
+        this.factorReduccion = 0.998356;
+        this.iteraciones = 2000;
         //this.cantMuestras = 30;
     }
 
@@ -285,14 +285,14 @@ class SSA
                 double errorPunto = Math.Abs((double)featureEstimacion.get_Value(indiceError));
                 double valorReal = (double)featureEstimacion.get_Value(indiceValor);
 
-                //errorTotal += errorPunto/valorReal;
-                errorTotal += Math.Pow(errorPunto, 2);
+                errorTotal += errorPunto/valorReal;
+                //errorTotal += Math.Pow(errorPunto, 2);
 
                 featureEstimacion = cursorEstimacion.NextFeature();
             }
 
-            //errorTotal = errorTotal / listaPuntosMuestreo.Count;
-            errorTotal = Math.Sqrt(errorTotal / listaPuntosMuestreo.Count);
+            errorTotal = errorTotal / listaPuntosMuestreo.Count;
+            //errorTotal = Math.Sqrt(errorTotal / listaPuntosMuestreo.Count);
         }
         catch
         {

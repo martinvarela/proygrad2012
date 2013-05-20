@@ -55,7 +55,8 @@ class Celda
     // 4-Alto rendimiento y Estable 
     public void clasificar(double parametroDST, double mediaGeneral)
     {
-        if (this.desviacion <= parametroDST)
+        double cv = this.desviacion / mediaGeneral;
+        if (cv <= parametroDST)
         {
             //es estable
             if (this.media <= mediaGeneral)

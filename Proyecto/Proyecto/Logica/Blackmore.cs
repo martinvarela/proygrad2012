@@ -151,7 +151,7 @@ class Blackmore : Capa
         //falta modificar el nombre de la capa para ser devuelta y setearla en la instancia de 'blackmore'
 
         //paso  
-        int indiceDst = this.crearField(featureUnion, "std_dev", esriFieldType.esriFieldTypeDouble);
+        int indiceDst = this.crearField(featureUnion, "CV", esriFieldType.esriFieldTypeDouble);
         //paso 
         int indiceMean = this.crearField(featureUnion, "mean", esriFieldType.esriFieldTypeDouble);
         //paso
@@ -180,7 +180,7 @@ class Blackmore : Capa
             c.setMedia(valorCelda / n);
             c.clasificar(this.parametroDST, mediaGeneral);
 
-            this.setValoresFeatureUnion(new DTPSetValoresFeatureUnion(featureUnion, fid, indiceDst, c.getDesviacion(), indiceMean, c.getMedia(), indiceClasificacion, c.getClasificacion()));
+            this.setValoresFeatureUnion(new DTPSetValoresFeatureUnion(featureUnion, fid, indiceDst, c.getDesviacion()/mediaGeneral, indiceMean, c.getMedia(), indiceClasificacion, c.getClasificacion()));
         }
     }
 
