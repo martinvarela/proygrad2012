@@ -15,6 +15,8 @@ namespace Proyecto
 {
     public partial class ventanaSSA : Form
     {
+        private IOptimizar ioptimizar;
+
         public ventanaSSA()
         {
             try
@@ -22,7 +24,7 @@ namespace Proyecto
                 InitializeComponent();
 
                 Fabrica fabrica = Fabrica.getInstancia;
-                IOptimizar ioptimizar = fabrica.getIOptimizar();
+                ioptimizar = fabrica.getIOptimizar();
                 List<string> listaCapas = ioptimizar.cargarCapasMuestreo();
                 foreach (string nombreCapa in listaCapas)
                 {
@@ -145,8 +147,6 @@ namespace Proyecto
 
                     //Obtengo el nombre y ruta de la capa de salida ingresado por el usuario
                     string rutaCapa = System.IO.Path.GetFullPath(this.txtCarpeta.Text.ToString());
-                    Fabrica fabrica = Fabrica.getInstancia;
-                    IOptimizar ioptimizar = fabrica.getIOptimizar();
                     ioptimizar.optimizarMuestreo(new DTPOptimizarMuestreo(featureClass, cboMetodoEstimacion.SelectedItem.ToString(), double.Parse(txtExpIDW.Text.ToString()), int.Parse(txtCantMuestras.Text.ToString()), double.Parse(txtError.Text.ToString()), rutaCapa));
 
                     this.Close();
@@ -183,8 +183,6 @@ namespace Proyecto
                 }
                 else
                 {
-                    Fabrica fabrica = Fabrica.getInstancia;
-                    IOptimizar ioptimizar = fabrica.getIOptimizar();
                     this.ptoVerdeCapa.Visible = false;
                     int muestras = ioptimizar.calcularArea(this.cboCapaMuestreo.Text);
                     if (muestras != -1)
@@ -225,9 +223,6 @@ namespace Proyecto
                 int cantMuestras;
                 if (int.TryParse(this.txtRango.Text, out i))
                 {
-                    Fabrica fabrica = Fabrica.getInstancia;
-                    IOptimizar ioptimizar = fabrica.getIOptimizar();
-
                     cantMuestras = ioptimizar.setearRango(i);
                     if (cantMuestras != -1)
                     {

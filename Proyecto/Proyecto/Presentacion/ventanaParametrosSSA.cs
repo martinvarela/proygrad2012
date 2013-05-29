@@ -11,30 +11,29 @@ namespace Proyecto
 {
     public partial class ventanaParametrosSSA : Form
     {
+        private IOptimizar ioptimizar;
         private string valorAux;
         
         public ventanaParametrosSSA()
         {
             InitializeComponent();
 
-            Controlador controlador = Controlador.getInstancia;
+            Fabrica fabrica = Fabrica.getInstancia;
+            this.ioptimizar = fabrica.getIOptimizar();
+
+            DTParametrosSSA dtp = ioptimizar.getParametrosSSA();
             //cargo el valor de la temperatura inicial
-            txtTemperatura.Text = controlador.getSSA().getTemperaturaInicial().ToString();
+            txtTemperatura.Text = dtp.getTemperaturaInicial().ToString();
             //cargo el valor del factor de reduccion
-            txtFactor.Text = controlador.getSSA().getFactorReduccion().ToString();
+            txtFactor.Text = dtp.getFactorReduccion().ToString();
             //cargo el valor de iteraciones
-            txtIteraciones.Text = controlador.getSSA().getIteraciones().ToString();
+            txtIteraciones.Text = dtp.getIteraciones().ToString();
         }
 
         private void btnCerrar_Click(object sender, EventArgs e)
         {
-            Controlador controlador = Controlador.getInstancia;
-            SSA ssa = controlador.getSSA();
-            ssa.setTemperaturaInicial(Double.Parse(txtTemperatura.Text.ToString()));
-            ssa.setFactorReduccion(Double.Parse(txtFactor.Text.ToString()));
-            ssa.setIteraciones(int.Parse(txtIteraciones.Text.ToString()));
-
-            controlador.setSSA(ssa);
+            DTParametrosSSA dtp = new DTParametrosSSA(Double.Parse(txtTemperatura.Text.ToString()), Double.Parse(txtFactor.Text.ToString()), int.Parse(txtIteraciones.Text.ToString()));
+            ioptimizar.setParametrosSSA(dtp);
 
             this.Close();
         }

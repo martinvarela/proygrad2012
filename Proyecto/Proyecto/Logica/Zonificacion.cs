@@ -91,153 +91,159 @@ class Zonificacion
 
     public Zonificacion(String rutaEntrada, List<int> variables_seleccion, System.Windows.Forms.ProgressBar pBar)
     {
-        //Obtengo el archivo
-        StreamReader objReader = new StreamReader(rutaEntrada);
-        //Incicializo la variable donde voy a guardar cada linea que leo y la variable donde voy a guardar en memoria el contenido del archivo
-        string sLine = "";
-        int Rows = 0;
-        int Cols = 0;
-        double xinicial = 0;
-        double yinicial = 0;
-        int cellSize = 0;
-        int cant_variables = 0;
-        string string_rows = "Rows: ";
-        string string_cols = "Cols: ";
-        string string_Xinicial = "CoordX: ";
-        string string_Yinicial = "CoordY: ";
-        string string_CellSize = "CellSize: ";
-        string string_cant_variables = "VarQty:";
-        coordenadaInicial = new Coordenada();
-        string NAN = "NaN";
-
-        string comienzo_datos = "[Cells]";
-
-        //Leo la linea actual del archivo
-        sLine = objReader.ReadLine();
-
-        //se setea el separador decimal ',' para una correcta lectura del archivo ZF
-        if (!CultureInfo.CurrentCulture.IsReadOnly)
-            CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator = ",";
-
-        //leo hasta la etiqueta [Cells] y saco los valores de rows, cols y cant_variables 
-        while (sLine != null)
+        try
         {
-            if (((sLine != "") && sLine.Substring(0, string_rows.Length) == string_rows))
-            {
-                Rows = Int32.Parse(sLine.Substring(string_rows.Length, sLine.Length - string_rows.Length));
-                this.filas = Rows;
-            }
-            else if (((sLine != "") && sLine.Substring(0, string_cols.Length) == string_cols))
-            {
-                Cols = Int32.Parse(sLine.Substring(string_cols.Length, sLine.Length - string_cols.Length));
-                this.columnas = Cols;
-            }
-            else if (((sLine != "") && (sLine.Length >= string_Xinicial.Length) && sLine.Substring(0, string_Xinicial.Length) == string_Xinicial))
-            {
-                xinicial = Double.Parse(sLine.Substring(string_Xinicial.Length, sLine.Length - string_Xinicial.Length));
-                this.coordenadaInicial.setX(xinicial);
-            }
-            else if (((sLine != "") && (sLine.Length >= string_Yinicial.Length) && sLine.Substring(0, string_Yinicial.Length) == string_Yinicial))
-            {
-                yinicial = Double.Parse(sLine.Substring(string_Yinicial.Length, sLine.Length - string_Yinicial.Length));
-                this.coordenadaInicial.setY(yinicial);
-            }
-            else if (((sLine != "") && (sLine.Length >= string_CellSize.Length) && sLine.Substring(0, string_CellSize.Length) == string_CellSize))
-            {
-                cellSize = Int32.Parse(sLine.Substring(string_CellSize.Length, sLine.Length - string_CellSize.Length));
-                this.tamanoCelda = cellSize;
-            }
-            else if (((sLine != "") && (sLine.Length >= string_cant_variables.Length) && sLine.Substring(0, string_cant_variables.Length) == string_cant_variables))
-            {
-                cant_variables = Int32.Parse(sLine.Substring(string_cant_variables.Length, sLine.Length - string_cant_variables.Length));
-                int i = 1;
-                sLine = objReader.ReadLine();
-                string nombreVariable = "";
+            //Obtengo el archvo
+            StreamReader objReader = new StreamReader(rutaEntrada);
+            //Incicializo la variable donde voy a guardar cada linea que leo y la variable donde voy a guardar en memoria el contenido del archivo
+            string sLine = "";
+            int Rows = 0;
+            int Cols = 0;
+            double xinicial = 0;
+            double yinicial = 0;
+            int cellSize = 0;
+            int cant_variables = 0;
+            string string_rows = "Rows: ";
+            string string_cols = "Cols: ";
+            string string_Xinicial = "CoordX: ";
+            string string_Yinicial = "CoordY: ";
+            string string_CellSize = "CellSize: ";
+            string string_cant_variables = "VarQty:";
+            coordenadaInicial = new Coordenada();
+            string NAN = "NaN";
 
-                int p = 0;
-                while (i <= cant_variables && sLine != "" && p < variables_seleccion.Count)
-                {
-                    if ((i - 1) == variables_seleccion[p]) //es i-1 porque en el archivo ZF el i comienza en 1 y la seleccion de variable comienza en 0
-                    {
-                        string aux = "Var" + i + ": ";
-                        if ((sLine.Substring(0, aux.Length) == aux))
-                        {
-                            nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
-                            Variable variable = new Variable(nombreVariable);
-                            this.agregarVariable(variable);
-                        }
-                        p++;
-                    }
-                    i++;
-                    sLine = objReader.ReadLine();
-                }
-            }
+            string comienzo_datos = "[Cells]";
 
-            //Llegue a la etiqueta [Cells] entonces se que a continuacion empiezan los valores de los puntos muestreados
-            if (((sLine != "") && (sLine.Substring(0, comienzo_datos.Length) == comienzo_datos)))
-                break;
-
+            //Leo la linea actual del archivo
             sLine = objReader.ReadLine();
-        }  //fin while de datos generales
 
-        //se setea el puntoOrigen
-        this.puntoOrigen = new ESRI.ArcGIS.Geometry.PointClass();
-        this.puntoOrigen.X = xinicial;
-        this.puntoOrigen.Y = yinicial - Rows * cellSize;
+            //se setea el separador decimal ',' para una correcta lectura del archivo ZF
+            if (!CultureInfo.CurrentCulture.IsReadOnly)
+                CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator = ",";
 
-        //se setea el puntoOpuesto
-        this.puntoOpuesto = new ESRI.ArcGIS.Geometry.PointClass();
-        this.puntoOpuesto.X = xinicial + Cols * cellSize;
-        this.puntoOpuesto.Y = yinicial;
-
-        //seteo el progressBar
-        pBar.Minimum = 1;
-        pBar.Maximum = Rows * Cols;
-        pBar.Value = 1;
-        pBar.Step = 1;
-        pBar.Visible = true;
-
-        //comienza el proceso de los puntos de la zonificacion
-        for (int iy = 1; iy <= this.filas; iy++)
-        {
-            for (int ix = 1; ix <= this.columnas; ix++)
+            //leo hasta la etiqueta [Cells] y saco los valores de rows, cols y cant_variables 
+            while (sLine != null)
             {
-                sLine = objReader.ReadLine();
-
-                PuntoZonificacion ptoZonificacion = new PuntoZonificacion();
-                ptoZonificacion.setCoordenada(calcularCoordenada(this.coordenadaInicial, this.tamanoCelda, ix - 1, iy - 1));
-                ptoZonificacion.setVariables(this.variables);
-
-                char[] coma = { ';' };
-                string[] datos = null;
-                datos = sLine.Split(coma);
-                bool puntoUtil = true;
-
-                for (int i = 0; i < variables_seleccion.Count; i++)
+                if (((sLine != "") && sLine.Substring(0, string_rows.Length) == string_rows))
                 {
-                    if (datos[variables_seleccion[i]] == NAN || datos[variables_seleccion[i]] == "0" || datos[variables_seleccion[i]] == "-1")
-                    {
-                        puntoUtil = false;
-                        break;
-                    }
-                    else
-                        ptoZonificacion.agregarDato(ptoZonificacion.getVariables()[i].getNombre(), float.Parse(datos[variables_seleccion[i]]));
+                    Rows = Int32.Parse(sLine.Substring(string_rows.Length, sLine.Length - string_rows.Length));
+                    this.filas = Rows;
                 }
-                //agrego el punto solo si tiene datos
-                if (puntoUtil)
-                    this.agregarPuntoZonificacion(ptoZonificacion);
+                else if (((sLine != "") && sLine.Substring(0, string_cols.Length) == string_cols))
+                {
+                    Cols = Int32.Parse(sLine.Substring(string_cols.Length, sLine.Length - string_cols.Length));
+                    this.columnas = Cols;
+                }
+                else if (((sLine != "") && (sLine.Length >= string_Xinicial.Length) && sLine.Substring(0, string_Xinicial.Length) == string_Xinicial))
+                {
+                    xinicial = Double.Parse(sLine.Substring(string_Xinicial.Length, sLine.Length - string_Xinicial.Length));
+                    this.coordenadaInicial.setX(xinicial);
+                }
+                else if (((sLine != "") && (sLine.Length >= string_Yinicial.Length) && sLine.Substring(0, string_Yinicial.Length) == string_Yinicial))
+                {
+                    yinicial = Double.Parse(sLine.Substring(string_Yinicial.Length, sLine.Length - string_Yinicial.Length));
+                    this.coordenadaInicial.setY(yinicial);
+                }
+                else if (((sLine != "") && (sLine.Length >= string_CellSize.Length) && sLine.Substring(0, string_CellSize.Length) == string_CellSize))
+                {
+                    cellSize = Int32.Parse(sLine.Substring(string_CellSize.Length, sLine.Length - string_CellSize.Length));
+                    this.tamanoCelda = cellSize;
+                }
+                else if (((sLine != "") && (sLine.Length >= string_cant_variables.Length) && sLine.Substring(0, string_cant_variables.Length) == string_cant_variables))
+                {
+                    cant_variables = Int32.Parse(sLine.Substring(string_cant_variables.Length, sLine.Length - string_cant_variables.Length));
+                    int i = 1;
+                    sLine = objReader.ReadLine();
+                    string nombreVariable = "";
 
-                //actualizo el progressBar.
-                pBar.PerformStep();
+                    int p = 0;
+                    while (i <= cant_variables && sLine != "" && p < variables_seleccion.Count)
+                    {
+                        if ((i - 1) == variables_seleccion[p]) //es i-1 porque en el archivo ZF el i comienza en 1 y la seleccion de variable comienza en 0
+                        {
+                            string aux = "Var" + i + ": ";
+                            if ((sLine.Substring(0, aux.Length) == aux))
+                            {
+                                nombreVariable = sLine.Substring(aux.Length, sLine.Length - aux.Length);
+                                Variable variable = new Variable(nombreVariable);
+                                this.agregarVariable(variable);
+                            }
+                            p++;
+                        }
+                        i++;
+                        sLine = objReader.ReadLine();
+                    }
+                }
+
+                //Llegue a la etiqueta [Cells] entonces se que a continuacion empiezan los valores de los puntos muestreados
+                if (((sLine != "") && (sLine.Substring(0, comienzo_datos.Length) == comienzo_datos)))
+                    break;
+
+                sLine = objReader.ReadLine();
+            }  //fin while de datos generales
+
+            //se setea el puntoOrigen
+            this.puntoOrigen = new ESRI.ArcGIS.Geometry.PointClass();
+            this.puntoOrigen.X = xinicial;
+            this.puntoOrigen.Y = yinicial - Rows * cellSize;
+
+            //se setea el puntoOpuesto
+            this.puntoOpuesto = new ESRI.ArcGIS.Geometry.PointClass();
+            this.puntoOpuesto.X = xinicial + Cols * cellSize;
+            this.puntoOpuesto.Y = yinicial;
+
+            //seteo el progressBar
+            pBar.Minimum = 1;
+            pBar.Maximum = Rows * Cols;
+            pBar.Value = 1;
+            pBar.Step = 1;
+            pBar.Visible = true;
+
+            //comienza el proceso de los puntos de la zonificacion
+            for (int iy = 1; iy <= this.filas; iy++)
+            {
+                for (int ix = 1; ix <= this.columnas; ix++)
+                {
+                    sLine = objReader.ReadLine();
+
+                    PuntoZonificacion ptoZonificacion = new PuntoZonificacion();
+                    ptoZonificacion.setCoordenada(calcularCoordenada(this.coordenadaInicial, this.tamanoCelda, ix - 1, iy - 1));
+                    ptoZonificacion.setVariables(this.variables);
+
+                    char[] coma = { ';' };
+                    string[] datos = null;
+                    datos = sLine.Split(coma);
+                    bool puntoUtil = true;
+
+                    for (int i = 0; i < variables_seleccion.Count; i++)
+                    {
+                        if (datos[variables_seleccion[i]] == NAN || datos[variables_seleccion[i]] == "0" || datos[variables_seleccion[i]] == "-1")
+                        {
+                            puntoUtil = false;
+                            break;
+                        }
+                        else
+                            ptoZonificacion.agregarDato(ptoZonificacion.getVariables()[i].getNombre(), double.Parse(datos[variables_seleccion[i]]));
+                    }
+                    //agrego el punto solo si tiene datos
+                    if (puntoUtil)
+                        this.agregarPuntoZonificacion(ptoZonificacion);
+
+                    //actualizo el progressBar.
+                    pBar.PerformStep();
+                }
             }
+
+            //cierro el archivo
+            objReader.Close();
+
+            //cierro el progressBar
+            pBar.Visible = false;
         }
-
-        //cierro el archivo
-        objReader.Close();
-
-        //cierro el progressBar
-        pBar.Visible = false;
-
+        catch
+        {
+            throw new ProyectoException("Ha ocurrido un error al leer el archivo .ZF, por favor verifique su contenido.");        
+        }
     }
 
     public void calcularVariabilidad(System.Windows.Forms.ProgressBar pBar)
@@ -292,14 +298,5 @@ class Zonificacion
         return coordenada;
 
     }
-
-    //Calcula la distancia entre dos puntos y devuelve la distancia en metros luego de redondear el resultado
-    //private int calcularDistancia(int i, int j)
-    //{
-    //    double cuadX = (this.puntosZonificacion[i].Coordenada.getX() - this.puntosZonificacion[j].Coordenada.getX()) * (this.puntosZonificacion[i].Coordenada.getX() - this.puntosZonificacion[j].Coordenada.getX());
-    //    double cuadY = (this.puntosZonificacion[i].Coordenada.getY() - this.puntosZonificacion[j].Coordenada.getY()) * (this.puntosZonificacion[i].Coordenada.getY() - this.puntosZonificacion[j].Coordenada.getY());
-    //    double distancia = Math.Sqrt(cuadX + cuadY);
-    //    return (int)Math.Round(distancia);
-    //}
 
 }

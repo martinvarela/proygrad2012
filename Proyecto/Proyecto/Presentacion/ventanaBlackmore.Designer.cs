@@ -29,10 +29,10 @@ namespace Proyecto
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ventanaBlackmore));
             this.dgvVentana = new System.Windows.Forms.DataGridView();
             this.dgvCheckBoxSeleccionar = new System.Windows.Forms.DataGridViewCheckBoxColumn();
@@ -42,7 +42,6 @@ namespace Proyecto
             this.lblRuta = new System.Windows.Forms.Label();
             this.btnRuta = new System.Windows.Forms.Button();
             this.txtRuta = new System.Windows.Forms.TextBox();
-            this.pBar = new System.Windows.Forms.ProgressBar();
             this.btnCancelar = new System.Windows.Forms.Button();
             this.btnAyuda = new System.Windows.Forms.Button();
             this.btnAceptar = new System.Windows.Forms.Button();
@@ -90,41 +89,41 @@ namespace Proyecto
             this.dgvVentana.AllowUserToResizeColumns = false;
             this.dgvVentana.AllowUserToResizeRows = false;
             this.dgvVentana.BackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvVentana.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvVentana.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvVentana.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvVentana.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dgvCheckBoxSeleccionar,
             this.dgvTextBoxCapas,
             this.dgvComboBoxAtributo});
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle10.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvVentana.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvVentana.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvVentana.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.dgvVentana.Location = new System.Drawing.Point(32, 32);
             this.dgvVentana.Name = "dgvVentana";
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvVentana.RowHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvVentana.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvVentana.RowHeadersVisible = false;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvVentana.RowsDefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvVentana.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgvVentana.Size = new System.Drawing.Size(396, 170);
             this.dgvVentana.TabIndex = 0;
             this.dgvVentana.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvVentana_CellValueChanged);
@@ -190,14 +189,6 @@ namespace Proyecto
             this.txtRuta.TabIndex = 9;
             this.txtRuta.TextChanged += new System.EventHandler(this.txtRuta_TextChanged);
             this.txtRuta.GotFocus += new System.EventHandler(this.txtRuta_GotFocus);
-            // 
-            // pBar
-            // 
-            this.pBar.Location = new System.Drawing.Point(32, 407);
-            this.pBar.Name = "pBar";
-            this.pBar.Size = new System.Drawing.Size(396, 23);
-            this.pBar.TabIndex = 19;
-            this.pBar.Visible = false;
             // 
             // btnCancelar
             // 
@@ -520,6 +511,7 @@ namespace Proyecto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(461, 474);
             this.Controls.Add(this.ptoVerdeBase);
             this.Controls.Add(this.lblBase);
@@ -537,7 +529,6 @@ namespace Proyecto
             this.Controls.Add(this.txtVertical);
             this.Controls.Add(this.txtHorizontal);
             this.Controls.Add(this.panelAyuda);
-            this.Controls.Add(this.pBar);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnAyuda);
             this.Controls.Add(this.btnAceptar);
@@ -571,7 +562,6 @@ namespace Proyecto
         private System.Windows.Forms.Label lblRuta;
         private System.Windows.Forms.Button btnRuta;
         private System.Windows.Forms.TextBox txtRuta;
-        private System.Windows.Forms.ProgressBar pBar;
         private System.Windows.Forms.Button btnCancelar;
         private System.Windows.Forms.Button btnAyuda;
         private System.Windows.Forms.Button btnAceptar;

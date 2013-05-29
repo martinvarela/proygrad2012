@@ -12,9 +12,13 @@ namespace Proyecto
 {
     public partial class ventanaMuestreo : Form
     {
+        private IMuestreo imuestreo;
         public ventanaMuestreo()
         {
             InitializeComponent();
+
+            Fabrica fabrica = Fabrica.getInstancia;
+            this.imuestreo = fabrica.getIMuestreo();
 
             this.cboTipoRed.SelectedIndex = 0;
             this.Visible = true;
@@ -71,7 +75,6 @@ namespace Proyecto
                 //si esta no hay errores, ejecuto la funcion de crear puntos de muestreo
                 if (cantidadErrores == 0)
                 {
-                    Controlador controlador = Controlador.getInstancia;
                     List<int> variables = new List<int>();
                     for (int i = 0; i < chkLstVariables.Items.Count; i++)
                     {
@@ -86,8 +89,6 @@ namespace Proyecto
                     //desabilito el boton Aceptar
                     this.btnAceptar.Enabled = false;
 
-                    Fabrica fabrica = Fabrica.getInstancia;
-                    IMuestreo imuestreo = fabrica.getIMuestreo();
                     if (chkSinRed.Checked)
                     {
                         imuestreo.crearPuntosMuestreo(new DTPCrearPuntosMuestreo(false, txtArchivoZF.Text, true, 0, 0, variables, pBar, rutaCapa, nombreCapa, this.lblProgressBar));
@@ -115,6 +116,7 @@ namespace Proyecto
                 strErrores[0] = p.Message;
                 VentanaErrores v = new VentanaErrores(1, strErrores);
                 v.ShowDialog();
+                btnAceptar.Enabled = true;
             }
             catch
             {
@@ -132,8 +134,7 @@ namespace Proyecto
                 if (txtArchivoZF.Text.EndsWith(".ZF"))
                 {
                     ptoVerdeZF.Visible = false;
-                    Fabrica fabrica = Fabrica.getInstancia;
-                    IMuestreo imuestreo = fabrica.getIMuestreo();
+                    this.chkLstVariables.Items.Clear();
                     List<string> listaVariables = imuestreo.cargarVariables(txtArchivoZF.Text);
                     foreach (string nombreVariable in listaVariables)
                     {

@@ -18,7 +18,7 @@ namespace Proyecto
             //se crea la ventana principal del SSA
             ventanaSSA ventana = new ventanaSSA();
             //no se puede minimizar
-            ventana.MinimizeBox = false;
+            ventana.MinimizeBox = true;
             //no se puede maximizar
             ventana.MaximizeBox = false;
             //no se puede cambiar el tamano

@@ -12,10 +12,23 @@ using ESRI.ArcGIS.Geoprocessing;
 
 class OptimizarControlador : IOptimizar
 {
+    private static OptimizarControlador instancia;
     private IWorkspace wsSSA;
     private SSA ssa;
     private double area;
     private int rango;
+
+    public static OptimizarControlador getInstancia
+    {
+        get
+        {
+            if (instancia == null)
+            {
+                instancia = new OptimizarControlador();
+            }
+            return instancia;
+        }
+    }
 
     public OptimizarControlador()
     {

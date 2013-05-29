@@ -17,6 +17,7 @@ namespace Proyecto
 {
     public partial class ventanaBlackmore : Form
     {
+        private IBlackmore iblackmore;
         private List<DTCapasBlackmore> listaCapas;
 
         public ventanaBlackmore()
@@ -26,8 +27,8 @@ namespace Proyecto
                 InitializeComponent();
 
                 Fabrica fabrica = Fabrica.getInstancia;
-                IBlackmore iBlackmore = fabrica.getIBlackmore();
-                this.listaCapas = iBlackmore.cargarCapasBlackmore();
+                iblackmore = fabrica.getIBlackmore();
+                this.listaCapas = iblackmore.cargarCapasBlackmore();
 
                 foreach (DTCapasBlackmore capa in this.listaCapas)
                 {
@@ -271,9 +272,6 @@ namespace Proyecto
                     stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblBase.Text + ": Se debe seleccionar una capa base.";
                 }
 
-                Fabrica fabrica = Fabrica.getInstancia;
-                IBlackmore iBlackmore = fabrica.getIBlackmore();
-
                 List<DTCapasBlackmore> capasMarcadas = new List<DTCapasBlackmore>();
                 for (int i = 0; i < this.dgvVentana.RowCount; i++)
                 {
@@ -336,7 +334,7 @@ namespace Proyecto
 
                     //llamada a crear Blackmore
                     DTPCrearBlackmore dtp = new DTPCrearBlackmore(filasColumnas, int.Parse(this.txtVertical.Text), int.Parse(this.txtHorizontal.Text), capasMarcadas, double.Parse(this.txtEstabilidad.Text), nombreCapa, rutaCapa);
-                    iBlackmore.crearBlackmore(dtp);
+                    iblackmore.crearBlackmore(dtp);
                     this.Close();
                 }
                 else
@@ -351,6 +349,7 @@ namespace Proyecto
                 strErrores[0] = p.Message;
                 VentanaErrores v = new VentanaErrores(1, strErrores);
                 v.ShowDialog();
+                btnAceptar.Enabled = true;
             }
         }
     }

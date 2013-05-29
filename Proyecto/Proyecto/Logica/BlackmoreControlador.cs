@@ -176,7 +176,7 @@ class BlackmoreControlador : IBlackmore
     }
 
     //retorna una lista de datatypes con los datos de las capas cargadas en el ArcMap.
-    //filtros de capa: capas con featureClass y que tienen al menos 1 atributo double o entero corto o entero largo o float(single)
+    //filtros de capa: capas con featureClass y que tienen al menos 1 atributo double o entero corto o entero largo o double(single)
     //Excepciones: OK
     //ProyectoException
     public List<DTCapasBlackmore> cargarCapasBlackmore()

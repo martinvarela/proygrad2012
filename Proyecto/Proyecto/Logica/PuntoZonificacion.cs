@@ -53,11 +53,11 @@ class PuntoZonificacion
             for (int i = 0; i < this.getVariables().Count; i++)
             {
                 datosVariable = this.getVariables()[i].getDatos();
-                medicion = (float)this.hashDato[datosVariable.Nombre.ToString()];
-                temp += (float)(medicion / datosVariable.Media);
+                medicion = (double)this.hashDato[datosVariable.Nombre.ToString()];
+                temp += (double)(medicion / datosVariable.Media);
                 cant++;
             }
-            this.variabilidad = (float)(temp / cant);
+            this.variabilidad = (double)(temp / cant);
         }
         else
         {   //una sola variable, no se normaliza
