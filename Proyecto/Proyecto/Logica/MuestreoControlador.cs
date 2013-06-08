@@ -1,20 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ESRI.ArcGIS.Carto;
-using Proyecto;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using ESRI.ArcGIS.Carto;
+//using Proyecto;
+//using ESRI.ArcGIS.Geodatabase;
+//using ESRI.ArcGIS.DataSourcesFile;
+//using System.Windows.Forms;
+//using ESRI.ArcGIS.Geometry;
+//using ESRI.ArcGIS.Geoprocessor;
+//using ESRI.ArcGIS.Geoprocessing;
+//using System.Runtime.InteropServices;
+//using ESRI.ArcGIS.esriSystem;
+//using System.IO;
+//using ESRI.ArcGIS.CartographyTools;
+
 using ESRI.ArcGIS.Geodatabase;
-using ESRI.ArcGIS.DataSourcesFile;
+using ESRI.ArcGIS.Carto;
+using System.Collections.Generic;
+using System;
+using System.IO;
 using System.Windows.Forms;
+using Proyecto;
+using ESRI.ArcGIS.DataSourcesFile;
 using ESRI.ArcGIS.Geometry;
+using System.Runtime.InteropServices;
 using ESRI.ArcGIS.Geoprocessor;
 using ESRI.ArcGIS.Geoprocessing;
-using System.Runtime.InteropServices;
 using ESRI.ArcGIS.esriSystem;
-using System.IO;
-using ESRI.ArcGIS.CartographyTools;
-
 class MuestreoControlador : IMuestreo
 {
     private IWorkspace wsZonif;
@@ -54,35 +67,18 @@ class MuestreoControlador : IMuestreo
             IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
             IWorkspace workspaceZonif = workspaceFactory.OpenFromFile(rutaCapa, 0);
             this.wsZonif = workspaceZonif;
-            //////GONZALO
-            //String[] strErrores = new String[1];
-            //strErrores[0] = "Antes de paso1";
-            //VentanaErrores v = new VentanaErrores(1, strErrores);
-            //v.ShowDialog();
-            ////
 
             //paso 1
             lblProgressBar.Text = "Cargando puntos de zonificación...";
             lblProgressBar.Visible = true;
 
             this.zonificacion = new Zonificacion(rutaEntrada, variablesMarcadas, pBar);
-            //////GONZALO
-            //strErrores[0] = "se creo la zonificacion";
-            //v = new VentanaErrores(1, strErrores);
-            //v.ShowDialog();
-            ////
-            //lblProgressBar.Text = "";
 
             //paso 2
             lblProgressBar.Text = "Calculando variabilidad de los puntos de zonificación...";
             zonificacion.calcularVariabilidad(pBar);
             lblProgressBar.Text = "";
 
-            //////GONZALO
-            //strErrores[0] = "termino de calcular la variabilidad";
-            //v = new VentanaErrores(1, strErrores);
-            //v.ShowDialog();
-            ////
             //paso 3 - crear Puntos de Muestreo
             Muestreo muestreo = new Muestreo();
 
@@ -111,20 +107,9 @@ class MuestreoControlador : IMuestreo
                 int tamCelda = zonificacion.getTamanoCelda();
                 //hacer poligono de todo el campo
                 string nomPolExt = "polExt" + System.DateTime.Now.ToString("HHmmss");
-                //////GONZALO
-                //strErrores[0] = "antes de hacer la extension del poligono";
-                //v = new VentanaErrores(1, strErrores);
-                //v.ShowDialog();
-                ////
-                ////IFeatureClass extensionPoligono = this.crearPoligonoExtension(nombreCapaPuntosZonificacion, nomPolExt, tamCelda);
 
                 //se crea la capa de red con las filas y columnas pasadas como parametro
                 //se carga en el controlar la capaPoligonos y capaPuntosMuestreo
-                //////GONZALO
-                //strErrores[0] = "antes de hacer de crear red";
-                //v = new VentanaErrores(1, strErrores);
-                //v.ShowDialog();
-                ////
                 this.crearRed(new DTPCrearRed(map, this.nombreCapaPoligonos, nombreCapa, zonificacion.getPuntoOrigen(), zonificacion.getPuntoOpuesto(), filasColumnas, vertical, horizontal, true, this.nombreCapaPuntosZonificacion));
 
                 //paso 5
@@ -138,21 +123,9 @@ class MuestreoControlador : IMuestreo
 
                 //calcula los valores de los puntos de muestreo haciendo promedio en los puntos que "caen" dentro de la celda de la capa de poligonos
                 //agrega cada punto de muestreo a la lista de la instancia de muestreo.
-                //////GONZALO
-                //strErrores[0] = "antes de cargarValoresPuntosMuestreo";
-                //v = new VentanaErrores(1, strErrores);
-                //v.ShowDialog();
-                ////
                 this.cargarValoresPuntosMuestreo(new DTPCargarValoresPuntosMuestreo(map, muestreo, this.nombreCapaPuntosZonificacion, this.nombreCapaPoligonos, this.nombreCapaPuntosMuestreo, 2, 2, pBar));
 
                 //se quitan los puntos externos al campo
-                //////GONZALO
-                //strErrores[0] = "antes de quitarpuntos Externos";
-                //v = new VentanaErrores(1, strErrores);
-                //v.ShowDialog();
-                ////
-                ////this.quitarPuntosExternos(this.nombreCapaPuntosMuestreo, extensionPoligono);
-
 
                 pBar.Visible = false;
                 lblProgressBar.Text = "";
@@ -318,7 +291,7 @@ class MuestreoControlador : IMuestreo
     //crea un featureClass con los los fields: "OID", "Shape", "Valor"
     //Excepciones: OK
     //ProyectoException
-    private IFeatureClass crearFeatureClassConFields(String featureClassName, IFeatureWorkspace featureWorkspace)
+    private IFeatureClass crearFeatureClassConFields(string featureClassName, IFeatureWorkspace featureWorkspace)
     {
         try
         {

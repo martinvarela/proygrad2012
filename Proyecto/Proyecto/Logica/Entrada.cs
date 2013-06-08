@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ESRI.ArcGIS.Carto;
-using ESRI.ArcGIS.Geodatabase;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using ESRI.ArcGIS.Carto;
+//using ESRI.ArcGIS.Geodatabase;
 
+using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Carto;
 class Entrada : Capa
 {
     private string nombreAtributo; //1
@@ -15,7 +17,7 @@ class Entrada : Capa
     private int indice; //6
 
     //1
-    public void setNombreAtributo(String s)
+    public void setNombreAtributo(string s)
     {
         this.nombreAtributo = s;
     }

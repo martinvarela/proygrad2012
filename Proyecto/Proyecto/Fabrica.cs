@@ -6,9 +6,11 @@ using System.Text;
 class Fabrica
 {
     private static Fabrica instancia;
+    private static OptimizarControlador instanciaOptimizarControlador;
+
     private Fabrica()
     { }
-
+    
     public static Fabrica getInstancia
     {
         get
@@ -16,6 +18,7 @@ class Fabrica
             if (instancia == null)
             {
                 instancia = new Fabrica();
+                instanciaOptimizarControlador = null;
             }
             return instancia;
         }
@@ -31,6 +34,10 @@ class Fabrica
     }
     public IOptimizar getIOptimizar()
     {
-        return new OptimizarControlador();
+        if (instanciaOptimizarControlador == null)
+        {
+            instanciaOptimizarControlador = new OptimizarControlador();
+        }
+        return instanciaOptimizarControlador;
     }
 }

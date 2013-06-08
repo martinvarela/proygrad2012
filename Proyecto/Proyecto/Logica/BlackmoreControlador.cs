@@ -1,17 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using ESRI.ArcGIS.Geodatabase;
+//using ESRI.ArcGIS.Carto;
+//using Proyecto;
+//using ESRI.ArcGIS.Geoprocessor;
+//using ESRI.ArcGIS.Geoprocessing;
+//using ESRI.ArcGIS.DataSourcesFile;
+//using ESRI.ArcGIS.Display;
+//using ESRI.ArcGIS.esriSystem;
+
+
 using ESRI.ArcGIS.Geodatabase;
+using System.Collections.Generic;
 using ESRI.ArcGIS.Carto;
 using Proyecto;
+using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.Geoprocessor;
 using ESRI.ArcGIS.Geoprocessing;
-using ESRI.ArcGIS.DataSourcesFile;
-using ESRI.ArcGIS.Display;
 using ESRI.ArcGIS.esriSystem;
-
-
+using ESRI.ArcGIS.DataSourcesFile;
 class BlackmoreControlador : IBlackmore
 {
     private IWorkspace wsBlackmore;

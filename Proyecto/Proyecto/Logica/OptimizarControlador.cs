@@ -1,15 +1,24 @@
-﻿using System;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using ESRI.ArcGIS.Geodatabase;
+//using ESRI.ArcGIS.DataSourcesFile;
+//using ESRI.ArcGIS.Carto;
+//using Proyecto;
+//using ESRI.ArcGIS.Geometry;
+//using ESRI.ArcGIS.Geoprocessor;
+//using ESRI.ArcGIS.Geoprocessing;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ESRI.ArcGIS.Geodatabase;
-using ESRI.ArcGIS.DataSourcesFile;
 using ESRI.ArcGIS.Carto;
 using Proyecto;
+using ESRI.ArcGIS.Geodatabase;
 using ESRI.ArcGIS.Geometry;
+using System;
 using ESRI.ArcGIS.Geoprocessor;
 using ESRI.ArcGIS.Geoprocessing;
-
+using ESRI.ArcGIS.DataSourcesFile;
 class OptimizarControlador : IOptimizar
 {
     private static OptimizarControlador instancia;
@@ -33,6 +42,8 @@ class OptimizarControlador : IOptimizar
     public OptimizarControlador()
     {
         this.ssa = new SSA();
+        this.area = -1;
+        this.rango = -1;
     }
 
     //capaPuntosMuestreo es la capa seleccionada por el usuario
@@ -52,21 +63,30 @@ class OptimizarControlador : IOptimizar
             double error = dtp.getError();
             string rutaCapa = dtp.getRutaCapa();
 
-            IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
+            int cantidadPuntosCapa = capaPuntosMuestreo.FeatureCount(null);
 
-            //esta ruta la indica el usuario
-            string fechaActual = System.DateTime.Now.ToString("ddMMyyyy_HHmm");
-            string nombreDirectorio = fechaActual + "_Capas";
-            string nombreArchivo = fechaActual + "_Resumen.txt";
-            string pathCombinado = System.IO.Path.Combine(rutaCapa, nombreDirectorio);
-            string pathArchivo = System.IO.Path.Combine(rutaCapa, nombreArchivo);
+            if (nroMuestras < cantidadPuntosCapa)
+            {
+                IWorkspaceFactory workspaceFactory = new ShapefileWorkspaceFactoryClass();
 
-            System.IO.Directory.CreateDirectory(pathCombinado);
-            IWorkspace workspace = workspaceFactory.OpenFromFile(pathCombinado, 0);
-            this.wsSSA = workspace;
-            this.ssa.setWorkspace(this.wsSSA);
-            this.ssa.cantMuestras = nroMuestras;
-            IFeatureClass resultado = this.ssa.simulatedAnnealing(new DTPSimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, error, pathArchivo));
+                //esta ruta la indica el usuario
+                string fechaActual = System.DateTime.Now.ToString("ddMMyyyy_HHmm");
+                string nombreDirectorio = fechaActual + "_Capas";
+                string nombreArchivo = fechaActual + "_Resumen.txt";
+                string pathCombinado = System.IO.Path.Combine(rutaCapa, nombreDirectorio);
+                string pathArchivo = System.IO.Path.Combine(rutaCapa, nombreArchivo);
+
+                System.IO.Directory.CreateDirectory(pathCombinado);
+                IWorkspace workspace = workspaceFactory.OpenFromFile(pathCombinado, 0);
+                this.wsSSA = workspace;
+                this.ssa.setWorkspace(this.wsSSA);
+                this.ssa.cantMuestras = nroMuestras;
+                IFeatureClass resultado = this.ssa.simulatedAnnealing(new DTPSimulatedAnnealing(capaPuntosMuestreo, metodoInterpolacion, expIDW, error, pathArchivo));
+            }
+            else
+            {
+                throw new ProyectoException("La cantidad no puede ser mayor o igual a la cantidad de puntos de la capa(" + cantidadPuntosCapa + " puntos).");
+            }
         }
         catch (ProyectoException p)
         {

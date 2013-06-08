@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using ESRI.ArcGIS.Geodatabase;
 
 
+//using Proyecto;
 namespace Proyecto
 {
     public class botonBlackmore : ESRI.ArcGIS.Desktop.AddIns.Button
@@ -28,5 +29,4 @@ namespace Proyecto
         }
 
     }
-
 }

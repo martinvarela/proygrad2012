@@ -1,24 +1,29 @@
-﻿using ESRI.ArcGIS.SystemUI;
-using ESRI.ArcGIS.esriSystem;
-using ESRI.ArcGIS.Display;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.IO;
-using ESRI.ArcGIS.Carto;
-using Proyecto;
-using System.Windows.Forms;
+﻿//using ESRI.ArcGIS.SystemUI;
+//using ESRI.ArcGIS.esriSystem;
+//using ESRI.ArcGIS.Display;
+//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using System.IO;
+//using ESRI.ArcGIS.Carto;
+//using Proyecto;
+//using System.Windows.Forms;
+//using ESRI.ArcGIS.Geometry;
+//using ESRI.ArcGIS.Geodatabase;
+//using System.Runtime.InteropServices;
+//using ESRI.ArcGIS.ArcMapUI;
+//using ESRI.ArcGIS.Editor;
+//using ESRI.ArcGIS.Geoprocessor;
+//using System.Globalization;
+
+
+
 using ESRI.ArcGIS.Geometry;
-using ESRI.ArcGIS.Geodatabase;
-using System.Runtime.InteropServices;
-using ESRI.ArcGIS.ArcMapUI;
-using ESRI.ArcGIS.Editor;
-using ESRI.ArcGIS.Geoprocessor;
+using System.Collections.Generic;
 using System.Globalization;
-
-
-
+using System;
+using System.IO;
 class Zonificacion
 {
     private int columnas;
@@ -89,7 +94,7 @@ class Zonificacion
         this.puntoOpuesto = p;
     }
 
-    public Zonificacion(String rutaEntrada, List<int> variables_seleccion, System.Windows.Forms.ProgressBar pBar)
+    public Zonificacion(string rutaEntrada, List<int> variables_seleccion, System.Windows.Forms.ProgressBar pBar)
     {
         try
         {

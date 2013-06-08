@@ -1,13 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ESRI.ArcGIS.Geodatabase;
-using ESRI.ArcGIS.Geoprocessor;
-using ESRI.ArcGIS.Geoprocessing;
-using ESRI.ArcGIS.Carto;
-using ESRI.ArcGIS.Geometry;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using ESRI.ArcGIS.Geodatabase;
+//using ESRI.ArcGIS.Geoprocessor;
+//using ESRI.ArcGIS.Geoprocessing;
+//using ESRI.ArcGIS.Carto;
+//using ESRI.ArcGIS.Geometry;
 
+
+using ESRI.ArcGIS.Carto;
+using System.Collections.Generic;
+using ESRI.ArcGIS.Geodatabase;
+using ESRI.ArcGIS.Geometry;
+using ESRI.ArcGIS.Geoprocessor;
+using System;
+using ESRI.ArcGIS.Geoprocessing;
 
 class Blackmore : Capa
 {

@@ -1,17 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ESRI.ArcGIS.Geoprocessor;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Text;
+//using ESRI.ArcGIS.Geoprocessor;
+//using ESRI.ArcGIS.Geodatabase;
+//using ESRI.ArcGIS.Carto;
+//using ESRI.ArcGIS.Geometry;
+//using Proyecto;
+//using ESRI.ArcGIS.Geoprocessing;
+//using System.IO;
+//using ESRI.ArcGIS.esriSystem;
+
+
 using ESRI.ArcGIS.Geodatabase;
+using System.Collections.Generic;
 using ESRI.ArcGIS.Carto;
 using ESRI.ArcGIS.Geometry;
 using Proyecto;
-using ESRI.ArcGIS.Geoprocessing;
 using System.IO;
-using ESRI.ArcGIS.esriSystem;
-
-
+using System;
+using ESRI.ArcGIS.Geoprocessor;
+using ESRI.ArcGIS.Geoprocessing;
 class SSA
 {
     private IWorkspace ws;
@@ -95,7 +104,7 @@ class SSA
 
         bool llegueAErrorEsperado = true;
 
-        while (cantMuestrasAux > 1 && llegueAErrorEsperado)
+        while (cantMuestrasAux >= 3 && llegueAErrorEsperado)
         {
             double temperaturaInicialAux = this.temperaturaInicial;
             //a partir de los puntos, selecciona las muestras iniciales
@@ -118,7 +127,7 @@ class SSA
             System.Diagnostics.Debug.WriteLine(" fitness: " + fitness);
 
             //LOOP principal
-            while (iteration < iteracionesAux && (fitness > error) )
+            while (iteration < iteracionesAux && (fitness*100 > error) )
             {
                 iteration++;
 
@@ -186,7 +195,7 @@ class SSA
                     sw.WriteLine("");
                     sw.WriteLine("Nombre Capa: " + nombreCapaPuntosMuestreoOptimo);
                     sw.WriteLine("  Cantidad de Muestras: " + cantMuestrasAux.ToString());
-                    sw.WriteLine("  Error: " + fitness.ToString());
+                    sw.WriteLine("  Error: " + Math.Round(fitness*100,2).ToString() + " %");
                     sw.WriteLine("  Iteraciones: " + iteration.ToString());
                     sw.Close();
                 }
@@ -196,7 +205,7 @@ class SSA
                     tw.WriteLine("");
                     tw.WriteLine("Nombre Capa: " + nombreCapaPuntosMuestreoOptimo);
                     tw.WriteLine("  Cantidad de Muestras: " + cantMuestrasAux.ToString());
-                    tw.WriteLine("  Error: " + fitness.ToString());
+                    tw.WriteLine("  Error: " + Math.Round(fitness * 100, 2).ToString() + " %");
                     tw.WriteLine("  Iteraciones: " + iteration.ToString());
                     tw.Close();
                 }
@@ -207,7 +216,9 @@ class SSA
             }
 
             if (fitness * 100 > error)
+            {
                 llegueAErrorEsperado = false;
+            }
             cantMuestrasAux--;
         }
         return null;
@@ -236,7 +247,7 @@ class SSA
         ESRI.ArcGIS.GeostatisticalAnalystTools.IDW capaIDW = new ESRI.ArcGIS.GeostatisticalAnalystTools.IDW();
         capaIDW.in_features = capaPuntosMuestreoOptimo;
         capaIDW.out_ga_layer = nombreCapaIDW;
-        capaIDW.z_field = capaPuntosMuestreoOptimo.FindField("Valor");
+        capaIDW.z_field = "Valor";
         capaIDW.power = expIDW; 
         gp.TemporaryMapLayers = true;
         gp.OverwriteOutput = true;
@@ -247,10 +258,7 @@ class SSA
             gp.Execute(capaIDW, null);
         }
         catch
-        { 
-            for (int i = 0; i < gp.MessageCount; i++)
-                System.Diagnostics.Debug.WriteLine(gp.GetMessage(i));
-            System.Diagnostics.Debug.WriteLine("Caught exception #2.");
+        {
         }
 
         string nombreCapaEstimacion = "Estimacion";
@@ -296,7 +304,6 @@ class SSA
         }
         catch
         {
-
             errorTotal = 9999999999999999;
         }
 

@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Collections;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Text;
+//using System.Collections;
 
+using System.Collections;
+using System.Collections.Generic;
 class PuntoZonificacion
 {
     private Coordenada coordenada;
@@ -68,12 +70,12 @@ class PuntoZonificacion
 
     }
     
-    public double getMedicion(String nombre)  
+    public double getMedicion(string nombre)  
     {
         return (double)this.hashDato[nombre.ToString()];
     }
 
-    public void agregarDato(String nombreVariable, double dato)
+    public void agregarDato(string nombreVariable, double dato)
     {
         if (this.hashDato == null)
             this.hashDato = new Hashtable();
