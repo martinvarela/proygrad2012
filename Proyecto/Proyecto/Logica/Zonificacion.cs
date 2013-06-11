@@ -141,12 +141,12 @@ class Zonificacion
                 }
                 else if (((sLine != "") && (sLine.Length >= string_Xinicial.Length) && sLine.Substring(0, string_Xinicial.Length) == string_Xinicial))
                 {
-                    xinicial = Double.Parse(sLine.Substring(string_Xinicial.Length, sLine.Length - string_Xinicial.Length));
+                    xinicial = Double.Parse(sLine.Substring(string_Xinicial.Length, sLine.Length - string_Xinicial.Length),new NumberFormatInfo() { NumberDecimalSeparator = "," });
                     this.coordenadaInicial.setX(xinicial);
                 }
                 else if (((sLine != "") && (sLine.Length >= string_Yinicial.Length) && sLine.Substring(0, string_Yinicial.Length) == string_Yinicial))
                 {
-                    yinicial = Double.Parse(sLine.Substring(string_Yinicial.Length, sLine.Length - string_Yinicial.Length));
+                    yinicial = Double.Parse(sLine.Substring(string_Yinicial.Length, sLine.Length - string_Yinicial.Length), new NumberFormatInfo() { NumberDecimalSeparator = "," });
                     this.coordenadaInicial.setY(yinicial);
                 }
                 else if (((sLine != "") && (sLine.Length >= string_CellSize.Length) && sLine.Substring(0, string_CellSize.Length) == string_CellSize))
