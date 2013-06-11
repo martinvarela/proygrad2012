@@ -34,8 +34,8 @@
         this.txtMuestreo = new System.Windows.Forms.TextBox();
         this.btnAyuda = new System.Windows.Forms.Button();
         this.panelAyuda = new System.Windows.Forms.Panel();
-        this.labelDescripcionZonificacion = new System.Windows.Forms.Label();
         this.labelTituloZonificacion = new System.Windows.Forms.Label();
+        this.labelDescripcionZonificacion = new System.Windows.Forms.Label();
         this.lblTituloVariables = new System.Windows.Forms.Label();
         this.lblDescripcionRed9 = new System.Windows.Forms.Label();
         this.lblDescripcionRed8 = new System.Windows.Forms.Label();
@@ -46,6 +46,7 @@
         this.lblDescripcionRed5 = new System.Windows.Forms.Label();
         this.lblDescripcionVariables = new System.Windows.Forms.Label();
         this.lblDescripcionRed1 = new System.Windows.Forms.Label();
+        this.lblDescripcionRed2 = new System.Windows.Forms.Label();
         this.lblTituloRed = new System.Windows.Forms.Label();
         this.labelDescripcionMuestreo = new System.Windows.Forms.Label();
         this.labelTituloMuestreo = new System.Windows.Forms.Label();
@@ -148,23 +149,13 @@
         // 
         this.panelAyuda.BackColor = System.Drawing.SystemColors.ButtonHighlight;
         this.panelAyuda.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-        this.panelAyuda.Controls.Add(this.labelDescripcionZonificacion);
         this.panelAyuda.Controls.Add(this.labelTituloZonificacion);
+        this.panelAyuda.Controls.Add(this.labelDescripcionZonificacion);
         this.panelAyuda.Location = new System.Drawing.Point(475, 27);
         this.panelAyuda.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
         this.panelAyuda.Name = "panelAyuda";
         this.panelAyuda.Size = new System.Drawing.Size(442, 427);
         this.panelAyuda.TabIndex = 10;
-        // 
-        // labelDescripcionZonificacion
-        // 
-        this.labelDescripcionZonificacion.AutoSize = true;
-        this.labelDescripcionZonificacion.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-        this.labelDescripcionZonificacion.Location = new System.Drawing.Point(19, 86);
-        this.labelDescripcionZonificacion.Name = "labelDescripcionZonificacion";
-        this.labelDescripcionZonificacion.Size = new System.Drawing.Size(301, 16);
-        this.labelDescripcionZonificacion.TabIndex = 1;
-        this.labelDescripcionZonificacion.Text = "Ingrese el archivo correspondiente a la zonificación";
         // 
         // labelTituloZonificacion
         // 
@@ -175,6 +166,16 @@
         this.labelTituloZonificacion.Size = new System.Drawing.Size(188, 19);
         this.labelTituloZonificacion.TabIndex = 0;
         this.labelTituloZonificacion.Text = "Archivo de zonificación";
+        // 
+        // labelDescripcionZonificacion
+        // 
+        this.labelDescripcionZonificacion.AutoSize = true;
+        this.labelDescripcionZonificacion.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        this.labelDescripcionZonificacion.Location = new System.Drawing.Point(19, 86);
+        this.labelDescripcionZonificacion.Name = "labelDescripcionZonificacion";
+        this.labelDescripcionZonificacion.Size = new System.Drawing.Size(301, 16);
+        this.labelDescripcionZonificacion.TabIndex = 1;
+        this.labelDescripcionZonificacion.Text = "Ingrese el archivo correspondiente a la zonificación";
         // 
         // lblTituloVariables
         // 
@@ -249,7 +250,7 @@
         this.lblDescripcionRed5.Name = "lblDescripcionRed5";
         this.lblDescripcionRed5.Size = new System.Drawing.Size(384, 56);
         this.lblDescripcionRed5.TabIndex = 7;
-        this.lblDescripcionRed5.Text = "Tamaño de celdas - Determina que se hara la generalización de puntos mediante una" +
+        this.lblDescripcionRed5.Text = "Tamaño de celdas - Determina que se hará la generalización de puntos mediante una" +
             " red construida en base al ancho y alto de cada celda.";
         // 
         // lblDescripcionVariables
@@ -272,6 +273,16 @@
         this.lblDescripcionRed1.Size = new System.Drawing.Size(81, 16);
         this.lblDescripcionRed1.TabIndex = 5;
         this.lblDescripcionRed1.Text = "Tipo de red";
+        // 
+        // lblDescripcionRed2
+        // 
+        this.lblDescripcionRed2.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+        this.lblDescripcionRed2.Location = new System.Drawing.Point(19, 80);
+        this.lblDescripcionRed2.Name = "lblDescripcionRed2";
+        this.lblDescripcionRed2.Size = new System.Drawing.Size(384, 56);
+        this.lblDescripcionRed2.TabIndex = 6;
+        this.lblDescripcionRed2.Text = "Cantidad de celdas - Determina que se hará la generalización de puntos mediante u" +
+            "na red construida en base a la cantidad de filas y de columnas.";
         // 
         // lblTituloRed
         // 
@@ -375,8 +386,8 @@
         this.cboTipoRed.Font = new System.Drawing.Font("Arial", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
         this.cboTipoRed.FormattingEnabled = true;
         this.cboTipoRed.Items.AddRange(new object[] {
-        "Cantidad de celdas",
-        "Tamaño de celdas"});
+            "Cantidad de celdas",
+            "Tamaño de celdas"});
         this.cboTipoRed.Location = new System.Drawing.Point(31, 196);
         this.cboTipoRed.Name = "cboTipoRed";
         this.cboTipoRed.Size = new System.Drawing.Size(174, 23);
@@ -594,6 +605,7 @@
     public System.Windows.Forms.Label lblDescripcionRed5;
     public System.Windows.Forms.Label lblDescripcionVariables;
     private System.Windows.Forms.Label lblDescripcionRed1;
+    private System.Windows.Forms.Label lblDescripcionRed2;
     private System.Windows.Forms.Label lblTituloRed;
     private System.Windows.Forms.Label lblProgressBar;
     private System.Windows.Forms.CheckBox chkSinRed;

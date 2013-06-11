@@ -117,7 +117,7 @@ public partial class ventanaSSA : Form
             if (ptoVerdeMuestras.Visible)
             {
                 cantidadErrores++;
-                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblMuestras.Text + ": Debe indicar un valor entero mayor que 0 para el numero de muestras.";
+                stringErrores[cantidadErrores - 1] = "ERROR: " + this.lblMuestras.Text + ": Debe indicar un valor entero mayor que 0 para el número de muestras.";
             }
             if (ptoVerdeError.Visible)
             {

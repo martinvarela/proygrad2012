@@ -85,7 +85,7 @@ class OptimizarControlador : IOptimizar
             }
             else
             {
-                throw new ProyectoException("La cantidad no puede ser mayor o igual a la cantidad de puntos de la capa(" + cantidadPuntosCapa + " puntos).");
+                throw new ProyectoException("ERROR: La cantidad de muestras no puede ser mayor o igual a la cantidad de puntos de la capa(" + cantidadPuntosCapa + " puntos).");
             }
         }
         catch (ProyectoException p)
@@ -262,7 +262,7 @@ class OptimizarControlador : IOptimizar
         }
         catch
         {
-            throw new ProyectoException("Ha ocurrido un error al calcular el número de muestras.");
+            throw new ProyectoException("ERROR: Ha ocurrido un error al calcular el número de muestras.");
         }
     }
 

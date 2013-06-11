@@ -265,7 +265,7 @@ public partial class ventanaMuestreo : Form
         panelAyuda.Controls.Clear();
         panelAyuda.Controls.Add(lblTituloRed);
         panelAyuda.Controls.Add(lblDescripcionRed1);
-        panelAyuda.Controls.Add(lblDescripcionVariables);
+        panelAyuda.Controls.Add(lblDescripcionRed2);
         panelAyuda.Controls.Add(lblDescripcionRed3);
         panelAyuda.Controls.Add(lblDescripcionRed4);
         panelAyuda.Controls.Add(lblDescripcionRed5);
