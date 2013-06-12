@@ -228,7 +228,7 @@ class Zonificacion
                             break;
                         }
                         else
-                            ptoZonificacion.agregarDato(ptoZonificacion.getVariables()[i].getNombre(), double.Parse(datos[variables_seleccion[i]]));
+                            ptoZonificacion.agregarDato(ptoZonificacion.getVariables()[i].getNombre(), Double.Parse(datos[variables_seleccion[i]], new NumberFormatInfo() { NumberDecimalSeparator = "," }));
                     }
                     //agrego el punto solo si tiene datos
                     if (puntoUtil)
